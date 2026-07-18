@@ -10,7 +10,8 @@
     "causal-lab": "./dist/server.js"
   },
   "files": [
-    "dist"
+    "dist",
+    "schema"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",

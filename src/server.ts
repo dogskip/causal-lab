@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { serve } from "@hono/node-server";
 import { createApp } from "./app.js";
+import { ScenarioCatalog } from "./catalog.js";
 
 const hostname = process.env.CAUSAL_LAB_HOST ?? "127.0.0.1";
 const port = Number(process.env.CAUSAL_LAB_PORT ?? "8787");
@@ -14,11 +15,14 @@ if (!Number.isSafeInteger(port) || port < 1 || port > 65_535) {
   process.exit(2);
 }
 
-const server = serve({ fetch: createApp().fetch, hostname, port });
+const databasePath = process.env.CAUSAL_LAB_DB;
+const catalog = databasePath === undefined ? undefined : new ScenarioCatalog(databasePath);
+const server = serve({ fetch: createApp(catalog).fetch, hostname, port });
 console.log(`causal-lab listening on http://${hostname}:${port}`);
 
 const shutdown = (): void => {
   server.close((error) => {
+    catalog?.close();
     if (error !== undefined) {
       console.error("causal-lab shutdown failed");
       process.exitCode = 1;
