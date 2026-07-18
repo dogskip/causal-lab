@@ -184,13 +184,15 @@ function validateOperation(operation: Operation): void {
   }
   validateDot(operation.dot);
   validateKey(operation.key);
-  if (!Array.isArray(operation.removes) || operation.removes.length > 10_000) {
+  if (
+    !Array.isArray(operation.removes) ||
+    operation.removes.length > 10_000 ||
+    !operation.removes.every(
+      (removed: unknown) =>
+        typeof removed === "string" && /^[A-Za-z0-9._-]+:[1-9][0-9]*$/u.test(removed),
+    )
+  ) {
     throw new ContractError("operation removal context is invalid");
-  }
-  for (const removed of operation.removes) {
-    if (!/^[A-Za-z0-9._-]+:[1-9][0-9]*$/u.test(removed)) {
-      throw new ContractError("removed operation id is invalid");
-    }
   }
   if (operation.kind === "put" && Buffer.byteLength(operation.value, "utf8") > MAX_VALUE_BYTES) {
     throw new ContractError(`value exceeds ${MAX_VALUE_BYTES} bytes`);
