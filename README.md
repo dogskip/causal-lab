@@ -13,3 +13,13 @@ Each replica records dotted operations and a version vector. Put and remove oper
 
 The precise invariants are in [`docs/test-contract.md`](docs/test-contract.md). Security assumptions are in [`docs/threat-model.md`](docs/threat-model.md).
 
+## Development
+
+Node 24 or newer and pnpm 10 are required. The core never reads wall-clock time. `pnpm start` serves `POST /v1/run` on `127.0.0.1:8787`; the host remains restricted to `127.0.0.1` or `::1`.
+
+```sh
+pnpm test
+pnpm typecheck
+pnpm lint
+pnpm build
+```
