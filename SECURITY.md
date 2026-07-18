@@ -13,5 +13,4 @@ pnpm lint
 pnpm audit --prod --audit-level high
 ```
 
-A passing run only states that the pinned tools found no current issue. It is not an absolute security guarantee.
-
+The current baseline is Node 26.0.0, pnpm 10.28.2, TypeScript 5.9.3, Hono 4.12.30, and Vitest 4.1.10. A passing run only states that the pinned tools found no current issue. It is not an absolute security guarantee.
