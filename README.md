@@ -1,0 +1,15 @@
+# Causal Lab
+
+Causal Lab is a deterministic network simulator for studying an observed-remove map under partitions, latency, drops, duplication, and reordering. A seeded run uses virtual time only, so the same scenario produces the same trace on every machine.
+
+Each replica records dotted operations and a version vector. Put and remove operations carry the exact dots they observed; tombstones make late and duplicated delivery harmless. Healing performs a reliable anti-entropy pass and reports whether all replicas converged to the same canonical state.
+
+## Boundary
+
+- at most 12 replicas and 10,000 scheduled events
+- at most 2 MiB per JSON request
+- no wall-clock time, sockets, telemetry, hosted state, or dynamic code execution in the simulation core
+- scenario identifiers, keys, values, and replica names are bounded before allocation
+
+The precise invariants are in [`docs/test-contract.md`](docs/test-contract.md). Security assumptions are in [`docs/threat-model.md`](docs/threat-model.md).
+
