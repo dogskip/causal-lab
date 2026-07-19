@@ -17,6 +17,39 @@ An optional content-addressed SQLite catalog persists validated scenarios and im
 
 The precise invariants are in [`docs/test-contract.md`](docs/test-contract.md). Security assumptions are in [`docs/threat-model.md`](docs/threat-model.md).
 
+## Quickstart
+
+```sh
+pnpm install
+pnpm start   # causal-lab listening on http://127.0.0.1:8787
+```
+
+Run a scenario (partition, write while isolated, heal, converge):
+
+```sh
+curl -X POST http://127.0.0.1:8787/v1/run \
+  -H 'content-type: application/json' \
+  -d '{
+    "config": {
+      "replicas": ["a", "b"],
+      "seed": 19,
+      "minLatency": 1,
+      "maxLatency": 3,
+      "dropRate": 0.25,
+      "duplicateRate": 0.5
+    },
+    "steps": [
+      { "at": 0, "action": "partition", "left": "a", "right": "b" },
+      { "at": 1, "action": "put", "replica": "a", "key": "mode", "value": "safe" },
+      { "at": 5, "action": "heal" }
+    ]
+  }'
+```
+
+The response is a `SimulationReport` with `converged: true` and an ordered `trace`. Re-run it with the same body: the response is byte-identical.
+
+New here? Read the [tutorial](docs/tutorial.md). For the full contract see the [API reference](docs/api-reference.md), [error codes](docs/error-codes.md), and [OpenAPI spec](docs/openapi.json).
+
 ## Development
 
 Node 24 or newer and pnpm 10 are required. The core never reads wall-clock time. `pnpm start` serves `POST /v1/run` on `127.0.0.1:8787`; the host remains restricted to `127.0.0.1` or `::1`.

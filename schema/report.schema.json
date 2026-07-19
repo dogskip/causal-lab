@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://causal-lab/schemas/report.schema.json",
+  "title": "SimulationReport",
+  "description": "Deterministic run receipt returned by POST /v1/run and stored in the catalog. Mirrors SimulationReport in src/simulation.ts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["seed", "virtualTime", "processedEvents", "converged", "states", "versions", "trace"],
+  "properties": {
+    "seed": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+    "virtualTime": { "type": "integer", "minimum": 0 },
+    "processedEvents": { "type": "integer", "minimum": 0, "maximum": 10000 },
+    "converged": { "type": "boolean" },
+    "states": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "versions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "trace": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["sequence", "time", "kind"],
+        "properties": {
+          "sequence": { "type": "integer", "minimum": 1 },
+          "time": { "type": "integer", "minimum": 0 },
+          "kind": {
+            "enum": ["local", "scheduled", "dropped", "held", "delivered", "partition", "heal"]
+          },
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "operation": { "type": "string" }
+        }
+      }
+    }
+  }
+}
