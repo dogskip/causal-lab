@@ -13,6 +13,15 @@ import {
 import type { SimulationReport } from "./simulation.js";
 
 const HASH_PATTERN = /^[0-9a-f]{64}$/;
+
+export type CatalogErrorCode = "corruption" | "schema" | "missing";
+
+export class CatalogError extends Error {
+  override readonly name = "CatalogError";
+  constructor(message: string, readonly code: CatalogErrorCode) {
+    super(message);
+  }
+}
 const MIGRATION = readFileSync(
   new URL("../schema/sqlite/001_catalog.sql", import.meta.url),
   "utf8",
@@ -82,7 +91,7 @@ export class ScenarioCatalog {
       row?.canonicalization !== CANONICALIZATION ||
       row.canonical_json !== identity.canonical
     ) {
-      throw new Error("scenario digest collision or catalog corruption");
+      throw new CatalogError("scenario digest collision or catalog corruption", "corruption");
     }
     return { id: identity.id, canonicalization: CANONICALIZATION };
   }
@@ -103,21 +112,21 @@ export class ScenarioCatalog {
       return undefined;
     }
     if (row.canonicalization !== CANONICALIZATION) {
-      throw new Error("catalog canonicalization is not supported");
+      throw new CatalogError("catalog canonicalization is not supported", "schema");
     }
     if (Buffer.byteLength(row.canonical_json) !== row.definition_bytes) {
-      throw new Error("stored scenario byte count does not match its content");
+      throw new CatalogError("stored scenario byte count does not match its content", "corruption");
     }
     const scenario = parseScenario(JSON.parse(row.canonical_json) as unknown);
     if (scenarioIdentity(scenario).id !== id) {
-      throw new Error("stored scenario failed its content identity check");
+      throw new CatalogError("stored scenario failed its content identity check", "corruption");
     }
     return { id, canonicalization: CANONICALIZATION, scenario };
   }
 
   putRun(scenarioId: string, report: SimulationReport): StoredRun {
     if (this.getScenario(scenarioId) === undefined) {
-      throw new Error("scenario does not exist");
+      throw new CatalogError("scenario does not exist", "missing");
     }
     const reportJson = canonicalJson(report);
     const traceSha256 = digest(canonicalJson(report.trace));
@@ -135,7 +144,7 @@ export class ScenarioCatalog {
       stored.scenarioId !== scenarioId ||
       canonicalJson(stored.report) !== reportJson
     ) {
-      throw new Error("run digest collision or catalog corruption");
+      throw new CatalogError("run digest collision or catalog corruption", "corruption");
     }
     return stored;
   }
@@ -168,7 +177,7 @@ export class ScenarioCatalog {
       report.processedEvents !== row.processed_events ||
       report.converged !== (row.converged === 1)
     ) {
-      throw new Error("stored run failed its receipt checks");
+      throw new CatalogError("stored run failed its receipt checks", "corruption");
     }
     return {
       id,
@@ -185,17 +194,17 @@ export class ScenarioCatalog {
       .prepare("SELECT COALESCE(MAX(version), 0) AS version FROM schema_migrations")
       .get() as { version: number };
     if (migration.version !== 1) {
-      throw new Error("catalog schema version is not supported");
+      throw new CatalogError("catalog schema version is not supported", "schema");
     }
     const integrity = this.#database.prepare("PRAGMA integrity_check").all() as Array<{
       integrity_check: string;
     }>;
     if (integrity.length !== 1 || integrity[0]?.integrity_check !== "ok") {
-      throw new Error("catalog integrity check failed");
+      throw new CatalogError("catalog integrity check failed", "corruption");
     }
     const foreignKeys = this.#database.prepare("PRAGMA foreign_key_check").all();
     if (foreignKeys.length !== 0) {
-      throw new Error("catalog foreign-key check failed");
+      throw new CatalogError("catalog foreign-key check failed", "corruption");
     }
   }
 

@@ -5,6 +5,7 @@ import { DatabaseSync } from "node:sqlite";
 import { afterEach, describe, expect, it } from "vitest";
 import { ScenarioCatalog } from "../src/catalog.js";
 import { executeScenario, parseScenario } from "../src/scenario.js";
+import { catalogScenario } from "./fixtures.js";
 
 const directories: string[] = [];
 
@@ -19,7 +20,7 @@ describe("scenario catalog", () => {
     const directory = mkdtempSync(join(tmpdir(), "causal-lab-"));
     directories.push(directory);
     const path = join(directory, "catalog.sqlite");
-    const scenario = parseScenario(sampleScenario());
+    const scenario = parseScenario(catalogScenario());
 
     const first = new ScenarioCatalog(path);
     const reference = first.putScenario(scenario);
@@ -45,20 +46,3 @@ describe("scenario catalog", () => {
     database.close();
   });
 });
-
-function sampleScenario(): unknown {
-  return {
-    config: {
-      replicas: ["a", "b"],
-      seed: 7,
-      minLatency: 1,
-      maxLatency: 2,
-      dropRate: 0,
-      duplicateRate: 0,
-    },
-    steps: [
-      { at: 0, action: "put", replica: "a", key: "mode", value: "safe" },
-      { at: 3, action: "heal" },
-    ],
-  };
-}

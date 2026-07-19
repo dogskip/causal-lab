@@ -144,9 +144,15 @@ export class Replica {
   }
 
   operations(): Operation[] {
-    return [...this.#operations.entries()]
-      .sort(([left], [right]) => left.localeCompare(right))
-      .map(([, operation]) => cloneOperation(operation));
+    return [...this.#operations.values()]
+      .sort((left, right) =>
+        left.dot.replica < right.dot.replica
+          ? -1
+          : left.dot.replica > right.dot.replica
+            ? 1
+            : left.dot.counter - right.dot.counter,
+      )
+      .map(cloneOperation);
   }
 
   canonicalState(): Record<string, string[]> {

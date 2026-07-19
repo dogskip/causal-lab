@@ -1,15 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { Simulation } from "../src/simulation.js";
+import { partitionSimulationConfig } from "./fixtures.js";
 
 function runScenario() {
-  const simulation = new Simulation({
-    replicas: ["north", "south", "west"],
-    seed: 0x5eed,
-    minLatency: 2,
-    maxLatency: 17,
-    dropRate: 0.2,
-    duplicateRate: 0.5,
-  });
+  const simulation = new Simulation(partitionSimulationConfig);
   simulation.partition("north", "south");
   simulation.put("north", "status", "draft");
   simulation.put("south", "status", "ready");

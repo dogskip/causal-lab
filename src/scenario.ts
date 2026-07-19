@@ -164,6 +164,9 @@ function expectObject(
 }
 
 function expectString(value: unknown, field: string): string {
+  if (value === undefined) {
+    throw new ContractError(`${field} is required`);
+  }
   if (!isString(value)) {
     throw new ContractError(`${field} must be a string`);
   }
@@ -171,6 +174,9 @@ function expectString(value: unknown, field: string): string {
 }
 
 function expectNumber(value: unknown, field: string): number {
+  if (value === undefined) {
+    throw new ContractError(`${field} is required`);
+  }
   if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new ContractError(`${field} must be a finite number`);
   }

@@ -14,4 +14,4 @@ The suite must demonstrate:
 10. catalog migrations are idempotent and integrity, foreign-key, hash, byte-count, and trace checks pass;
 11. catalog routes are absent when storage is not configured and preserve the stateless run contract.
 
-Limits: 12 replicas, 10,000 events, 2 MiB JSON, 128-byte identifiers and keys, and 4 KiB values.
+Limits: 12 replicas, 10,000 events, 2 MiB JSON, 128-byte identifiers and keys, 4 KiB values, and 1,000 steps.

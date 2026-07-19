@@ -1,36 +1,23 @@
 import { describe, expect, it } from "vitest";
 import { executeScenario, parseScenario, scenarioIdentity } from "../src/scenario.js";
-
-const scenarioInput = {
-  config: {
-    replicas: ["a", "b"],
-    seed: 19,
-    minLatency: 1,
-    maxLatency: 3,
-    dropRate: 0.25,
-    duplicateRate: 0.5,
-  },
-  steps: [
-    { at: 0, action: "partition", left: "a", right: "b" },
-    { at: 1, action: "put", replica: "a", key: "mode", value: "safe" },
-    { at: 5, action: "heal" },
-  ],
-};
+import { partitionScenarioInput } from "./fixtures.js";
 
 describe("reproducible scenarios", () => {
   it("assigns the same identity regardless of object key order", () => {
     const reordered = {
-      steps: scenarioInput.steps.map((step) => Object.fromEntries(Object.entries(step).reverse())),
-      config: Object.fromEntries(Object.entries(scenarioInput.config).reverse()),
+      steps: partitionScenarioInput.steps.map((step) =>
+        Object.fromEntries(Object.entries(step).reverse()),
+      ),
+      config: Object.fromEntries(Object.entries(partitionScenarioInput.config).reverse()),
     };
 
-    const first = parseScenario(scenarioInput);
+    const first = parseScenario(partitionScenarioInput);
     const second = parseScenario(reordered);
     expect(scenarioIdentity(first)).toEqual(scenarioIdentity(second));
   });
 
   it("executes the same validated scenario byte-identically", () => {
-    const scenario = parseScenario(scenarioInput);
+    const scenario = parseScenario(partitionScenarioInput);
     expect(executeScenario(scenario)).toEqual(executeScenario(scenario));
   });
 });
