@@ -11,14 +11,17 @@
   },
   "files": [
     "dist",
-    "schema"
+    "schema",
+    "examples"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
-    "start": "tsx src/server.ts"
+    "start": "tsx src/server.ts",
+    "bench": "tsx bench/bench.ts",
+    "repl": "tsx src/repl.ts"
   },
   "engines": {
     "node": ">=24"

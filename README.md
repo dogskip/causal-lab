@@ -50,6 +50,32 @@ The response is a `SimulationReport` with `converged: true` and an ordered `trac
 
 New here? Read the [tutorial](docs/tutorial.md). For the full contract see the [API reference](docs/api-reference.md), [error codes](docs/error-codes.md), and [OpenAPI spec](docs/openapi.json).
 
+## Try it without writing JSON
+
+The REPL lets you explore the model interactively — no scenario JSON required:
+
+```sh
+pnpm repl
+> partition a b        # split the network
+> put a mode safe      # write while isolated
+> put b mode fast      # concurrent write on the other side
+> heal                 # clear partitions + reliable anti-entropy
+> run                  # drain scheduled events, print convergence
+> mermaid              # render the trace as a sequence diagram
+```
+
+Or run a ready-made scenario without copy-pasting JSON:
+
+```sh
+curl -X POST http://127.0.0.1:8787/v1/run -H 'content-type: application/json' -d @examples/partition-heal.json
+```
+
+See [`examples/`](examples/README.md) for partition/heal, concurrent put, observed-remove, and three-replica drop scenarios. Each example is covered by `test/examples.test.ts`.
+
+## Trace visualization
+
+A `SimulationReport.trace` is a flat event list. `traceToMermaid(trace)` (exported from `causal-lab`) turns it into a Mermaid `sequenceDiagram` showing who talks to whom and where messages are dropped or held — paste it into GitHub markdown or [mermaid.live](https://mermaid.live). The REPL's `mermaid` command prints it directly.
+
 ## Development
 
 Node 24 or newer and pnpm 10 are required. The core never reads wall-clock time. `pnpm start` serves `POST /v1/run` on `127.0.0.1:8787`; the host remains restricted to `127.0.0.1` or `::1`.
