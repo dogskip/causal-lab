@@ -44,7 +44,7 @@ export class Simulation {
   readonly #replicas = new Map<string, Replica>();
   readonly #random: DeterministicRandom;
   readonly #partitions = new Set<string>();
-  readonly #events: Event[] = [];
+  readonly #events = new EventHeap();
   readonly #held: Event[] = [];
   readonly #trace: TraceEntry[] = [];
   #now = 0;
@@ -109,11 +109,13 @@ export class Simulation {
     if (!Number.isSafeInteger(target)) {
       throw new ContractError("virtual time overflow");
     }
-    while (this.#events.some((event) => event.at <= target)) {
-      const event = this.#takeNext();
-      if (event.at > target) {
-        this.#events.push(event);
-        break;
+    // Drain every event scheduled at or before target. peek() avoids popping an
+    // event that belongs to a future tick — the heap preserves total order, so
+    // this is byte-identical to the previous sort+shift drain.
+    while (this.#events.size > 0 && (this.#events.peek()?.at ?? Number.POSITIVE_INFINITY) <= target) {
+      const event = this.#events.pop();
+      if (event === undefined) {
+        throw new Error("event queue is empty");
       }
       this.#now = event.at;
       this.#process(event);
@@ -122,8 +124,11 @@ export class Simulation {
   }
 
   runUntilIdle(): void {
-    while (this.#events.length > 0) {
-      const event = this.#takeNext();
+    while (this.#events.size > 0) {
+      const event = this.#events.pop();
+      if (event === undefined) {
+        throw new Error("event queue is empty");
+      }
       this.#now = Math.max(this.#now, event.at);
       this.#process(event);
     }
@@ -211,15 +216,6 @@ export class Simulation {
     });
   }
 
-  #takeNext(): Event {
-    this.#events.sort((left, right) => left.at - right.at || left.sequence - right.sequence);
-    const event = this.#events.shift();
-    if (event === undefined) {
-      throw new Error("event queue is empty");
-    }
-    return event;
-  }
-
   #replica(id: string): Replica {
     const replica = this.#replicas.get(id);
     if (replica === undefined) {
@@ -257,6 +253,100 @@ class DeterministicRandom {
 
   integer(minimum: number, maximum: number): number {
     return minimum + Math.floor(this.next() * (maximum - minimum + 1));
+  }
+}
+
+/**
+ * Binary min-heap over events keyed by (at, sequence). The comparator matches the
+ * previous sort+shift order exactly: `at` ascending, then `sequence` ascending.
+ * Because `sequence` is a strictly increasing unique integer, (at, sequence) is
+ * a strict total order, so pop order is byte-identical to the old sort+shift —
+ * determinism is preserved while per-event cost drops from O(n log n) to O(log n).
+ */
+class EventHeap {
+  readonly #items: Event[] = [];
+
+  get size(): number {
+    return this.#items.length;
+  }
+
+  peek(): Event | undefined {
+    return this.#items[0];
+  }
+
+  push(event: Event): void {
+    this.#items.push(event);
+    this.#siftUp(this.#items.length - 1);
+  }
+
+  pop(): Event | undefined {
+    const top = this.#items[0];
+    const last = this.#items.pop();
+    if (last !== undefined && this.#items.length > 0) {
+      this.#items[0] = last;
+      this.#siftDown(0);
+    }
+    return top;
+  }
+
+  #less(a: Event, b: Event): boolean {
+    return a.at < b.at || (a.at === b.at && a.sequence < b.sequence);
+  }
+
+  #siftUp(index: number): void {
+    let current = index;
+    while (current > 0) {
+      const parent = (current - 1) >>> 1;
+      const parentEvent = this.#items[parent];
+      const currentEvent = this.#items[current];
+      if (parentEvent === undefined || currentEvent === undefined) {
+        return;
+      }
+      if (this.#less(parentEvent, currentEvent)) {
+        return;
+      }
+      this.#items[parent] = currentEvent;
+      this.#items[current] = parentEvent;
+      current = parent;
+    }
+  }
+
+  #siftDown(index: number): void {
+    let current = index;
+    const length = this.#items.length;
+    for (;;) {
+      const left = current * 2 + 1;
+      const right = current * 2 + 2;
+      let smallest = current;
+      const smallestEvent = this.#items[smallest];
+      if (smallestEvent === undefined) {
+        return;
+      }
+      if (left < length) {
+        const leftEvent = this.#items[left];
+        if (leftEvent !== undefined && this.#less(leftEvent, smallestEvent)) {
+          smallest = left;
+        }
+      }
+      if (right < length) {
+        const rightEvent = this.#items[right];
+        const smallestAfterLeft = this.#items[smallest];
+        if (rightEvent !== undefined && smallestAfterLeft !== undefined && this.#less(rightEvent, smallestAfterLeft)) {
+          smallest = right;
+        }
+      }
+      if (smallest === current) {
+        return;
+      }
+      const a = this.#items[current];
+      const b = this.#items[smallest];
+      if (a === undefined || b === undefined) {
+        return;
+      }
+      this.#items[current] = b;
+      this.#items[smallest] = a;
+      current = smallest;
+    }
   }
 }
 
