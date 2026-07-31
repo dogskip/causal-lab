@@ -77,4 +77,47 @@ describe("traceToMermaid", () => {
     expect(mermaid).toContain("heal");
     expect(report.converged).toBe(true);
   });
+
+  it("handles an empty trace", () => {
+    const mermaid = traceToMermaid([]);
+    expect(mermaid).toBe("sequenceDiagram");
+  });
+
+  it("handles a trace with only one participant", () => {
+    const trace: TraceEntry[] = [
+      { sequence: 1, time: 0, kind: "local", from: "a", operation: "a:1" },
+    ];
+    const mermaid = traceToMermaid(trace);
+    expect(mermaid.split("\n")[0]).toBe("sequenceDiagram");
+    expect(mermaid).toContain("participant a");
+    expect(mermaid).toContain("local a:1");
+  });
+
+  it("sorts participants deterministically", () => {
+    const trace: TraceEntry[] = [
+      { sequence: 1, time: 0, kind: "scheduled", from: "c", to: "a", operation: "c:1" },
+      { sequence: 2, time: 1, kind: "delivered", from: "b", to: "a", operation: "b:1" },
+    ];
+    const mermaid = traceToMermaid(trace);
+    const lines = mermaid.split("\n");
+    expect(lines[1]).toBe("participant a");
+    expect(lines[2]).toBe("participant b");
+    expect(lines[3]).toBe("participant c");
+  });
+
+  it("includes dropped events in mermaid output", () => {
+    const trace: TraceEntry[] = [
+      { sequence: 1, time: 0, kind: "dropped", from: "a", to: "b", operation: "a:1" },
+    ];
+    const mermaid = traceToMermaid(trace);
+    expect(mermaid).toContain("a --x drop a:1 (t=0): b");
+  });
+
+  it("includes held events in mermaid output", () => {
+    const trace: TraceEntry[] = [
+      { sequence: 1, time: 0, kind: "held", from: "a", to: "b", operation: "a:1" },
+    ];
+    const mermaid = traceToMermaid(trace);
+    expect(mermaid).toContain("a --) hold a:1 (t=0): b");
+  });
 });
