@@ -26,7 +26,7 @@
   "packageManager": "pnpm@10.28.2",
   "dependencies": {
     "@hono/node-server": "2.0.10",
-    "hono": "4.12.30"
+    "hono": "4.12.34"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
