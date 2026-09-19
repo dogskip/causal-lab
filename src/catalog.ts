@@ -1,7 +1,8 @@
-import { createHash } from "node:crypto";
 import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { DatabaseSync } from "node:sqlite";
+import { utf8Length } from "./crdt.js";
+import { sha256Hex } from "./sha256.js";
 import {
   CANONICALIZATION,
   canonicalJson,
@@ -13,6 +14,15 @@ import {
 import type { SimulationReport } from "./simulation.js";
 
 const HASH_PATTERN = /^[0-9a-f]{64}$/;
+
+export type CatalogErrorCode = "corruption" | "schema" | "missing";
+
+export class CatalogError extends Error {
+  override readonly name = "CatalogError";
+  constructor(message: string, readonly code: CatalogErrorCode) {
+    super(message);
+  }
+}
 const MIGRATION = readFileSync(
   new URL("../schema/sqlite/001_catalog.sql", import.meta.url),
   "utf8",
@@ -74,7 +84,7 @@ export class ScenarioCatalog {
         "INSERT OR IGNORE INTO scenarios " +
           "(scenario_id, canonicalization, canonical_json, definition_bytes) VALUES (?, ?, ?, ?)",
       )
-      .run(identity.id, CANONICALIZATION, identity.canonical, Buffer.byteLength(identity.canonical));
+      .run(identity.id, CANONICALIZATION, identity.canonical, utf8Length(identity.canonical));
     const row = this.#database
       .prepare("SELECT canonicalization, canonical_json FROM scenarios WHERE scenario_id = ?")
       .get(identity.id) as { canonicalization: string; canonical_json: string } | undefined;
@@ -82,7 +92,7 @@ export class ScenarioCatalog {
       row?.canonicalization !== CANONICALIZATION ||
       row.canonical_json !== identity.canonical
     ) {
-      throw new Error("scenario digest collision or catalog corruption");
+      throw new CatalogError("scenario digest collision or catalog corruption", "corruption");
     }
     return { id: identity.id, canonicalization: CANONICALIZATION };
   }
@@ -103,25 +113,25 @@ export class ScenarioCatalog {
       return undefined;
     }
     if (row.canonicalization !== CANONICALIZATION) {
-      throw new Error("catalog canonicalization is not supported");
+      throw new CatalogError("catalog canonicalization is not supported", "schema");
     }
-    if (Buffer.byteLength(row.canonical_json) !== row.definition_bytes) {
-      throw new Error("stored scenario byte count does not match its content");
+    if (utf8Length(row.canonical_json) !== row.definition_bytes) {
+      throw new CatalogError("stored scenario byte count does not match its content", "corruption");
     }
     const scenario = parseScenario(JSON.parse(row.canonical_json) as unknown);
     if (scenarioIdentity(scenario).id !== id) {
-      throw new Error("stored scenario failed its content identity check");
+      throw new CatalogError("stored scenario failed its content identity check", "corruption");
     }
     return { id, canonicalization: CANONICALIZATION, scenario };
   }
 
   putRun(scenarioId: string, report: SimulationReport): StoredRun {
     if (this.getScenario(scenarioId) === undefined) {
-      throw new Error("scenario does not exist");
+      throw new CatalogError("scenario does not exist", "missing");
     }
     const reportJson = canonicalJson(report);
-    const traceSha256 = digest(canonicalJson(report.trace));
-    const id = digest(`${scenarioId}\0${reportJson}`);
+    const traceSha256 = sha256Hex(canonicalJson(report.trace));
+    const id = sha256Hex(`${scenarioId}\0${reportJson}`);
     this.#database
       .prepare(
         "INSERT OR IGNORE INTO runs " +
@@ -135,7 +145,7 @@ export class ScenarioCatalog {
       stored.scenarioId !== scenarioId ||
       canonicalJson(stored.report) !== reportJson
     ) {
-      throw new Error("run digest collision or catalog corruption");
+      throw new CatalogError("run digest collision or catalog corruption", "corruption");
     }
     return stored;
   }
@@ -163,12 +173,12 @@ export class ScenarioCatalog {
     }
     const report = JSON.parse(row.report_json) as SimulationReport;
     if (
-      digest(`${row.scenario_id}\0${row.report_json}`) !== id ||
-      digest(canonicalJson(report.trace)) !== row.trace_sha256 ||
+      sha256Hex(`${row.scenario_id}\0${row.report_json}`) !== id ||
+      sha256Hex(canonicalJson(report.trace)) !== row.trace_sha256 ||
       report.processedEvents !== row.processed_events ||
       report.converged !== (row.converged === 1)
     ) {
-      throw new Error("stored run failed its receipt checks");
+      throw new CatalogError("stored run failed its receipt checks", "corruption");
     }
     return {
       id,
@@ -185,17 +195,17 @@ export class ScenarioCatalog {
       .prepare("SELECT COALESCE(MAX(version), 0) AS version FROM schema_migrations")
       .get() as { version: number };
     if (migration.version !== 1) {
-      throw new Error("catalog schema version is not supported");
+      throw new CatalogError("catalog schema version is not supported", "schema");
     }
     const integrity = this.#database.prepare("PRAGMA integrity_check").all() as Array<{
       integrity_check: string;
     }>;
     if (integrity.length !== 1 || integrity[0]?.integrity_check !== "ok") {
-      throw new Error("catalog integrity check failed");
+      throw new CatalogError("catalog integrity check failed", "corruption");
     }
     const foreignKeys = this.#database.prepare("PRAGMA foreign_key_check").all();
     if (foreignKeys.length !== 0) {
-      throw new Error("catalog foreign-key check failed");
+      throw new CatalogError("catalog foreign-key check failed", "corruption");
     }
   }
 
@@ -215,8 +225,4 @@ export class ScenarioCatalog {
       throw error;
     }
   }
-}
-
-function digest(value: string): string {
-  return createHash("sha256").update(value).digest("hex");
 }

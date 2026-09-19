@@ -1,8 +1,10 @@
-import { createHash } from "node:crypto";
 import { ContractError } from "./crdt.js";
+import { sha256Hex } from "./sha256.js";
 import { Simulation, type SimulationConfig, type SimulationReport } from "./simulation.js";
 
 export const MAX_STEPS = 1_000;
+/** Bound on a scenario's canonical JSON, shared by the HTTP adapter and the persisted definition. */
+export const MAX_SCENARIO_BYTES = 2 * 1024 * 1024;
 export const CANONICALIZATION = "causal-lab-json-v1";
 
 export type ScenarioStep =
@@ -87,7 +89,13 @@ export function parseScenario(input: unknown): Scenario {
   return { config, steps };
 }
 
-export function executeScenario(scenario: Scenario): SimulationReport {
+/** Called after each step is applied, with the replica states at that step boundary. */
+export type StepObserver = (
+  step: ScenarioStep,
+  states: SimulationReport["states"],
+) => void;
+
+export function executeScenario(scenario: Scenario, observe?: StepObserver): SimulationReport {
   const simulation = new Simulation(scenario.config);
   let previousTime = 0;
   for (const step of scenario.steps) {
@@ -107,6 +115,7 @@ export function executeScenario(scenario: Scenario): SimulationReport {
         simulation.healAll();
         break;
     }
+    observe?.(step, simulation.states());
   }
   simulation.runUntilIdle();
   return simulation.report();
@@ -137,12 +146,7 @@ export function canonicalJson(value: unknown): string {
 
 export function scenarioIdentity(scenario: Scenario): Readonly<{ id: string; canonical: string }> {
   const canonical = canonicalJson(scenario);
-  const id = createHash("sha256")
-    .update(CANONICALIZATION)
-    .update("\0")
-    .update(canonical)
-    .digest("hex");
-  return { id, canonical };
+  return { id: sha256Hex(`${CANONICALIZATION}\0${canonical}`), canonical };
 }
 
 function expectObject(
@@ -164,6 +168,9 @@ function expectObject(
 }
 
 function expectString(value: unknown, field: string): string {
+  if (value === undefined) {
+    throw new ContractError(`${field} is required`);
+  }
   if (!isString(value)) {
     throw new ContractError(`${field} must be a string`);
   }
@@ -171,6 +178,9 @@ function expectString(value: unknown, field: string): string {
 }
 
 function expectNumber(value: unknown, field: string): number {
+  if (value === undefined) {
+    throw new ContractError(`${field} is required`);
+  }
   if (typeof value !== "number" || !Number.isFinite(value)) {
     throw new ContractError(`${field} must be a finite number`);
   }

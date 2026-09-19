@@ -1,6 +1,13 @@
 export const MAX_IDENTIFIER_BYTES = 128;
 export const MAX_VALUE_BYTES = 4 * 1024;
 
+const ENCODER = new TextEncoder();
+
+/** UTF-8 byte length, the measure every byte cap in the contract uses. */
+export function utf8Length(value: string): number {
+  return ENCODER.encode(value).length;
+}
+
 export type Dot = Readonly<{
   replica: string;
   counter: number;
@@ -82,7 +89,7 @@ export class Replica {
 
   put(key: string, value: string): Operation {
     validateKey(key);
-    if (Buffer.byteLength(value, "utf8") > MAX_VALUE_BYTES) {
+    if (utf8Length(value) > MAX_VALUE_BYTES) {
       throw new ContractError(`value exceeds ${MAX_VALUE_BYTES} bytes`);
     }
     const operation: PutOperation = {
@@ -144,9 +151,15 @@ export class Replica {
   }
 
   operations(): Operation[] {
-    return [...this.#operations.entries()]
-      .sort(([left], [right]) => left.localeCompare(right))
-      .map(([, operation]) => cloneOperation(operation));
+    return [...this.#operations.values()]
+      .sort((left, right) =>
+        left.dot.replica < right.dot.replica
+          ? -1
+          : left.dot.replica > right.dot.replica
+            ? 1
+            : left.dot.counter - right.dot.counter,
+      )
+      .map(cloneOperation);
   }
 
   canonicalState(): Record<string, string[]> {
@@ -194,7 +207,7 @@ function validateOperation(operation: Operation): void {
   ) {
     throw new ContractError("operation removal context is invalid");
   }
-  if (operation.kind === "put" && Buffer.byteLength(operation.value, "utf8") > MAX_VALUE_BYTES) {
+  if (operation.kind === "put" && utf8Length(operation.value) > MAX_VALUE_BYTES) {
     throw new ContractError(`value exceeds ${MAX_VALUE_BYTES} bytes`);
   }
 }
@@ -213,7 +226,7 @@ function validateKey(key: string): void {
 function validateIdentifier(value: string, field: string): void {
   if (
     value.length === 0 ||
-    Buffer.byteLength(value, "utf8") > MAX_IDENTIFIER_BYTES ||
+    utf8Length(value) > MAX_IDENTIFIER_BYTES ||
     !/^[A-Za-z0-9._-]+$/u.test(value)
   ) {
     throw new ContractError(`${field} is invalid`);
