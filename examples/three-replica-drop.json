@@ -1,0 +1,16 @@
+{
+  "config": {
+    "replicas": ["alpha", "beta", "gamma"],
+    "seed": 42,
+    "minLatency": 2,
+    "maxLatency": 5,
+    "dropRate": 0.3,
+    "duplicateRate": 0.1
+  },
+  "steps": [
+    { "at": 0, "action": "put", "replica": "alpha", "key": "leader", "value": "alpha" },
+    { "at": 2, "action": "partition", "left": "alpha", "right": "gamma" },
+    { "at": 3, "action": "put", "replica": "beta", "key": "leader", "value": "beta" },
+    { "at": 8, "action": "heal" }
+  ]
+}

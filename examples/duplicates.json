@@ -1,0 +1,15 @@
+{
+  "config": {
+    "replicas": ["a", "b", "c"],
+    "seed": 5,
+    "minLatency": 1,
+    "maxLatency": 6,
+    "dropRate": 0,
+    "duplicateRate": 1
+  },
+  "steps": [
+    { "at": 0, "action": "put", "replica": "a", "key": "k", "value": "1" },
+    { "at": 2, "action": "put", "replica": "a", "key": "k", "value": "2" },
+    { "at": 9, "action": "heal" }
+  ]
+}

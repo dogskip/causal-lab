@@ -1,0 +1,15 @@
+{
+  "config": {
+    "replicas": ["a", "b"],
+    "seed": 19,
+    "minLatency": 1,
+    "maxLatency": 3,
+    "dropRate": 0.25,
+    "duplicateRate": 0.5
+  },
+  "steps": [
+    { "at": 0, "action": "partition", "left": "a", "right": "b" },
+    { "at": 1, "action": "put", "replica": "a", "key": "mode", "value": "safe" },
+    { "at": 5, "action": "heal" }
+  ]
+}

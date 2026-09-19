@@ -1,0 +1,15 @@
+{
+  "config": {
+    "replicas": ["a", "b"],
+    "seed": 7,
+    "minLatency": 1,
+    "maxLatency": 2,
+    "dropRate": 0,
+    "duplicateRate": 0
+  },
+  "steps": [
+    { "at": 0, "action": "put", "replica": "a", "key": "color", "value": "red" },
+    { "at": 0, "action": "put", "replica": "b", "key": "color", "value": "blue" },
+    { "at": 5, "action": "heal" }
+  ]
+}
