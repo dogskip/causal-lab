@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://causal-lab/schemas/scenario.schema.json",
+  "title": "Scenario",
+  "description": "A bounded, deterministic CRDT network simulation scenario. Mirrors the validation enforced in src/scenario.ts and src/crdt.ts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["config", "steps"],
+  "properties": {
+    "config": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["replicas", "seed", "minLatency", "maxLatency", "dropRate", "duplicateRate"],
+      "properties": {
+        "replicas": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 12,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9._-]+$",
+            "maxLength": 128,
+            "minLength": 1
+          }
+        },
+        "seed": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "minLatency": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60000
+        },
+        "maxLatency": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 60000
+        },
+        "dropRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "duplicateRate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "maxItems": 1000,
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["at", "action", "replica", "key", "value"],
+            "properties": {
+              "at": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+              "action": { "const": "put" },
+              "replica": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128, "minLength": 1 },
+              "key": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128, "minLength": 1 },
+              "value": { "type": "string", "maxLength": 4096 }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["at", "action", "replica", "key"],
+            "properties": {
+              "at": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+              "action": { "const": "remove" },
+              "replica": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128, "minLength": 1 },
+              "key": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128, "minLength": 1 }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["at", "action", "left", "right"],
+            "properties": {
+              "at": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+              "action": { "const": "partition" },
+              "left": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128, "minLength": 1 },
+              "right": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128, "minLength": 1 }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["at", "action"],
+            "properties": {
+              "at": { "type": "integer", "minimum": 0, "maximum": 1000000000 },
+              "action": { "const": "heal" }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
