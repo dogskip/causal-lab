@@ -1,0 +1,90 @@
+body {
+  margin: 2.5rem auto;
+  max-width: 54rem;
+  padding: 0 1.25rem;
+  line-height: 1.75;
+}
+
+h1 {
+  margin-bottom: 0.6rem;
+}
+
+h2 {
+  margin: 0 0 1rem;
+}
+
+p,
+ul,
+dl,
+table,
+canvas {
+  margin: 0 0 1rem;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid;
+  margin: 2.5rem 0;
+}
+
+li {
+  margin-bottom: 0.6rem;
+}
+
+a {
+  margin-right: 0.75rem;
+}
+
+button:disabled {
+  font-weight: 700;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 0.35rem 0.8rem;
+}
+
+thead th,
+tbody th {
+  background: color-mix(in srgb, canvastext 8%, canvas);
+}
+
+dt {
+  font-weight: 600;
+}
+
+dd {
+  margin: 0 0 0.4rem 1.5rem;
+}
+
+#beat {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+#counters {
+  color: color-mix(in srgb, canvastext 70%, canvas);
+}
+
+canvas {
+  max-width: 100%;
+}
+
+h2,
+details {
+  scroll-margin-top: 1.5rem;
+}
+
+#step-table-wrap {
+  overflow-x: auto;
+}
+
+summary {
+  cursor: pointer;
+  padding: 0.2rem 0;
+}
