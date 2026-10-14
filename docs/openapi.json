@@ -6,7 +6,9 @@
     "description": "Deterministic CRDT network simulation. The same scenario and seed always produces the same trace and report. All routes are bound to 127.0.0.1 or ::1 (loopback only). The catalog routes (POST /v1/scenarios, GET /v1/scenarios/{id}, POST /v1/scenarios/{id}/runs, GET /v1/runs/{id}) are available only when the CAUSAL_LAB_DB environment variable is set; otherwise they return 404 with an actionable message. POST /v1/run is always available and stateless."
   },
   "servers": [
-    { "url": "http://127.0.0.1:8787" }
+    {
+      "url": "http://127.0.0.1:8787"
+    }
   ],
   "components": {
     "schemas": {
@@ -17,46 +19,104 @@
         "$ref": "../schema/report.schema.json"
       },
       "ScenarioReference": {
-        "type": "object",
-        "additionalProperties": false,
-        "required": ["id", "canonicalization"],
-        "properties": {
-          "id": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "SHA-256 receipt over the versioned canonical JSON." },
-          "canonicalization": { "const": "causal-lab-json-v1" }
-        }
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ScenarioIdentity"
+          }
+        ],
+        "unevaluatedProperties": false
       },
       "StoredScenario": {
         "allOf": [
-          { "$ref": "#/components/schemas/ScenarioReference" },
+          {
+            "$ref": "#/components/schemas/ScenarioIdentity"
+          },
           {
             "type": "object",
-            "required": ["scenario"],
+            "required": [
+              "scenario"
+            ],
             "properties": {
-              "scenario": { "$ref": "#/components/schemas/Scenario" }
+              "scenario": {
+                "$ref": "#/components/schemas/Scenario"
+              }
             }
           }
-        ]
+        ],
+        "unevaluatedProperties": false
       },
       "StoredRun": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "scenarioId", "traceSha256", "processedEvents", "converged", "report"],
+        "required": [
+          "id",
+          "scenarioId",
+          "traceSha256",
+          "processedEvents",
+          "converged",
+          "report"
+        ],
         "properties": {
-          "id": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-          "scenarioId": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-          "traceSha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
-          "processedEvents": { "type": "integer", "minimum": 0 },
-          "converged": { "type": "boolean" },
-          "report": { "$ref": "#/components/schemas/SimulationReport" }
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "scenarioId": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "traceSha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "processedEvents": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "converged": {
+            "type": "boolean"
+          },
+          "report": {
+            "$ref": "#/components/schemas/SimulationReport"
+          }
         }
       },
       "Error": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["error"],
+        "required": [
+          "error"
+        ],
         "properties": {
-          "error": { "type": "string" },
-          "code": { "type": "string", "enum": ["corruption", "schema", "missing"], "description": "Present only on catalog failures (HTTP 500)." }
+          "error": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "corruption",
+              "schema",
+              "missing"
+            ],
+            "description": "Present only on catalog failures (HTTP 500)."
+          }
+        }
+      },
+      "ScenarioIdentity": {
+        "type": "object",
+        "required": [
+          "id",
+          "canonicalization"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "SHA-256 receipt over the versioned canonical JSON."
+          },
+          "canonicalization": {
+            "const": "causal-lab-json-v1"
+          }
         }
       }
     }
@@ -69,14 +129,54 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "#/components/schemas/Scenario" } }
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Scenario"
+              }
+            }
           }
         },
         "responses": {
-          "200": { "description": "Run report.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/SimulationReport" } } } },
-          "413": { "description": "Request body exceeds 2 MiB.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
-          "422": { "description": "Scenario violates the simulation contract. The specific contract message is returned in `error`.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
-          "500": { "description": "Unexpected simulation failure.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+          "200": {
+            "description": "Run report.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SimulationReport"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds 2 MiB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Scenario violates the simulation contract. The specific contract message is returned in `error`.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected simulation failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -87,14 +187,54 @@
         "requestBody": {
           "required": true,
           "content": {
-            "application/json": { "schema": { "$ref": "#/components/schemas/Scenario" } }
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Scenario"
+              }
+            }
           }
         },
         "responses": {
-          "201": { "description": "Scenario stored (or already present; idempotent).", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ScenarioReference" } } } },
-          "413": { "description": "Request body exceeds 2 MiB.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
-          "422": { "description": "Scenario violates the simulation contract.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
-          "500": { "description": "Catalog failure.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+          "201": {
+            "description": "Scenario stored (or already present; idempotent).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScenarioReference"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Request body exceeds 2 MiB.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Scenario violates the simulation contract.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Catalog failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -102,10 +242,38 @@
       "get": {
         "summary": "Fetch a stored scenario",
         "description": "Catalog route. Available only when CAUSAL_LAB_DB is set.",
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ],
         "responses": {
-          "200": { "description": "Stored scenario.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StoredScenario" } } } },
-          "404": { "description": "Scenario was not found, or catalog is not configured.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+          "200": {
+            "description": "Stored scenario.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoredScenario"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Scenario was not found, or catalog is not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -113,11 +281,48 @@
       "post": {
         "summary": "Execute and store an immutable run receipt",
         "description": "Catalog route. Available only when CAUSAL_LAB_DB is set. Re-executes the stored scenario and persists the resulting receipt. No request body.",
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ],
         "responses": {
-          "201": { "description": "Run stored.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StoredRun" } } } },
-          "404": { "description": "Scenario was not found, or catalog is not configured.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } },
-          "500": { "description": "Catalog failure.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+          "201": {
+            "description": "Run stored.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoredRun"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Scenario was not found, or catalog is not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Catalog failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -125,10 +330,38 @@
       "get": {
         "summary": "Fetch a stored run receipt",
         "description": "Catalog route. Available only when CAUSAL_LAB_DB is set.",
-        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string", "pattern": "^[0-9a-f]{64}$" } }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}$"
+            }
+          }
+        ],
         "responses": {
-          "200": { "description": "Stored run.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/StoredRun" } } } },
-          "404": { "description": "Run was not found, or catalog is not configured.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" } } } }
+          "200": {
+            "description": "Stored run.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoredRun"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Run was not found, or catalog is not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
         }
       }
     }

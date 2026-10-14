@@ -87,7 +87,7 @@ describe("snapshots", () => {
   ];
 
   it("picks the latest snapshot at or before the time", () => {
-    expect(snapshotAt(snapshots, 0)).toBe(snapshots[0]);
+    expect(snapshotAt(snapshots, 0)).toBeUndefined();
     expect(snapshotAt(snapshots, 1)).toBe(snapshots[0]);
     expect(snapshotAt(snapshots, 2)).toBe(snapshots[0]);
     expect(snapshotAt(snapshots, 4)).toBe(snapshots[1]);

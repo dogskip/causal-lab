@@ -151,13 +151,13 @@ describe("scenario API", () => {
     expect(typeof report.states).toBe("object");
   });
 
-  it("returns 500 on unexpected errors (simulation failure)", () => {
-    // Hono's contractRoute catches ContractError/SyntaxError and returns 422,
-    // and app.onError catches CatalogError (500) or generic (500).
-    // A genuine 500 is hard to trigger without patching. Verify error handler exists.
-    const app = createApp();
-    // The app.onError handler is registered — verify the app was created without error
-    expect(app).toBeDefined();
+  it("returns a safe 500 when the configured database is closed", async () => {
+    const catalog = new ScenarioCatalog(":memory:");
+    const app = createApp(catalog);
+    catalog.close();
+    const response = await app.request(`/v1/scenarios/${"a".repeat(64)}`);
+    expect(response.status).toBe(500);
+    expect(await response.json()).toEqual({ error: "simulation failed" });
   });
 
   it("stores, runs, and reads a content-addressed scenario when a catalog is configured", async () => {

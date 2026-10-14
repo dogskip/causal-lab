@@ -12,7 +12,7 @@ export default defineConfig({
     // Readable output: the deployed bundle stays auditable and keeps export names.
     minify: false,
     rollupOptions: {
-      input: { index: "index.html", core: "core.ts" },
+      input: { index: "index.html", core: "core.ts", verification: "verification.html" },
       output: {
         // `core.ts` is both an entry and the app's dependency; keep its export names.
         minifyInternalExports: false,
@@ -21,5 +21,5 @@ export default defineConfig({
     },
   },
   // The playground is built from `web/`, but the test suite lives at the repo root.
-  test: { root: "." },
+  test: { root: ".", exclude: ["**/node_modules/**", "**/dist/**", "e2e/**"] },
 });

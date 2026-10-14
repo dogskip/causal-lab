@@ -65,7 +65,7 @@
               "action": { "const": "put" },
               "replica": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128, "minLength": 1 },
               "key": { "type": "string", "pattern": "^[A-Za-z0-9._-]+$", "maxLength": 128, "minLength": 1 },
-              "value": { "type": "string", "maxLength": 4096 }
+              "value": { "type": "string", "maxLength": 4096, "x-maxUtf8Bytes": 4096, "description": "The runtime UTF-8 cap is normative. Configure the x-maxUtf8Bytes assertion when validating this schema." }
             }
           },
           {

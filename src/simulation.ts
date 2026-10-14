@@ -1,3 +1,5 @@
+import { EventHeap } from "./scheduler.js";
+import { DeterministicRandom } from "./random.js";
 import { ContractError, Replica, operationId, type Operation } from "./crdt.js";
 
 export const MAX_REPLICAS = 12;
@@ -39,12 +41,17 @@ type Event = Readonly<{
   operation: Operation;
 }>;
 
+export type StateObserver = (event: TraceEntry, states: SimulationReport["states"]) => void;
+
+type Transfer = Readonly<{ from: string; to: string; operation: Operation; reliable: boolean }>;
+type NetworkPlan = Readonly<{ random: DeterministicRandom; budget: number; nextSequence: number; entries: readonly (Event | Transfer)[] }>;
+
 export class Simulation {
   readonly #config: SimulationConfig;
   readonly #replicas = new Map<string, Replica>();
   readonly #random: DeterministicRandom;
   readonly #partitions = new Set<string>();
-  readonly #events = new EventHeap();
+  readonly #events = new EventHeap<Event>();
   readonly #held: Event[] = [];
   readonly #trace: TraceEntry[] = [];
   #now = 0;
@@ -52,7 +59,7 @@ export class Simulation {
   #scheduledEvents = 0;
   #processedEvents = 0;
 
-  constructor(config: SimulationConfig) {
+  constructor(config: SimulationConfig, private readonly observeState?: StateObserver) {
     validateConfig(config);
     this.#config = {
       ...config,
@@ -65,16 +72,22 @@ export class Simulation {
   }
 
   put(replica: string, key: string, value: string): Operation {
-    const operation = this.#replica(replica).put(key, value);
+    const target = this.#replica(replica);
+    const operation = target.preparePut(key, value);
+    const plan = this.#prepare(this.#broadcast(replica, operation, false));
+    target.apply(operation);
     this.#record({ kind: "local", from: replica, operation: operationId(operation.dot) });
-    this.#broadcast(replica, operation, false);
+    this.#commit(plan);
     return operation;
   }
 
   remove(replica: string, key: string): Operation {
-    const operation = this.#replica(replica).remove(key);
+    const target = this.#replica(replica);
+    const operation = target.prepareRemove(key);
+    const plan = this.#prepare(this.#broadcast(replica, operation, false));
+    target.apply(operation);
     this.#record({ kind: "local", from: replica, operation: operationId(operation.dot) });
-    this.#broadcast(replica, operation, false);
+    this.#commit(plan);
     return operation;
   }
 
@@ -89,14 +102,20 @@ export class Simulation {
   }
 
   healAll(): void {
+    const plan = this.#prepare(this.#recoveryTransfers());
     this.#partitions.clear();
+    this.#held.length = 0;
     this.#record({ kind: "heal" });
-    for (const event of this.#held.splice(0)) {
-      this.#enqueue(event.from, event.to, event.operation, true);
+    this.#commit(plan);
+  }
+
+  *#recoveryTransfers(): Generator<Transfer> {
+    for (const event of this.#held) {
+      yield { from: event.from, to: event.to, operation: event.operation, reliable: true };
     }
     for (const [from, replica] of this.#replicas) {
       for (const operation of replica.operations()) {
-        this.#broadcast(from, operation, true);
+        yield* this.#broadcast(from, operation, true);
       }
     }
   }
@@ -135,27 +154,12 @@ export class Simulation {
   }
 
   states(): SimulationReport["states"] {
-    const states: Record<string, Record<string, string[]>> = {};
-    for (const id of [...this.#replicas.keys()].sort()) {
-      const replica = this.#replicas.get(id);
-      if (replica === undefined) {
-        throw new Error("replica map changed during report");
-      }
-      states[id] = replica.canonicalState();
-    }
-    return states;
+    return Object.fromEntries([...this.#replicas.keys()].sort().map((id) => [id, this.#replica(id).canonicalState()]));
   }
 
   report(): SimulationReport {
     const states = this.states();
-    const versions: Record<string, Record<string, number>> = {};
-    for (const id of [...this.#replicas.keys()].sort()) {
-      const replica = this.#replicas.get(id);
-      if (replica === undefined) {
-        throw new Error("replica map changed during report");
-      }
-      versions[id] = replica.version();
-    }
+    const versions = Object.fromEntries([...this.#replicas.keys()].sort().map((id) => [id, this.#replica(id).version()]));
     const canonical = Object.values(states).map((state) => JSON.stringify(state));
     return {
       seed: this.#config.seed,
@@ -168,42 +172,49 @@ export class Simulation {
     };
   }
 
-  #broadcast(from: string, operation: Operation, reliable: boolean): void {
+  *#broadcast(from: string, operation: Operation, reliable: boolean): Generator<Transfer> {
     for (const to of this.#config.replicas) {
-      if (to !== from) {
-        this.#enqueue(from, to, operation, reliable);
+      if (to !== from) yield { from, to, operation, reliable };
+    }
+  }
+
+  #prepare(transfers: Iterable<Transfer>): NetworkPlan {
+    const random = this.#random.clone();
+    let budget = this.#scheduledEvents;
+    let nextSequence = this.#nextSequence;
+    const entries: (Event | Transfer)[] = [];
+    const consume = (): void => {
+      if (budget >= MAX_EVENTS) throw new ContractError(`simulation exceeds ${MAX_EVENTS} scheduled events`);
+      budget += 1;
+    };
+    const schedule = (transfer: Transfer): void => {
+      const at = this.#now + random.integer(this.#config.minLatency, this.#config.maxLatency);
+      if (!Number.isSafeInteger(at)) throw new ContractError("scheduled time overflow");
+      entries.push({ sequence: nextSequence++, at, from: transfer.from, to: transfer.to, operation: transfer.operation });
+    };
+    for (const transfer of transfers) {
+      consume();
+      if (!transfer.reliable && random.next() < this.#config.dropRate) {
+        entries.push(transfer);
+        continue;
+      }
+      schedule(transfer);
+      if (!transfer.reliable && random.next() < this.#config.duplicateRate) {
+        consume();
+        schedule(transfer);
       }
     }
+    return { random, budget, nextSequence, entries };
   }
 
-  #enqueue(from: string, to: string, operation: Operation, reliable: boolean): void {
-    this.#consumeEventBudget();
-    if (!reliable && this.#random.next() < this.#config.dropRate) {
-      this.#record({ kind: "dropped", from, to, operation: operationId(operation.dot) });
-      return;
+  #commit(plan: NetworkPlan): void {
+    this.#random.copyFrom(plan.random);
+    this.#scheduledEvents = plan.budget;
+    this.#nextSequence = plan.nextSequence;
+    for (const entry of plan.entries) {
+      if ("at" in entry) this.#events.push(entry);
+      this.#record({ kind: "at" in entry ? "scheduled" : "dropped", from: entry.from, to: entry.to, operation: operationId(entry.operation.dot) });
     }
-    this.#pushEvent(from, to, operation);
-    if (!reliable && this.#random.next() < this.#config.duplicateRate) {
-      this.#consumeEventBudget();
-      this.#pushEvent(from, to, operation);
-    }
-  }
-
-  #pushEvent(from: string, to: string, operation: Operation): void {
-    const event: Event = {
-      sequence: this.#nextSequence++,
-      at: this.#now + this.#random.integer(this.#config.minLatency, this.#config.maxLatency),
-      from,
-      to,
-      operation,
-    };
-    this.#events.push(event);
-    this.#record({
-      kind: "scheduled",
-      from,
-      to,
-      operation: operationId(operation.dot),
-    });
   }
 
   #process(event: Event): void {
@@ -235,129 +246,10 @@ export class Simulation {
     return replica;
   }
 
-  #consumeEventBudget(): void {
-    if (this.#scheduledEvents >= MAX_EVENTS) {
-      throw new ContractError(`simulation exceeds ${MAX_EVENTS} scheduled events`);
-    }
-    this.#scheduledEvents += 1;
-  }
-
   #record(entry: Omit<TraceEntry, "sequence" | "time">): void {
-    this.#trace.push({ sequence: this.#trace.length + 1, time: this.#now, ...entry });
-  }
-}
-
-class DeterministicRandom {
-  #state: number;
-
-  constructor(seed: number) {
-    this.#state = seed >>> 0;
-  }
-
-  next(): number {
-    this.#state = (this.#state + 0x6d2b_79f5) >>> 0;
-    let value = this.#state;
-    value = Math.imul(value ^ (value >>> 15), value | 1);
-    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
-    return ((value ^ (value >>> 14)) >>> 0) / 4_294_967_296;
-  }
-
-  integer(minimum: number, maximum: number): number {
-    return minimum + Math.floor(this.next() * (maximum - minimum + 1));
-  }
-}
-
-/**
- * Binary min-heap over events keyed by (at, sequence). The comparator matches the
- * previous sort+shift order exactly: `at` ascending, then `sequence` ascending.
- * Because `sequence` is a strictly increasing unique integer, (at, sequence) is
- * a strict total order, so pop order is byte-identical to the old sort+shift —
- * determinism is preserved while per-event cost drops from O(n log n) to O(log n).
- */
-class EventHeap {
-  readonly #items: Event[] = [];
-
-  get size(): number {
-    return this.#items.length;
-  }
-
-  peek(): Event | undefined {
-    return this.#items[0];
-  }
-
-  push(event: Event): void {
-    this.#items.push(event);
-    this.#siftUp(this.#items.length - 1);
-  }
-
-  pop(): Event | undefined {
-    const top = this.#items[0];
-    const last = this.#items.pop();
-    if (last !== undefined && this.#items.length > 0) {
-      this.#items[0] = last;
-      this.#siftDown(0);
-    }
-    return top;
-  }
-
-  #less(a: Event, b: Event): boolean {
-    return a.at < b.at || (a.at === b.at && a.sequence < b.sequence);
-  }
-
-  #siftUp(index: number): void {
-    let current = index;
-    while (current > 0) {
-      const parent = (current - 1) >>> 1;
-      const parentEvent = this.#items[parent];
-      const currentEvent = this.#items[current];
-      if (parentEvent === undefined || currentEvent === undefined) {
-        return;
-      }
-      if (this.#less(parentEvent, currentEvent)) {
-        return;
-      }
-      this.#items[parent] = currentEvent;
-      this.#items[current] = parentEvent;
-      current = parent;
-    }
-  }
-
-  #siftDown(index: number): void {
-    let current = index;
-    const length = this.#items.length;
-    for (;;) {
-      const left = current * 2 + 1;
-      const right = current * 2 + 2;
-      let smallest = current;
-      const smallestEvent = this.#items[smallest];
-      if (smallestEvent === undefined) {
-        return;
-      }
-      if (left < length) {
-        const leftEvent = this.#items[left];
-        if (leftEvent !== undefined && this.#less(leftEvent, smallestEvent)) {
-          smallest = left;
-        }
-      }
-      if (right < length) {
-        const rightEvent = this.#items[right];
-        const smallestAfterLeft = this.#items[smallest];
-        if (rightEvent !== undefined && smallestAfterLeft !== undefined && this.#less(rightEvent, smallestAfterLeft)) {
-          smallest = right;
-        }
-      }
-      if (smallest === current) {
-        return;
-      }
-      const a = this.#items[current];
-      const b = this.#items[smallest];
-      if (a === undefined || b === undefined) {
-        return;
-      }
-      this.#items[current] = b;
-      this.#items[smallest] = a;
-      current = smallest;
-    }
+    const recorded = { sequence: this.#trace.length + 1, time: this.#now, ...entry };
+    this.#trace.push(recorded);
+    if (entry.kind === "local" || entry.kind === "delivered") this.observeState?.({ ...recorded }, this.states());
   }
 }
 

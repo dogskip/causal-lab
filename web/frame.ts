@@ -73,7 +73,7 @@ export function isPartitioned(bands: readonly Band[], time: number): boolean {
   return bands.some((band) => band.start <= time && (band.end === null || band.end > time));
 }
 
-/** The latest snapshot at or before `time`, or the first one when none qualifies. */
+/** The latest recorded state at or before the requested time. */
 export function snapshotAt(snapshots: readonly Snapshot[], time: number): Snapshot | undefined {
   let found: Snapshot | undefined;
   for (const snapshot of snapshots) {
@@ -81,7 +81,7 @@ export function snapshotAt(snapshots: readonly Snapshot[], time: number): Snapsh
       found = snapshot;
     }
   }
-  return found ?? snapshots[0];
+  return found;
 }
 
 /** Per-key values across replicas, marking keys the replicas do not yet share. */
@@ -94,17 +94,18 @@ export function differencesOf(states: SimulationReport["states"]): readonly Diff
     }
   }
   return [...keys].sort().map((key) => {
-    const values: Record<string, readonly string[]> = {};
-    for (const replica of replicas) {
-      values[replica] = states[replica]?.[key] ?? [];
-    }
+    const values: Record<string, readonly string[]> = Object.fromEntries(
+      replicas.map((replica) => [replica, states[replica]?.[key] ?? []]),
+    );
     const distinct = new Set(Object.values(values).map((list) => JSON.stringify(list)));
     return { key, values, agrees: distinct.size <= 1 };
   });
 }
 
 export function frameAt(replay: Replay, time: number): Frame {
-  const states = snapshotAt(replay.snapshots, time)?.states ?? replay.report.states;
+  const states = snapshotAt(replay.snapshots, time)?.states ?? Object.fromEntries(
+    Object.keys(replay.report.states).map((replica) => [replica, {}]),
+  );
   return {
     time,
     entries: replay.report.trace.filter((entry) => entry.time <= time),

@@ -59,7 +59,8 @@ function mermaidNote(entry: TraceEntry): string | null {
 }
 
 function arrow(from: string, to: string, label: string): string {
-  return `${from} ${label}: ${to}`;
+  const separator = label.indexOf(" ");
+  return `${from}${label.slice(0, separator)}${to}: ${label.slice(separator + 1)}`;
 }
 
 function note(actor: string, label: string): string {

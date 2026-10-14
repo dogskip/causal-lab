@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from "node:fs";
+import { mkdtempSync, rmSync, symlinkSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { DatabaseSync } from "node:sqlite";
@@ -123,14 +123,11 @@ describe("scenario catalog", () => {
   });
 
   it("throws when catalog path is a symbolic link", () => {
-    // Skip this test if not on a filesystem that supports it — just verify the rejection logic.
-    // We test the logic: existsSync returns true and isSymbolicLink returns true.
-    // Not trivially testable without creating a symlink, but we can test the guard by
-    // using a known directory and linking.
     const path = tmpPath();
-    // The path was just created as a regular file, so opening it should work (not a symlink).
     const catalog = new ScenarioCatalog(path);
     catalog.close();
-    // Cleanup handled by afterEach
+    const link = `${path}.link`;
+    symlinkSync(path, link);
+    expect(() => new ScenarioCatalog(link)).toThrow(/symbolic link/);
   });
 });

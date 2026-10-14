@@ -46,9 +46,15 @@ export class VersionVector {
   }
 
   next(replica: string): Dot {
+    const dot = this.prepareNext(replica);
+    this.observe(dot);
+    return dot;
+  }
+
+  prepareNext(replica: string): Dot {
     validateIdentifier(replica, "replica");
     const dot = { replica, counter: (this.#counters.get(replica) ?? 0) + 1 };
-    this.observe(dot);
+    validateDot(dot);
     return dot;
   }
 
@@ -66,7 +72,7 @@ export class VersionVector {
 
   toJSON(): Record<string, number> {
     return Object.fromEntries(
-      [...this.#counters.entries()].sort(([left], [right]) => left.localeCompare(right)),
+      [...this.#counters.entries()].sort(([left], [right]) => left < right ? -1 : left > right ? 1 : 0),
     );
   }
 }
@@ -88,31 +94,41 @@ export class Replica {
   }
 
   put(key: string, value: string): Operation {
+    const operation = this.preparePut(key, value);
+    this.apply(operation);
+    return operation;
+  }
+
+  preparePut(key: string, value: string): PutOperation {
     validateKey(key);
     if (utf8Length(value) > MAX_VALUE_BYTES) {
       throw new ContractError(`value exceeds ${MAX_VALUE_BYTES} bytes`);
     }
     const operation: PutOperation = {
       kind: "put",
-      dot: this.#clock.next(this.#id),
+      dot: this.#clock.prepareNext(this.#id),
       key,
       value,
       removes: this.#visibleDots(key),
     };
+    return operation;
+  }
+
+  remove(key: string): Operation {
+    const operation = this.prepareRemove(key);
     this.apply(operation);
     return cloneOperation(operation);
   }
 
-  remove(key: string): Operation {
+  prepareRemove(key: string): RemoveOperation {
     validateKey(key);
     const operation: RemoveOperation = {
       kind: "remove",
-      dot: this.#clock.next(this.#id),
+      dot: this.#clock.prepareNext(this.#id),
       key,
       removes: this.#visibleDots(key),
     };
-    this.apply(operation);
-    return cloneOperation(operation);
+    return operation;
   }
 
   apply(input: Operation): boolean {

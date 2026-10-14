@@ -51,3 +51,12 @@ jobs:
           pnpm typecheck
           pnpm build
           pnpm test
+          pnpm test:deep
+
+      - name: Install headless Chromium
+        if: runner.os == 'Linux'
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run headless browser regression
+        if: runner.os == 'Linux'
+        run: pnpm test:e2e --repeat-each=2

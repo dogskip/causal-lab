@@ -1,6 +1,6 @@
 import { ContractError } from "./crdt.js";
 import { sha256Hex } from "./sha256.js";
-import { Simulation, type SimulationConfig, type SimulationReport } from "./simulation.js";
+import { Simulation, type SimulationConfig, type SimulationReport, type StateObserver } from "./simulation.js";
 
 export const MAX_STEPS = 1_000;
 /** Bound on a scenario's canonical JSON, shared by the HTTP adapter and the persisted definition. */
@@ -95,8 +95,8 @@ export type StepObserver = (
   states: SimulationReport["states"],
 ) => void;
 
-export function executeScenario(scenario: Scenario, observe?: StepObserver): SimulationReport {
-  const simulation = new Simulation(scenario.config);
+export function executeScenario(scenario: Scenario, observe?: StepObserver, observeState?: StateObserver): SimulationReport {
+  const simulation = new Simulation(scenario.config, observeState);
   let previousTime = 0;
   for (const step of scenario.steps) {
     simulation.advance(step.at - previousTime);

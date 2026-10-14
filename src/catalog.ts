@@ -1,4 +1,4 @@
-import { chmodSync, existsSync, lstatSync, mkdirSync, readFileSync } from "node:fs";
+import { chmodSync, lstatSync, mkdirSync, readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { utf8Length } from "./crdt.js";
@@ -52,7 +52,7 @@ export class ScenarioCatalog {
       throw new Error("catalog path cannot be empty");
     }
     if (path !== ":memory:") {
-      if (existsSync(path) && lstatSync(path).isSymbolicLink()) {
+      if (lstatSync(path, { throwIfNoEntry: false })?.isSymbolicLink()) {
         throw new Error("catalog path cannot be a symbolic link");
       }
       mkdirSync(dirname(path), { mode: 0o700, recursive: true });

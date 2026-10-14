@@ -28,12 +28,12 @@ describe("traceToMermaid", () => {
     ];
     const out = traceToMermaid(trace);
     expect(out).toContain("Note over a: local a:1 (t=0)");
-    expect(out).toContain("a ->> schedule a:1 (t=0): b");
-    expect(out).toContain("a --x drop a:1 (t=0): b");
+    expect(out).toContain("a->>b: schedule a:1 (t=0)");
+    expect(out).toContain("a--xb: drop a:1 (t=0)");
     expect(out).toContain("Note over a: partition a<->b (t=1)");
-    expect(out).toContain("a --) hold a:1 (t=2): b");
+    expect(out).toContain("a--)b: hold a:1 (t=2)");
     expect(out).toContain("Note over system: heal (t=3)");
-    expect(out).toContain("a ->> deliver a:1 (t=3): b");
+    expect(out).toContain("a->>b: deliver a:1 (t=3)");
   });
 
   it("is deterministic: same trace yields byte-identical output", () => {
@@ -110,7 +110,7 @@ describe("traceToMermaid", () => {
       { sequence: 1, time: 0, kind: "dropped", from: "a", to: "b", operation: "a:1" },
     ];
     const mermaid = traceToMermaid(trace);
-    expect(mermaid).toContain("a --x drop a:1 (t=0): b");
+    expect(mermaid).toContain("a--xb: drop a:1 (t=0)");
   });
 
   it("includes held events in mermaid output", () => {
@@ -118,6 +118,6 @@ describe("traceToMermaid", () => {
       { sequence: 1, time: 0, kind: "held", from: "a", to: "b", operation: "a:1" },
     ];
     const mermaid = traceToMermaid(trace);
-    expect(mermaid).toContain("a --) hold a:1 (t=0): b");
+    expect(mermaid).toContain("a--)b: hold a:1 (t=0)");
   });
 });

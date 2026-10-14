@@ -213,11 +213,11 @@ function runScenario(autoplay = false): void {
     fail(error);
     return;
   }
-  const snapshots: Snapshot[] = [];
+  const snapshots: Snapshot[] = [{ at: 0, states: Object.fromEntries(scenario.config.replicas.map((id) => [id, {}])) }];
   let report: SimulationReport;
   try {
-    report = executeScenario(scenario, (step, states) => {
-      snapshots.push({ at: step.at, states });
+    report = executeScenario(scenario, undefined, (event, states) => {
+      snapshots.push({ at: event.time, states });
     });
   } catch (error) {
     fail(error);

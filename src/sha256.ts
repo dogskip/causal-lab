@@ -19,7 +19,10 @@ const ROUND_CONSTANTS = new Uint32Array([
 const ENCODER = new TextEncoder();
 
 export function sha256Hex(text: string): string {
-  const message = ENCODER.encode(text);
+  return sha256Bytes(ENCODER.encode(text));
+}
+
+export function sha256Bytes(message: Uint8Array): string {
   // Pad to a multiple of 64 bytes with room for the 0x80 marker and the 8-byte length.
   const padded = new Uint8Array((((message.length + 8) >> 6) + 1) << 6);
   padded.set(message);

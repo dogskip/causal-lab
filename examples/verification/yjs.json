@@ -1,0 +1,58 @@
+{
+  "format_version": 2,
+  "model_id": "yjs-map",
+  "profile": "independent-updates",
+  "replicas": [
+    "a",
+    "b"
+  ],
+  "bootstrap": {
+    "a": {
+      "clientID": 1,
+      "guid": "example-document",
+      "values": {}
+    },
+    "b": {
+      "clientID": 2,
+      "guid": "example-document",
+      "values": {}
+    }
+  },
+  "seed": 19,
+  "network": {
+    "minLatency": 1,
+    "maxLatency": 3,
+    "dropRate": 0.5,
+    "duplicateRate": 0.5
+  },
+  "steps": [
+    {
+      "at": 0,
+      "action": "command",
+      "replica": "a",
+      "command": {
+        "action": "put",
+        "key": "mode",
+        "value": "safe"
+      }
+    },
+    {
+      "at": 10,
+      "action": "heal"
+    }
+  ],
+  "checks": [
+    {
+      "id": "convergence",
+      "parameters": null
+    },
+    {
+      "id": "expected-state",
+      "parameters": {
+        "state": {
+          "mode": "safe"
+        }
+      }
+    }
+  ]
+}
