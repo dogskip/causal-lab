@@ -1,0 +1,11 @@
+{
+  "phase": "GREEN",
+  "command": [
+    "/Users/bjchoi/.nvm/versions/node/v24.18.1/bin/node",
+    "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/node_modules/vitest/vitest.mjs",
+    "run",
+    "test/g0-regression.test.ts",
+    "--reporter=verbose"
+  ],
+  "exitCode": 0
+}

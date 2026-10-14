@@ -1,0 +1,37 @@
+import { DatabaseSync } from 'node:sqlite';
+import { readFileSync, writeFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+const db = new DatabaseSync(':memory:');
+db.exec('PRAGMA foreign_keys=ON');
+db.exec(readFileSync(process.argv[2], 'utf8'));
+const cid='a'.repeat(64),rid='b'.repeat(64),def='{"format_version":2,"model_id":"yjs-map"}';
+const caseArgs=[cid,2,def,Buffer.byteLength(def)];
+db.prepare('INSERT INTO verification_cases VALUES(?,?,?,?)').run(...caseArgs);
+const receipt=status=>JSON.stringify({format_version:2,case_id:cid,manifest:{model_id:'yjs-map'},status});
+const runArgs=status=>[rid,cid,2,'yjs-map',status,receipt(status),Buffer.byteLength(receipt(status))];
+db.prepare('INSERT INTO verification_runs VALUES(?,?,?,?,?,?,?)').run(...runArgs('passed'));
+const checks=[];
+const reject=(id,fn)=>{assert.throws(fn);checks.push({id,rejected:true});};
+for(const clause of ['INSERT OR REPLACE INTO','REPLACE INTO','INSERT OR IGNORE INTO']){
+ reject('run-'+clause,()=>db.prepare(clause+' verification_runs VALUES(?,?,?,?,?,?,?)').run(...runArgs('failed')));
+ reject('case-'+clause,()=>db.prepare(clause+' verification_cases VALUES(?,?,?,?)').run(...caseArgs));
+}
+reject('upsert-run',()=>db.prepare('INSERT INTO verification_runs VALUES(?,?,?,?,?,?,?) ON CONFLICT(run_id) DO UPDATE SET status=excluded.status,receipt_json=excluded.receipt_json,receipt_bytes=excluded.receipt_bytes').run(...runArgs('failed')));
+reject('run-delete',()=>db.prepare('DELETE FROM verification_runs WHERE run_id=?').run(rid));
+reject('case-delete',()=>db.prepare('DELETE FROM verification_cases WHERE case_id=?').run(cid));
+for(const badId of ['c'.repeat(64)+String.fromCharCode(0),'c'.repeat(64)+String.fromCharCode(0)+'g','C'.repeat(64),'z'.repeat(64),'c'.repeat(63),'c'.repeat(65),'한'.repeat(22),null]){
+ const id=badId;
+ reject('case-hash-'+JSON.stringify(id),()=>db.prepare('INSERT INTO verification_cases VALUES(?,?,?,?)').run(id,2,def,Buffer.byteLength(def)));
+ reject('run-hash-'+JSON.stringify(id),()=>db.prepare('INSERT INTO verification_runs VALUES(?,?,?,?,?,?,?)').run(id,...runArgs('passed').slice(1)));
+}
+for(const field of ['format_version','case_id','status'])for(const value of [null,[],{},true]){
+ const body=JSON.stringify({format_version:2,case_id:cid,manifest:{model_id:'yjs-map'},status:'passed',[field]:value});
+ reject('json-'+field+'-'+JSON.stringify(value),()=>db.prepare('INSERT INTO verification_runs VALUES(?,?,?,?,?,?,?)').run('d'.repeat(64),cid,2,'yjs-map','passed',body,Buffer.byteLength(body)));
+}
+assert.equal(db.prepare('SELECT status FROM verification_runs WHERE run_id=?').get(rid).status,'passed');
+assert.equal(db.prepare('SELECT count(*) AS n FROM verification_runs').get().n,1);
+assert.equal(db.prepare('SELECT count(*) AS n FROM verification_cases').get().n,1);
+const result={scope:'revised-proposed-sql-independent-review',productAcceptance:false,node:process.version,sqliteVersion:db.prepare('SELECT sqlite_version() AS version').get().version,recursiveTriggers:db.prepare('PRAGMA recursive_triggers').get().recursive_triggers,checks:checks.length,allRejected:checks.every(c=>c.rejected),originalStatus:'passed',caseCount:1,runCount:1,details:checks};
+writeFileSync(process.argv[3],JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify({...result,details:undefined},null,2));
+db.close();

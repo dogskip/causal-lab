@@ -1,0 +1,55 @@
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+ × test/schema-contract.test.ts > actual HTTP and documented schema contract > accepts actual stored scenario and run responses with no contradictory allOf restriction 34ms
+   → expected false to be true // Object.is equality
+ × test/schema-contract.test.ts > actual HTTP and documented schema contract > enforces the documented UTF-8 value cap as well as character length 4ms
+   → expected true to be false // Object.is equality
+ ✓ test/schema-contract.test.ts > actual HTTP and documented schema contract > executes an actual internal failure and returns only the documented safe error 1ms
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 1 passed (3)
+   Start at  18:12:32
+   Duration  201ms (transform 38ms, setup 0ms, import 94ms, tests 40ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/schema-contract.test.ts > actual HTTP and documented schema contract > accepts actual stored scenario and run responses with no contradictory allOf restriction
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ test/schema-contract.test.ts:30:63
+     28|       const stored = await app.request(`/v1/scenarios/${reference.id}`…
+     29|       expect(stored.status).toBe(200);
+     30|       expect(validate("StoredScenario", await stored.json())).toBe(tru…
+       |                                                               ^
+     31|       const run = await app.request(`/v1/scenarios/${reference.id}/run…
+     32|       expect(run.status).toBe(201);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  test/schema-contract.test.ts > actual HTTP and documented schema contract > enforces the documented UTF-8 value cap as well as character length
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ test/schema-contract.test.ts:42:44
+     40|     const response = await createApp().request("/v1/run", { method: "P…
+     41|     expect(response.status).toBe(422);
+     42|     expect(validate("Scenario", scenario)).toBe(false);
+       |                                            ^
+     43|     const valid = { ...scenario, steps: [{ ...scenario.steps[0], value…
+     44|     expect(validate("Scenario", valid)).toBe(true);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+

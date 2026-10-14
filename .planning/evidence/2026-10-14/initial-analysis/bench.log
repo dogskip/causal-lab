@@ -1,0 +1,6 @@
+
+> causal-lab@0.1.0 bench /private/var/folders/mm/kmj45ls13zzfqssk63kptb7c0000gn/T/causal-lab-analysis-397hg05c/workspace
+> tsx bench/bench.ts
+
+[PASS] 10k-event drain (heap canary): 3.5 ms (budget 500 ms), 901 events, converged=true
+[PASS] small scenario smoke: 0.0 ms (budget 50 ms), 2 events, converged=true

@@ -1,0 +1,87 @@
+import assert from 'node:assert/strict';
+import { DatabaseSync, backup } from 'node:sqlite';
+import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+const sql = readFileSync(process.argv[2], 'utf8');
+const folder = mkdtempSync(join(tmpdir(), 'causal-sql-proof-'));
+const path = join(folder, 'proof.sqlite');
+const checks = [];
+const record = (id, fn) => { fn(); checks.push({ id, passed: true }); };
+const sha = text => createHash('sha256').update(text).digest('hex');
+let db;
+try {
+  db = new DatabaseSync(path, { enableForeignKeyConstraints: true, allowExtension: false });
+  db.exec('PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;');
+  record('migration-idempotent', () => { db.exec(sql); db.exec(sql); assert.equal(db.prepare('SELECT count(*) AS n FROM verification_schema_migrations').get().n, 1); });
+  record('foreign-keys-enabled', () => assert.equal(db.prepare('PRAGMA foreign_keys').get().foreign_keys, 1));
+  const definition = JSON.stringify({ format_version: 2, model_id: 'yjs-map', value: '한' });
+  const caseId = sha('case-proof' + definition);
+  const insertCase = db.prepare('INSERT INTO verification_cases VALUES(?,?,?,?)');
+  const insertRun = db.prepare('INSERT INTO verification_runs VALUES(?,?,?,?,?,?,?)');
+  insertCase.run(caseId, 2, definition, Buffer.byteLength(definition));
+  const body = JSON.stringify({ format_version: 2, case_id: caseId, manifest: { model_id: 'yjs-map' }, status: 'passed' });
+  const runId = sha('run-proof' + body);
+  const args = [runId, caseId, 2, 'yjs-map', 'passed', body, Buffer.byteLength(body)];
+  insertRun.run(...args);
+  record('valid-case-and-run', () => assert.equal(db.prepare('SELECT count(*) AS n FROM verification_runs').get().n, 1));
+  record('invalid-hash-shape', () => assert.throws(() => insertCase.run('g'.repeat(64), 2, definition, Buffer.byteLength(definition))));
+  record('wrong-definition-bytes', () => assert.throws(() => insertCase.run('b'.repeat(64), 2, definition, definition.length)));
+  record('invalid-json', () => assert.throws(() => insertCase.run('b'.repeat(64), 2, '{', 1)));
+  record('wrong-format', () => assert.throws(() => insertCase.run('b'.repeat(64), 1, definition, Buffer.byteLength(definition))));
+  const invalidRun = (patch, bodyPatch = {}) => {
+    const changedBody = JSON.stringify({ format_version: 2, case_id: caseId, manifest: { model_id: 'yjs-map' }, status: 'passed', ...bodyPatch });
+    return insertRun.run('c'.repeat(64), ...[caseId,2,'yjs-map','passed',changedBody,Buffer.byteLength(changedBody)].map((value, index) => Object.hasOwn(patch,index) ? patch[index] : value));
+  };
+  record('foreign-key-orphan', () => assert.throws(() => invalidRun({0:'d'.repeat(64)}, {case_id:'d'.repeat(64)})));
+  record('status-mismatch', () => assert.throws(() => invalidRun({}, {status:'failed'})));
+  record('model-mismatch', () => assert.throws(() => invalidRun({}, {manifest:{model_id:'other'}})));
+  record('missing-required-json-field', () => assert.throws(() => invalidRun({}, {status:undefined})));
+  record('wrong-receipt-bytes', () => assert.throws(() => invalidRun({5:1})));
+  for(const [name,id] of [['case',caseId],['run',runId]]){
+    for(const method of ['REPLACE','IGNORE']){
+      const table=name==='case'?'verification_cases':'verification_runs';
+      const command=db.prepare('INSERT OR '+method+' INTO '+table+' VALUES('+ (name==='case'?'?,?,?,?':'?,?,?,?,?,?,?') +')');
+      record('reject-'+name+'-'+method.toLowerCase(),()=>assert.throws(()=>command.run(...(name==='case'?[caseId,2,definition,Buffer.byteLength(definition)]:args))));
+    }
+    record('reject-'+name+'-nul',()=>{
+      const bad='a'.repeat(64)+'\u0000g';
+      if(name==='case')assert.throws(()=>insertCase.run(bad,2,definition,Buffer.byteLength(definition)));
+      else assert.throws(()=>insertRun.run(bad,...args.slice(1)));
+    });
+  }
+  record('missing-case-format',()=>assert.throws(()=>insertCase.run('f'.repeat(64),2,'{}',2)));
+  record('immutable-update', () => assert.throws(() => db.prepare('UPDATE verification_runs SET status=? WHERE run_id=?').run('failed',runId)));
+  record('immutable-delete', () => assert.throws(() => db.prepare('DELETE FROM verification_cases WHERE case_id=?').run(caseId)));
+  record('transaction-rollback', () => {
+    const id='e'.repeat(64);
+    db.exec('BEGIN IMMEDIATE');
+    try {
+      insertCase.run(id,2,definition,Buffer.byteLength(definition));
+      invalidRun({0:'d'.repeat(64)}, {case_id:'d'.repeat(64)});
+      throw new Error('expected constraint rejection');
+    } catch { db.exec('ROLLBACK'); }
+    assert.equal(db.prepare('SELECT count(*) AS n FROM verification_cases WHERE case_id=?').get(id).n,0);
+  });
+  const before = db.prepare('SELECT * FROM verification_runs').all();
+  const backupPath=join(folder,'backup.sqlite');
+  await backup(db,backupPath);
+  const copy=new DatabaseSync(backupPath,{readOnly:true});
+  try { record('live-backup-consistency', () => assert.deepEqual(copy.prepare('SELECT * FROM verification_runs').all(),before)); }
+  finally { copy.close(); }
+  const sqliteVersion=db.prepare('SELECT sqlite_version() AS version').get().version;
+  db.close();
+  db=new DatabaseSync(path,{enableForeignKeyConstraints:true});
+  record('reopen-preserves-receipt', () => assert.deepEqual(db.prepare('SELECT * FROM verification_runs').all(),before));
+  record('integrity-and-foreign-keys', () => {
+    assert.equal(db.prepare('PRAGMA integrity_check').get().integrity_check,'ok');
+    assert.deepEqual(db.prepare('PRAGMA foreign_key_check').all(),[]);
+  });
+  const output={scope:'proposed-schema-fixture',productAcceptance:false,node:process.version,sqliteVersion,checks};
+  writeFileSync(process.argv[3],JSON.stringify(output,null,2)+'\n');
+  console.log(JSON.stringify(output,null,2));
+} finally {
+  if(db?.isOpen)db.close();
+  rmSync(folder,{recursive:true,force:true});
+}

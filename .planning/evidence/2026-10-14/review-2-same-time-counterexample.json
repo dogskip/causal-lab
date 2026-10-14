@@ -1,0 +1,25 @@
+{
+  "node": "v24.18.1",
+  "implementation": "13.6.27",
+  "case": "a put at 0, pending delivery at 5, b delete at 5",
+  "results": [
+    {
+      "deliveryBeforeCommand": true,
+      "replicas": [
+        {},
+        {}
+      ]
+    },
+    {
+      "deliveryBeforeCommand": false,
+      "replicas": [
+        {
+          "k": "v"
+        },
+        {
+          "k": "v"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "scope": "revised-proposed-sql-independent-review",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "sqliteVersion": "3.53.1",
+  "recursiveTriggers": 0,
+  "checks": 37,
+  "allRejected": true,
+  "originalStatus": "passed",
+  "caseCount": 1,
+  "runCount": 1,
+  "details": [
+    {
+      "id": "run-INSERT OR REPLACE INTO",
+      "rejected": true
+    },
+    {
+      "id": "case-INSERT OR REPLACE INTO",
+      "rejected": true
+    },
+    {
+      "id": "run-REPLACE INTO",
+      "rejected": true
+    },
+    {
+      "id": "case-REPLACE INTO",
+      "rejected": true
+    },
+    {
+      "id": "run-INSERT OR IGNORE INTO",
+      "rejected": true
+    },
+    {
+      "id": "case-INSERT OR IGNORE INTO",
+      "rejected": true
+    },
+    {
+      "id": "upsert-run",
+      "rejected": true
+    },
+    {
+      "id": "run-delete",
+      "rejected": true
+    },
+    {
+      "id": "case-delete",
+      "rejected": true
+    },
+    {
+      "id": "case-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000\"",
+      "rejected": true
+    },
+    {
+      "id": "run-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000\"",
+      "rejected": true
+    },
+    {
+      "id": "case-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000g\"",
+      "rejected": true
+    },
+    {
+      "id": "run-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000g\"",
+      "rejected": true
+    },
+    {
+      "id": "case-hash-\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"",
+      "rejected": true
+    },
+    {
+      "id": "run-hash-\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"",
+      "rejected": true
+    },
+    {
+      "id": "case-hash-\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+      "rejected": true
+    },
+    {
+      "id": "run-hash-\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+      "rejected": true
+    },
+    {
+      "id": "case-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+      "rejected": true
+    },
+    {
+      "id": "run-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+      "rejected": true
+    },
+    {
+      "id": "case-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+      "rejected": true
+    },
+    {
+      "id": "run-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+      "rejected": true
+    },
+    {
+      "id": "case-hash-\"한한한한한한한한한한한한한한한한한한한한한한\"",
+      "rejected": true
+    },
+    {
+      "id": "run-hash-\"한한한한한한한한한한한한한한한한한한한한한한\"",
+      "rejected": true
+    },
+    {
+      "id": "case-hash-null",
+      "rejected": true
+    },
+    {
+      "id": "run-hash-null",
+      "rejected": true
+    },
+    {
+      "id": "json-format_version-null",
+      "rejected": true
+    },
+    {
+      "id": "json-format_version-[]",
+      "rejected": true
+    },
+    {
+      "id": "json-format_version-{}",
+      "rejected": true
+    },
+    {
+      "id": "json-format_version-true",
+      "rejected": true
+    },
+    {
+      "id": "json-case_id-null",
+      "rejected": true
+    },
+    {
+      "id": "json-case_id-[]",
+      "rejected": true
+    },
+    {
+      "id": "json-case_id-{}",
+      "rejected": true
+    },
+    {
+      "id": "json-case_id-true",
+      "rejected": true
+    },
+    {
+      "id": "json-status-null",
+      "rejected": true
+    },
+    {
+      "id": "json-status-[]",
+      "rejected": true
+    },
+    {
+      "id": "json-status-{}",
+      "rejected": true
+    },
+    {
+      "id": "json-status-true",
+      "rejected": true
+    }
+  ]
+}

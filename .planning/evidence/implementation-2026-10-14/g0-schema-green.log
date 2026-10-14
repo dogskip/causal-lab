@@ -1,0 +1,9 @@
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  18:14:30
+   Duration  287ms (transform 64ms, setup 0ms, import 133ms, tests 200ms, environment 0ms)
+

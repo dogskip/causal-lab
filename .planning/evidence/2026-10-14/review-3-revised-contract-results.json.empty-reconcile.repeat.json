@@ -1,0 +1,116 @@
+{
+  "pid": 50401,
+  "fixture": {
+    "name": "empty-reconcile",
+    "configuredDropRate": 1,
+    "generatedTests": 1,
+    "attemptedCommands": 3,
+    "committedCommands": 3,
+    "acceptedCommands": 2,
+    "rejectedCommands": 1,
+    "completedRecovery": false,
+    "verdict": "error",
+    "businessRulePassed": false,
+    "recoveryEvidence": {
+      "policy": "full-state-exchange-v1",
+      "expectedPairs": [
+        {
+          "from": "a",
+          "to": "b"
+        },
+        {
+          "from": "a",
+          "to": "c"
+        },
+        {
+          "from": "b",
+          "to": "a"
+        },
+        {
+          "from": "b",
+          "to": "c"
+        },
+        {
+          "from": "c",
+          "to": "a"
+        },
+        {
+          "from": "c",
+          "to": "b"
+        }
+      ],
+      "completedPairs": [],
+      "requiredMessages": [],
+      "pending": 0,
+      "held": 0,
+      "invalidated": false,
+      "interrupted": false,
+      "connectionError": true
+    },
+    "finalStates": {
+      "a": {
+        "key": "value"
+      },
+      "b": {},
+      "c": {}
+    },
+    "events": [
+      {
+        "kind": "command",
+        "replica": "a",
+        "request": {
+          "action": "noop"
+        },
+        "outcome": "accepted",
+        "result": {
+          "changed": false
+        },
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "command",
+        "replica": "a",
+        "request": {
+          "action": "denied"
+        },
+        "outcome": "rejected",
+        "result": {
+          "reason": "policy"
+        },
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "command",
+        "replica": "a",
+        "request": {
+          "action": "set",
+          "key": "key",
+          "value": "value"
+        },
+        "outcome": "accepted",
+        "result": {
+          "changed": true
+        },
+        "state": {
+          "a": {
+            "key": "value"
+          },
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "heal-start",
+        "policy": "full-state-exchange-v1"
+      }
+    ]
+  }
+}

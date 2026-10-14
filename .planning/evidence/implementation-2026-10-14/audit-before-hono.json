@@ -1,0 +1,394 @@
+{
+  "actions": [
+    {
+      "action": "review",
+      "module": "hono",
+      "resolves": [
+        {
+          "id": 1130733,
+          "path": ".>hono",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1138771,
+          "path": ".>hono",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1138772,
+          "path": ".>hono",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1138773,
+          "path": ".>hono",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1193729,
+          "path": ".>hono",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1193730,
+          "path": ".>hono",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1193731,
+          "path": ".>hono",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        },
+        {
+          "id": 1240640,
+          "path": ".>hono",
+          "dev": false,
+          "optional": false,
+          "bundled": false
+        }
+      ]
+    }
+  ],
+  "advisories": {
+    "1130733": {
+      "findings": [
+        {
+          "version": "4.12.30",
+          "paths": [
+            ".>hono"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/honojs/hono/security/advisories/GHSA-8j4g-w8fx-2239\n- https://github.com/honojs/hono/commit/93fc250d8b4df58ea542cb945171de8013d5e6d5\n- https://github.com/honojs/hono/releases/tag/v4.12.34\n- https://github.com/advisories/GHSA-8j4g-w8fx-2239",
+      "created": "2026-08-03T20:23:30.000Z",
+      "id": 1130733,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nThe built-in CORS middleware (`hono/cors`) parses the attacker-controlled `Access-Control-Request-Headers` request header during a preflight (`OPTIONS`) request using a regular expression whose running time is quadratic in the input length. A single request carrying a long run of whitespace can consume seconds of CPU, and repeated requests can render the service unresponsive. This parsing runs under the default configuration.\n\n### Details\n\nOn a CORS preflight, when `allowHeaders` is not configured - the default - the middleware reflects and parses the `Access-Control-Request-Headers` value. The parser used a whitespace-tolerant regular expression whose backtracking makes the work grow quadratically (O(n²)) with the length of the value when it contains a long whitespace sequence without a delimiter.\n\nBecause the header value is bounded only by the deployment's maximum HTTP header size, a single preflight can block request processing for a noticeable amount of time; on runtimes that share one execution thread across requests, this stalls concurrent requests as well. No authentication, special origin, or user interaction is required.\n\nThis issue arises for any application using `cors()` with the default (or an empty) `allowHeaders`. Applications that set a non-empty `allowHeaders` do not reach the affected path.\n\n### Impact\n\nAn unauthenticated attacker can send preflight requests that each consume disproportionate CPU relative to their size, degrading or denying service. This is a denial-of-service issue only; it does not expose or modify data.",
+      "reported_by": null,
+      "title": "Hono: ReDoS in CORS middleware via Access-Control-Request-Headers",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-69207"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "hono",
+      "vulnerable_versions": "<4.12.34",
+      "github_advisory_id": "GHSA-8j4g-w8fx-2239",
+      "recommendation": "Upgrade to version 4.12.34 or later",
+      "patched_versions": ">=4.12.34",
+      "updated": "2026-08-03T20:23:59.000Z",
+      "cvss": {
+        "score": 5.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      },
+      "cwe": [
+        "CWE-1333"
+      ],
+      "url": "https://github.com/advisories/GHSA-8j4g-w8fx-2239"
+    },
+    "1138771": {
+      "findings": [
+        {
+          "version": "4.12.30",
+          "paths": [
+            ".>hono"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/honojs/hono/security/advisories/GHSA-f23p-vx2j-j53r\n- https://github.com/honojs/hono/commit/0c45036d6b0ddf42ab2fa44639dc8710825d5c0f\n- https://github.com/honojs/hono/releases/tag/v4.12.34\n- https://github.com/advisories/GHSA-f23p-vx2j-j53r",
+      "created": "2026-08-07T18:42:01.000Z",
+      "id": 1138771,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\n`memo()` from `hono/jsx` retains the result of a server-side render and reuses it for later renders with comparator-equal props. Request-scoped values read inside the component take no part in that comparison, so a response can contain HTML rendered for another user's request.\n\n### Details\n\nComponents wrapped with `memo()` are compared by props alone. Values read implicitly during rendering do not participate: JSX Context through `createContext()` and `useContext()`, `useRequestContext()` from `hono/jsx-renderer`, and `getContext()` from `hono/context-storage`. The retained result lives as long as the wrapped component, so it outlives the request that produced it.\n\nPer-request context isolation is not what fails: the current request's values are established correctly, but the memoized component is skipped before anything reads them.\n\nThis issue arises when a component wrapped in `memo()` obtains user- or request-specific data from an ambient context instead of through props.\n\n### Impact\n\nA user may receive a response containing HTML rendered for another user, when both render the same memoized component with comparator-equal props on the same warm instance.\n\nThis may lead to:\n\n- Disclosure of another user's account or profile data\n- Disclosure of request-scoped secrets embedded in HTML, such as CSRF tokens\n- Exposure of role-specific content to users who should not receive it\n\nExploitation depends on the order in which renders populate the retained value and on both requests reaching the same warm instance.\n\nThis issue affects applications that render with `hono/jsx` on the server and wrap a component reading ambient request state in `memo()`. Applications that pass all request-specific values through props, or that do not use `memo()`, are unaffected. Client-side rendering is unaffected.",
+      "reported_by": null,
+      "title": "Hono: `memo()` retains SSR output across requests, leading to cross-user data disclosure",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-71850"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "hono",
+      "vulnerable_versions": ">=3.8.0 <4.12.34",
+      "github_advisory_id": "GHSA-f23p-vx2j-j53r",
+      "recommendation": "Upgrade to version 4.12.34 or later",
+      "patched_versions": ">=4.12.34",
+      "updated": "2026-08-07T18:42:04.000Z",
+      "cvss": {
+        "score": 4.8,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:N/A:N"
+      },
+      "cwe": [
+        "CWE-488"
+      ],
+      "url": "https://github.com/advisories/GHSA-f23p-vx2j-j53r"
+    },
+    "1138772": {
+      "findings": [
+        {
+          "version": "4.12.30",
+          "paths": [
+            ".>hono"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/honojs/hono/security/advisories/GHSA-79qm-7rj5-m7r9\n- https://github.com/honojs/hono/commit/720b566290793d4358bf39843adcb7cf4da4548f\n- https://github.com/honojs/hono/releases/tag/v4.12.34\n- https://github.com/advisories/GHSA-79qm-7rj5-m7r9",
+      "created": "2026-08-07T18:38:48.000Z",
+      "id": 1138772,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nThe Proxy Helper (`hono/proxy`) does not remove response headers named by the origin's `Connection` header. Headers that the origin marked as connection-scoped are therefore forwarded to clients.\n\n### Details\n\nPer RFC 9110 Section 7.6.1, an intermediary must remove the header fields listed in a message's `Connection` header field before forwarding the message, in addition to the well-known hop-by-hop headers. The `proxy()` function removed the well-known hop-by-hop headers (including `Connection` itself) from origin responses, but did not remove the headers that the response's `Connection` header field designated as connection-scoped.\n\nThis issue arises when an application proxies responses from an origin that declares additional, non-standard headers as hop-by-hop via the `Connection` response header.\n\n### Impact\n\nA client may receive response headers that the origin intended only for its immediate peer. This may lead to:\n\n- Disclosure of connection-scoped or internal metadata contained in such headers\n\nThis issue affects applications that use the Proxy Helper (`hono/proxy`) to forward responses from origins that list custom header names in their `Connection` response header. Applications whose origins only use the standard hop-by-hop headers are not affected.",
+      "reported_by": null,
+      "title": "Hono: Proxy Helper does not remove response headers listed in the `Connection` header",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-71849"
+      ],
+      "access": "public",
+      "severity": "low",
+      "module_name": "hono",
+      "vulnerable_versions": ">=4.7.0 <4.12.34",
+      "github_advisory_id": "GHSA-79qm-7rj5-m7r9",
+      "recommendation": "Upgrade to version 4.12.34 or later",
+      "patched_versions": ">=4.12.34",
+      "updated": "2026-08-07T18:38:49.000Z",
+      "cvss": {
+        "score": 3.7,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:L/I:N/A:N"
+      },
+      "cwe": [
+        "CWE-200"
+      ],
+      "url": "https://github.com/advisories/GHSA-79qm-7rj5-m7r9"
+    },
+    "1138773": {
+      "findings": [
+        {
+          "version": "4.12.30",
+          "paths": [
+            ".>hono"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/honojs/hono/security/advisories/GHSA-54fx-42gc-7vw4\n- https://github.com/honojs/hono/commit/f70e2c31684387b3231cc38512a31df6ca76a1c7\n- https://github.com/honojs/hono/releases/tag/v4.12.34\n- https://github.com/advisories/GHSA-54fx-42gc-7vw4",
+      "created": "2026-08-07T18:36:31.000Z",
+      "id": 1138773,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nThe `languageDetector` middleware is vulnerable to algorithmic complexity denial of service when processing a crafted language tag containing a large number of hyphen-separated subtags.\n\n### Details\n\nTo implement progressive language-tag truncation, `normalizeLanguage()` repeatedly calls `parts.slice(0, i).join('-')` for every possible prefix. The total amount of string processing grows quadratically with the number of subtags.\n\nLanguage values may come from a query parameter, cookie, `Accept-Language` header, or URL path, depending on the detector configuration. The default detector order enables query-string, cookie, and header detection, so applications using `languageDetector()` may expose this processing to unauthenticated requests.\n\nRequest-size limits reduce the maximum cost of a single request but do not eliminate the issue. Inputs accepted by common JavaScript runtimes can still cause noticeable synchronous event-loop blocking.\n\n### Impact\n\nAn attacker may repeatedly send requests containing long, hyphen-separated language tags, causing excessive CPU consumption and preventing unrelated requests from being processed.\n\nThe practical impact depends on the runtime's request-size limits, reverse-proxy configuration, and the detectors enabled by the application.\n\n### Resolution\n\nThe progressive lookup should avoid reconstructing every shorter prefix. The implementation can instead inspect the configured supported languages and select the longest value that matches the input at a hyphen boundary.",
+      "reported_by": null,
+      "title": "Hono: Algorithmic Complexity DoS in Language Middleware",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-71848"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "hono",
+      "vulnerable_versions": ">=4.12.0 <4.12.34",
+      "github_advisory_id": "GHSA-54fx-42gc-7vw4",
+      "recommendation": "Upgrade to version 4.12.34 or later",
+      "patched_versions": ">=4.12.34",
+      "updated": "2026-08-07T18:36:33.000Z",
+      "cvss": {
+        "score": 5.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      },
+      "cwe": [
+        "CWE-407"
+      ],
+      "url": "https://github.com/advisories/GHSA-54fx-42gc-7vw4"
+    },
+    "1193729": {
+      "findings": [
+        {
+          "version": "4.12.30",
+          "paths": [
+            ".>hono"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/honojs/hono/security/advisories/GHSA-gqvv-2mrq-wpjv\n- https://nvd.nist.gov/vuln/detail/CVE-2026-84365\n- https://github.com/honojs/hono/commit/3a67f7f3997e1437d108f7bcba2dbcee2df69221\n- https://github.com/honojs/hono/releases/tag/v4.13.5\n- https://github.com/advisories/GHSA-gqvv-2mrq-wpjv",
+      "created": "2026-09-08T21:23:51.000Z",
+      "id": 1193729,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nThe fix released for CVE-2026-39408 does not cover every traversal sequence. `toSSG()` can still write files outside the configured output directory when a route parameter contains consecutive parent-directory segments.\n\n### Details\n\nStatic site generation builds each output path from the route path and the values supplied through `ssgParams`, then verifies that the result stays inside the output directory. That check normalizes the path with the same routine that built it, and the routine did not fully collapse runs of consecutive parent-directory segments. A value carrying enough of them produces a path the check accepts, but the filesystem resolves outside the output directory.\n\nThe earlier fix handled a single parent-directory segment, so it blocks the sequence reported at the time while leaving longer runs unhandled. The check also treated output directories that differ only in how they are rooted as equivalent.\n\nThis arises when an application generates a static site from route parameter values it does not fully control — slugs coming from a CMS, an API, or user submissions.\n\n### Impact\n\nA value reaching `ssgParams` from an untrusted source can cause build output to be written outside the intended output directory, carrying whatever content the route handler produced.\n\nThis may lead to:\n\n- files being created or overwritten elsewhere in the build environment\n- generated artifacts or deployment output being altered\n\nThis affects build-time static site generation only; request-time routing is not affected. Applications whose `ssgParams` values are entirely developer-controlled are not affected.",
+      "reported_by": null,
+      "title": "Hono: Incomplete fix for CVE-2026-39408: `toSSG()` still writes files outside the output directory",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-84365"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "hono",
+      "vulnerable_versions": "<4.13.5",
+      "github_advisory_id": "GHSA-gqvv-2mrq-wpjv",
+      "recommendation": "Upgrade to version 4.13.5 or later",
+      "patched_versions": ">=4.13.5",
+      "updated": "2026-09-08T21:23:51.000Z",
+      "cvss": {
+        "score": 6.5,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-22"
+      ],
+      "url": "https://github.com/advisories/GHSA-gqvv-2mrq-wpjv"
+    },
+    "1193730": {
+      "findings": [
+        {
+          "version": "4.12.30",
+          "paths": [
+            ".>hono"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/honojs/hono/security/advisories/GHSA-g6gw-c38x-mqfc\n- https://nvd.nist.gov/vuln/detail/CVE-2026-84364\n- https://github.com/honojs/hono/commit/531e9c5a3ae058d10de33f643055bd4009a87178\n- https://github.com/honojs/hono/releases/tag/v4.13.5\n- https://github.com/advisories/GHSA-g6gw-c38x-mqfc",
+      "created": "2026-09-08T21:23:02.000Z",
+      "id": 1193730,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nWhen `parseBody()` expands dot-separated form field names into nested objects, it does not limit the nesting depth or the total number of objects created. A request body well within a normal size limit can therefore allocate an object graph far larger than the request itself, and concurrent requests can exhaust the heap and terminate the process.\n\n### Details\n\nEach dot-separated segment of a field name creates an intermediate object. Neither the segments within a single field name nor the total across a request was bounded, and empty segments were preserved, so a field name could encode one nesting level per byte.\n\nBoth shapes produce the effect: a single deeply dotted field name, and a large number of shallowly dotted ones within one body. A request body size limit does not prevent it, because the amplification happens after the body has been accepted.\n\nDot-notation parsing is not enabled by default.\n\n### Impact\n\nAn attacker who can reach an endpoint that parses request bodies with dot-notation enabled can send concurrent requests whose memory cost is disproportionate to their size.\n\nThis may lead to:\n\n- exhaustion of the JavaScript heap and termination of the server process\n- the service remaining unavailable until it is restarted\n\nThis issue affects applications that explicitly enable dot-notation parsing. Applications using the default behaviour are not affected.",
+      "reported_by": null,
+      "title": "Hono: Unbounded dot-notation nesting in `parseBody()` can cause memory exhaustion",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-84364"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "hono",
+      "vulnerable_versions": "<4.13.5",
+      "github_advisory_id": "GHSA-g6gw-c38x-mqfc",
+      "recommendation": "Upgrade to version 4.13.5 or later",
+      "patched_versions": ">=4.13.5",
+      "updated": "2026-09-08T21:23:04.000Z",
+      "cvss": {
+        "score": 5.3,
+        "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L"
+      },
+      "cwe": [
+        "CWE-400"
+      ],
+      "url": "https://github.com/advisories/GHSA-g6gw-c38x-mqfc"
+    },
+    "1193731": {
+      "findings": [
+        {
+          "version": "4.12.30",
+          "paths": [
+            ".>hono"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/honojs/hono/security/advisories/GHSA-crvj-82cr-hjcx\n- https://nvd.nist.gov/vuln/detail/CVE-2026-84363\n- https://github.com/honojs/hono/commit/9c28d724c5a7fb086ebaa812fdc1ad6e957c63bc\n- https://github.com/honojs/hono/releases/tag/v4.13.5\n- https://github.com/advisories/GHSA-crvj-82cr-hjcx",
+      "created": "2026-09-08T21:22:50.000Z",
+      "id": 1193731,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\nHono's query parsing does not stop at the URL fragment: a `?` appearing after a `#` is treated as the start of a query string. As a result, the application can read request parameters that no other component involved in handling the request can see.\n\n### Details\n\nA fragment is never part of the query, and every standard URL consumer — browsers, `new URL()`, reverse proxies — ignores everything from the first `#` onward. Hono's routing followed that rule; its query helpers did not.\n\nFor one and the same request, this produces an interpretation differential:\n\n- A component in front of the application that inspects the query string — filtering rules, parameter allow/deny lists, access logging — observes no parameters, while the application reads and acts on them.\n- The cache middleware removed the fragment when building its cache key, so a response influenced by parameters carried inside the fragment could be stored under a key that did not reflect them and later returned to other users.\n\nThe same divergence reaches request validation and any middleware that reads query parameters.\n\nThis requires a request target containing a literal `#` to reach the application. Deployments on runtimes that normalise such a target — including Cloudflare Workers — are not affected, and neither are those behind an intermediary that strips the fragment.\n\n### Impact\n\nAn attacker can cause the application to act on parameters that components in front of it never observe.\n\nThis may lead to:\n\n- filtering rules, allow/deny lists, and audit logging being blind to parameters the application still processes\n- a cached response being stored under a key that does not reflect the parameters used to produce it, and served to other users\n- stored cross-site scripting, where such a parameter is reflected into a cached HTML response without escaping\n\nThis issue affects applications that read query parameters and run on a runtime that passes a literal `#` through to the request URL.",
+      "reported_by": null,
+      "title": "Hono: Query parser reads parameters after the URL fragment, causing cache-key and proxy interpretation differentials",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-84363"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "hono",
+      "vulnerable_versions": "<4.13.5",
+      "github_advisory_id": "GHSA-crvj-82cr-hjcx",
+      "recommendation": "Upgrade to version 4.13.5 or later",
+      "patched_versions": ">=4.13.5",
+      "updated": "2026-09-08T21:22:51.000Z",
+      "cvss": {
+        "score": 5.9,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:H/A:N"
+      },
+      "cwe": [
+        "CWE-444"
+      ],
+      "url": "https://github.com/advisories/GHSA-crvj-82cr-hjcx"
+    },
+    "1240640": {
+      "findings": [
+        {
+          "version": "4.12.30",
+          "paths": [
+            ".>hono"
+          ]
+        }
+      ],
+      "found_by": null,
+      "deleted": null,
+      "references": "- https://github.com/honojs/hono/security/advisories/GHSA-hxh3-vqpv-xpqv\n- https://nvd.nist.gov/vuln/detail/CVE-2026-93981\n- https://github.com/honojs/hono/commit/2b8ed402cdab6dfc5e829b480806dcd8db94161e\n- https://github.com/honojs/hono/releases/tag/v4.13.7\n- https://www.vulncheck.com/advisories/hono-jsx-before-4.13.7-cross-site-scripting-via-unescaped-strings\n- https://github.com/advisories/GHSA-hxh3-vqpv-xpqv",
+      "created": "2026-09-30T23:46:16.000Z",
+      "id": 1240640,
+      "npm_advisory_id": null,
+      "overview": "### Summary\n\n`hono/jsx` does not HTML-escape a plain string placed directly as a child or `fallback` of `Suspense` or `ErrorBoundary`, as the only child of a `Context.Provider`, or as the root value of `renderToString()` / `renderToReadableStream()` from `hono/jsx/dom/server`. Such a string is emitted as markup instead of text.\n\n### Details\n\nThese paths stringify their input and treat the result as already-escaped HTML, so a plain string passes through unchanged. Notable cases:\n\n- `Suspense`: a string child, or a string `fallback` while a child suspends. With streaming, the fallback reaches the browser in the initial chunk.\n- `ErrorBoundary`: a string child alongside an asynchronous sibling. The all-synchronous case was fixed in 4.11.7 (GHSA-9r54-q6cx-xmh5).\n- `Context.Provider`: a single string child. Multiple children are escaped.\n- `hono/jsx/dom/server`: a string, or an array containing strings, passed as the root.\n\nA lone `{children}` forwarded by a wrapper component is enough to reach these paths. Strings wrapped in an element, values from `raw()` or the `html` helper, and client-side rendering with `hono/jsx/dom` are not affected.\n\n### Impact\n\nAn attacker who controls a string rendered in an affected position can inject arbitrary HTML into the server-rendered page, leading to cross-site scripting under the application's origin.\n\nThis issue affects applications that render untrusted strings directly in one of the positions above during server-side rendering.",
+      "reported_by": null,
+      "title": "hono/jsx renders plain strings unescaped in boundary components, leading to XSS",
+      "metadata": null,
+      "cves": [
+        "CVE-2026-93981"
+      ],
+      "access": "public",
+      "severity": "moderate",
+      "module_name": "hono",
+      "vulnerable_versions": "<4.13.7",
+      "github_advisory_id": "GHSA-hxh3-vqpv-xpqv",
+      "recommendation": "Upgrade to version 4.13.7 or later",
+      "patched_versions": ">=4.13.7",
+      "updated": "2026-09-30T23:46:17.000Z",
+      "cvss": {
+        "score": 4.7,
+        "vectorString": "CVSS:3.1/AV:N/AC:H/PR:N/UI:R/S:C/C:L/I:L/A:N"
+      },
+      "cwe": [
+        "CWE-79"
+      ],
+      "url": "https://github.com/advisories/GHSA-hxh3-vqpv-xpqv"
+    }
+  },
+  "muted": [],
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 1,
+      "moderate": 7,
+      "high": 0,
+      "critical": 0
+    },
+    "dependencies": 8,
+    "devDependencies": 0,
+    "optionalDependencies": 0,
+    "totalDependencies": 8
+  }
+}

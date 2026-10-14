@@ -1,0 +1,27 @@
+[WebServer] (node:69711) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 16 tests using 1 worker
+
+(node:69727) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 e2e/g0.spec.ts:38:1 › state follows the actual delivery at time five (507ms)
+  ✓   2 e2e/g0.spec.ts:66:1 › the initial screen does not contain a future command (344ms)
+  ✓   3 e2e/g0.spec.ts:99:1 › reserved replica names are visible and different values remain different (246ms)
+  ✓   4 e2e/g0.spec.ts:129:1 › the real Mermaid parser preserves sender and receiver (253ms)
+  ✓   5 e2e/verification.spec.ts:52:1 › imports a verified file, shows actual initial state and exact same-time events (285ms)
+  ✓   6 e2e/verification.spec.ts:84:3 › shows honest failed status (197ms)
+  ✓   7 e2e/verification.spec.ts:84:3 › shows honest inconclusive status (189ms)
+  ✓   8 e2e/verification.spec.ts:100:1 › clears a previous result and refuses tampered files (236ms)
+(node:69865) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   9 e2e/g0.spec.ts:38:1 › state follows the actual delivery at time five (373ms)
+  ✓  10 e2e/g0.spec.ts:66:1 › the initial screen does not contain a future command (350ms)
+  ✓  11 e2e/g0.spec.ts:99:1 › reserved replica names are visible and different values remain different (229ms)
+  ✓  12 e2e/g0.spec.ts:129:1 › the real Mermaid parser preserves sender and receiver (240ms)
+  ✓  13 e2e/verification.spec.ts:52:1 › imports a verified file, shows actual initial state and exact same-time events (276ms)
+  ✓  14 e2e/verification.spec.ts:84:3 › shows honest failed status (200ms)
+  ✓  15 e2e/verification.spec.ts:84:3 › shows honest inconclusive status (201ms)
+  ✓  16 e2e/verification.spec.ts:100:1 › clears a previous result and refuses tampered files (220ms)
+
+  16 passed (6.2s)

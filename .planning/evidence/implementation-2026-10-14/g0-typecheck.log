@@ -1,0 +1,2 @@
+test/schema-contract.test.ts(39,32): error TS18046: 'source' is of type 'unknown'.
+test/schema-contract.test.ts(39,88): error TS18046: 'source' is of type 'unknown'.

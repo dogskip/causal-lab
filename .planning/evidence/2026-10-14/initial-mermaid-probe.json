@@ -1,0 +1,52 @@
+{
+  "generated": "sequenceDiagram\nparticipant a\nparticipant b\na ->> deliver a:1 (t=1): b",
+  "result": {
+    "actors": {
+      "a": {
+        "name": "a",
+        "description": "a",
+        "wrap": false,
+        "links": {},
+        "properties": {},
+        "actorCnt": null,
+        "rectData": null,
+        "type": "participant",
+        "nextActor": "b"
+      },
+      "b": {
+        "name": "b",
+        "description": "b",
+        "wrap": false,
+        "prevActor": "a",
+        "links": {},
+        "properties": {},
+        "actorCnt": null,
+        "rectData": null,
+        "type": "participant",
+        "nextActor": "deliver a"
+      },
+      "deliver a": {
+        "name": "deliver a",
+        "description": "deliver a",
+        "wrap": false,
+        "prevActor": "b",
+        "links": {},
+        "properties": {},
+        "actorCnt": null,
+        "rectData": null,
+        "type": "participant"
+      }
+    },
+    "messages": [
+      {
+        "id": "0",
+        "from": "a",
+        "to": "deliver a",
+        "message": "1 (t=1): b",
+        "wrap": false,
+        "type": 0,
+        "activate": false
+      }
+    ]
+  }
+}

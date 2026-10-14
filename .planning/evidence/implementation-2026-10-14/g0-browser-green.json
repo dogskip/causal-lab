@@ -1,0 +1,338 @@
+{
+  "config": {
+    "argv": [
+      "/Users/bjchoi/.nvm/versions/node/v24.18.1/bin/node",
+      "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/node_modules/@playwright/test/cli.js",
+      "test",
+      "e2e/g0.spec.ts"
+    ],
+    "configFile": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/playwright.config.ts",
+    "rootDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+        "snapshotDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:48123",
+          "headless": true,
+          "channel": "chrome",
+          "screenshot": "on",
+          "trace": "on"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": ".planning/evidence/implementation-2026-10-14/browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 1,
+    "webServer": {
+      "command": "node --import tsx e2e/server.ts",
+      "url": "http://127.0.0.1:48123",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "g0.spec.ts",
+      "file": "g0.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "state follows the actual delivery at time five",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 588,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T09:52:55.410Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-d5a86f5be683c3672625",
+          "file": "g0.spec.ts",
+          "line": 19,
+          "column": 1
+        },
+        {
+          "title": "the initial screen does not contain a future command",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 380,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T09:52:56.749Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-e93ac9f793f44766edb1",
+          "file": "g0.spec.ts",
+          "line": 29,
+          "column": 1
+        },
+        {
+          "title": "reserved replica names are visible and different values remain different",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 245,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T09:52:57.148Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-778d8ee07538490a1fee",
+          "file": "g0.spec.ts",
+          "line": 38,
+          "column": 1
+        },
+        {
+          "title": "the real Mermaid parser preserves sender and receiver",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 253,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T09:52:57.413Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-real-Mermaid-parser-preserves-sender-and-receiver/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-real-Mermaid-parser-preserves-sender-and-receiver/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-0378819c5020a110cd67",
+          "file": "g0.spec.ts",
+          "line": 46,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-14T09:52:55.118Z",
+    "duration": 2738.7149999999997,
+    "expected": 4,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

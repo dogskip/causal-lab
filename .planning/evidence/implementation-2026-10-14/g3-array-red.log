@@ -1,0 +1,21 @@
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+ ❯ test/json-v2.test.ts (7 tests | 1 failed) 9ms
+   × rejects array subclasses and hidden properties instead of silently dropping data 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/json-v2.test.ts > rejects array subclasses and hidden properties instead of silently dropping data
+AssertionError: expected [Function] to throw an error
+ ❯ test/json-v2.test.ts:53:183
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  19:41:19
+   Duration  139ms (transform 26ms, setup 0ms, import 36ms, tests 9ms, environment 0ms)
+

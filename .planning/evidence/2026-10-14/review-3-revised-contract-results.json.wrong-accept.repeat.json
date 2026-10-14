@@ -1,0 +1,309 @@
+{
+  "pid": 50395,
+  "fixture": {
+    "name": "wrong-accept",
+    "configuredDropRate": 1,
+    "generatedTests": 1,
+    "attemptedCommands": 3,
+    "committedCommands": 3,
+    "acceptedCommands": 2,
+    "rejectedCommands": 1,
+    "completedRecovery": true,
+    "verdict": "failed",
+    "businessRulePassed": false,
+    "recoveryEvidence": {
+      "policy": "full-state-exchange-v1",
+      "expectedPairs": [
+        {
+          "from": "a",
+          "to": "b"
+        },
+        {
+          "from": "a",
+          "to": "c"
+        },
+        {
+          "from": "b",
+          "to": "a"
+        },
+        {
+          "from": "b",
+          "to": "c"
+        },
+        {
+          "from": "c",
+          "to": "a"
+        },
+        {
+          "from": "c",
+          "to": "b"
+        }
+      ],
+      "completedPairs": [
+        {
+          "from": "a",
+          "to": "b"
+        },
+        {
+          "from": "a",
+          "to": "c"
+        },
+        {
+          "from": "b",
+          "to": "a"
+        },
+        {
+          "from": "b",
+          "to": "c"
+        },
+        {
+          "from": "c",
+          "to": "a"
+        },
+        {
+          "from": "c",
+          "to": "b"
+        }
+      ],
+      "requiredMessages": [
+        {
+          "generation": 1,
+          "from": "a",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": 5
+        },
+        {
+          "generation": 2,
+          "from": "a",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": 6
+        },
+        {
+          "generation": 3,
+          "from": "b",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": 7
+        },
+        {
+          "generation": 4,
+          "from": "b",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": 8
+        },
+        {
+          "generation": 5,
+          "from": "c",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": 9
+        },
+        {
+          "generation": 6,
+          "from": "c",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": 10
+        },
+        {
+          "generation": 7,
+          "from": "b",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": 11
+        },
+        {
+          "generation": 8,
+          "from": "c",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": 12
+        },
+        {
+          "generation": 9,
+          "from": "a",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": 13
+        }
+      ],
+      "pending": 0,
+      "held": 0,
+      "invalidated": false,
+      "interrupted": false,
+      "connectionError": false
+    },
+    "finalStates": {
+      "a": {},
+      "b": {},
+      "c": {}
+    },
+    "events": [
+      {
+        "kind": "command",
+        "replica": "a",
+        "request": {
+          "action": "noop"
+        },
+        "outcome": "accepted",
+        "result": {
+          "changed": false
+        },
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "command",
+        "replica": "a",
+        "request": {
+          "action": "denied"
+        },
+        "outcome": "rejected",
+        "result": {
+          "reason": "policy"
+        },
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "command",
+        "replica": "a",
+        "request": {
+          "action": "wrong-accept",
+          "key": "key",
+          "value": "value"
+        },
+        "outcome": "accepted",
+        "result": {
+          "changed": true
+        },
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "heal-start",
+        "policy": "full-state-exchange-v1"
+      },
+      {
+        "kind": "delivery",
+        "generation": 1,
+        "from": "a",
+        "to": "b",
+        "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "delivery",
+        "generation": 2,
+        "from": "a",
+        "to": "c",
+        "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "delivery",
+        "generation": 3,
+        "from": "b",
+        "to": "a",
+        "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "delivery",
+        "generation": 4,
+        "from": "b",
+        "to": "c",
+        "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "delivery",
+        "generation": 5,
+        "from": "c",
+        "to": "a",
+        "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "delivery",
+        "generation": 6,
+        "from": "c",
+        "to": "b",
+        "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "delivery",
+        "generation": 7,
+        "from": "b",
+        "to": "a",
+        "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "delivery",
+        "generation": 8,
+        "from": "c",
+        "to": "a",
+        "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "delivery",
+        "generation": 9,
+        "from": "a",
+        "to": "b",
+        "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      }
+    ]
+  }
+}

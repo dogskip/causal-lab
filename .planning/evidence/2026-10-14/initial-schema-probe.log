@@ -1,0 +1,33 @@
+[
+  {
+    "case": "stored-scenario-response",
+    "httpStatus": 200,
+    "responseKeys": [
+      "id",
+      "canonicalization",
+      "scenario"
+    ],
+    "schemaValid": false,
+    "validationErrors": [
+      {
+        "keyword": "additionalProperties",
+        "dataPath": "",
+        "schemaPath": "#/allOf/0/additionalProperties",
+        "params": {
+          "additionalProperty": "scenario"
+        },
+        "message": "should NOT have additional properties"
+      }
+    ]
+  },
+  {
+    "case": "unicode-value-length",
+    "characters": 2000,
+    "bytes": 6000,
+    "schemaValid": true,
+    "httpStatus": 422,
+    "response": {
+      "error": "value exceeds 4096 bytes"
+    }
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "scope": "permitted-return-reference-counterexample",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "before": "{\"value\":0}",
+  "after": "{\"value\":1}",
+  "previousObservationChanged": true,
+  "separatedBefore": "{\"value\":0}",
+  "separatedAfter": "{\"value\":0}",
+  "separatedPreviousObservationChanged": false
+}

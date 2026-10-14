@@ -1,0 +1,20 @@
+[
+  {
+    "language": "en_US.UTF-8",
+    "exit": 0,
+    "stdout": "{\"locale\":\"en-US\",\"scenarioId\":\"7a9964886f149a5bb9b90a03a0c0e90be66023a36e10a05588ad788f010ccb0b\",\"reportHash\":\"070640f029f60a01f518eca3d0ba797bc81755e0d3958d5f087aca16b125736e\",\"versions\":{\"I\":{\"i\":1,\"I\":1},\"i\":{\"i\":1,\"I\":1}},\"states\":{\"I\":{\"k\":[\"lower\",\"upper\"]},\"i\":{\"k\":[\"lower\",\"upper\"]}}}",
+    "stderr": ""
+  },
+  {
+    "language": "tr_TR.UTF-8",
+    "exit": 0,
+    "stdout": "{\"locale\":\"tr-TR\",\"scenarioId\":\"7a9964886f149a5bb9b90a03a0c0e90be66023a36e10a05588ad788f010ccb0b\",\"reportHash\":\"b274d57228285e4c95f1156f69ad629fe77166755ee3d4d2cdfd36d9ce2dd6e8\",\"versions\":{\"I\":{\"I\":1,\"i\":1},\"i\":{\"I\":1,\"i\":1}},\"states\":{\"I\":{\"k\":[\"lower\",\"upper\"]},\"i\":{\"k\":[\"lower\",\"upper\"]}}}",
+    "stderr": ""
+  },
+  {
+    "language": "sv_SE.UTF-8",
+    "exit": 0,
+    "stdout": "{\"locale\":\"sv-SE\",\"scenarioId\":\"7a9964886f149a5bb9b90a03a0c0e90be66023a36e10a05588ad788f010ccb0b\",\"reportHash\":\"070640f029f60a01f518eca3d0ba797bc81755e0d3958d5f087aca16b125736e\",\"versions\":{\"I\":{\"i\":1,\"I\":1},\"i\":{\"i\":1,\"I\":1}},\"states\":{\"I\":{\"k\":[\"lower\",\"upper\"]},\"i\":{\"k\":[\"lower\",\"upper\"]}}}",
+    "stderr": ""
+  }
+]

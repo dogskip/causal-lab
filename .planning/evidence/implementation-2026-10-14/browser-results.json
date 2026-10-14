@@ -1,0 +1,926 @@
+{
+  "config": {
+    "argv": [
+      "/Users/bjchoi/.nvm/versions/node/v24.18.1/bin/node",
+      "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/node_modules/.pnpm/@playwright+test@1.64.0/node_modules/@playwright/test/cli.js",
+      "test",
+      "--repeat-each=2"
+    ],
+    "configFile": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/playwright.config.ts",
+    "rootDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser",
+        "repeatEach": 2,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser",
+        "repeatEach": 2,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+        "snapshotDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:48123",
+          "headless": true,
+          "channel": "chrome",
+          "screenshot": "on",
+          "trace": "on"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": ".planning/evidence/implementation-2026-10-14/browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 1,
+    "webServer": {
+      "command": "node --import tsx e2e/server.ts",
+      "url": "http://127.0.0.1:48123",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "g0.spec.ts",
+      "file": "g0.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "state follows the actual delivery at time five",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 507,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:18.155Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-d5a86f5be683c3672625",
+          "file": "g0.spec.ts",
+          "line": 38,
+          "column": 1
+        },
+        {
+          "title": "the initial screen does not contain a future command",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 344,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:19.275Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-e93ac9f793f44766edb1",
+          "file": "g0.spec.ts",
+          "line": 66,
+          "column": 1
+        },
+        {
+          "title": "reserved replica names are visible and different values remain different",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 246,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:19.635Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-778d8ee07538490a1fee",
+          "file": "g0.spec.ts",
+          "line": 99,
+          "column": 1
+        },
+        {
+          "title": "the real Mermaid parser preserves sender and receiver",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 253,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:19.897Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-real-Mermaid-parser-preserves-sender-and-receiver/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-real-Mermaid-parser-preserves-sender-and-receiver/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-0378819c5020a110cd67",
+          "file": "g0.spec.ts",
+          "line": 129,
+          "column": 1
+        },
+        {
+          "title": "state follows the actual delivery at time five",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 373,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:21.466Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five-repeat1/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-f81c0301db9f213e6629",
+          "file": "g0.spec.ts",
+          "line": 38,
+          "column": 1
+        },
+        {
+          "title": "the initial screen does not contain a future command",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 350,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:22.064Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command-repeat1/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-92faa1d86f848ec89a3a",
+          "file": "g0.spec.ts",
+          "line": 66,
+          "column": 1
+        },
+        {
+          "title": "reserved replica names are visible and different values remain different",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 229,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:22.429Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different-repeat1/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-8132c6761fe83c47de2a",
+          "file": "g0.spec.ts",
+          "line": 99,
+          "column": 1
+        },
+        {
+          "title": "the real Mermaid parser preserves sender and receiver",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 240,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:22.677Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-real-Mermaid-parser-preserves-sender-and-receiver-repeat1/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-real-Mermaid-parser-preserves-sender-and-receiver-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-0451672d4df107d42fa6",
+          "file": "g0.spec.ts",
+          "line": 129,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "verification.spec.ts",
+      "file": "verification.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "imports a verified file, shows actual initial state and exact same-time events",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 285,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:20.184Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-imports-a-ver-bbca2--and-exact-same-time-events/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-imports-a-ver-bbca2--and-exact-same-time-events/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5dbceb02ef26bd154034-99753980ae7281570172",
+          "file": "verification.spec.ts",
+          "line": 52,
+          "column": 1
+        },
+        {
+          "title": "shows honest failed status",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 197,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:20.481Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-shows-honest-failed-status/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-shows-honest-failed-status/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5dbceb02ef26bd154034-668089cf6ac7376e734b",
+          "file": "verification.spec.ts",
+          "line": 84,
+          "column": 3
+        },
+        {
+          "title": "shows honest inconclusive status",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 189,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:20.691Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-shows-honest-inconclusive-status/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-shows-honest-inconclusive-status/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5dbceb02ef26bd154034-45e42dc9a1482de5adc4",
+          "file": "verification.spec.ts",
+          "line": 84,
+          "column": 3
+        },
+        {
+          "title": "clears a previous result and refuses tampered files",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 236,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:20.893Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-clears-a-prev-755ac--and-refuses-tampered-files/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-clears-a-prev-755ac--and-refuses-tampered-files/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5dbceb02ef26bd154034-12b2a1052f38437d6a1e",
+          "file": "verification.spec.ts",
+          "line": 100,
+          "column": 1
+        },
+        {
+          "title": "imports a verified file, shows actual initial state and exact same-time events",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 276,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:22.951Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-imports-a-ver-bbca2--and-exact-same-time-events-repeat1/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-imports-a-ver-bbca2--and-exact-same-time-events-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5dbceb02ef26bd154034-c0050103326b4de64341",
+          "file": "verification.spec.ts",
+          "line": 52,
+          "column": 1
+        },
+        {
+          "title": "shows honest failed status",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 200,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:23.239Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-shows-honest-failed-status-repeat1/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-shows-honest-failed-status-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5dbceb02ef26bd154034-0b8fb627f3bb764494e3",
+          "file": "verification.spec.ts",
+          "line": 84,
+          "column": 3
+        },
+        {
+          "title": "shows honest inconclusive status",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 201,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:23.453Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-shows-honest-inconclusive-status-repeat1/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-shows-honest-inconclusive-status-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5dbceb02ef26bd154034-ffd652a2117a8f744495",
+          "file": "verification.spec.ts",
+          "line": 84,
+          "column": 3
+        },
+        {
+          "title": "clears a previous result and refuses tampered files",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 220,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T10:53:23.667Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-clears-a-prev-755ac--and-refuses-tampered-files-repeat1/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/verification-clears-a-prev-755ac--and-refuses-tampered-files-repeat1/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "5dbceb02ef26bd154034-960040170ef1ab6e7add",
+          "file": "verification.spec.ts",
+          "line": 100,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-14T10:53:17.840Z",
+    "duration": 6229.826,
+    "expected": 16,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

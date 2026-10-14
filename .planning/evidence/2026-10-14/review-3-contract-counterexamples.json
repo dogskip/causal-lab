@@ -1,0 +1,263 @@
+{
+  "scope": "review-3-contract-ambiguity-counterexamples",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "implementation": {
+    "name": "yjs",
+    "version": "13.6.27"
+  },
+  "commandResult": {
+    "oldMessagesOnlyCannotDistinguishOutcomes": true,
+    "acceptedNoOp": {
+      "command": {
+        "action": "set",
+        "key": "key",
+        "value": "value"
+      },
+      "outgoing": [],
+      "observation": {
+        "values": {
+          "key": "value"
+        }
+      }
+    },
+    "rejectedCommand": {
+      "command": {
+        "action": "set",
+        "key": "key",
+        "value": "value"
+      },
+      "outgoing": [],
+      "observation": {
+        "values": {
+          "key": "value"
+        }
+      }
+    },
+    "explicitAccepted": {
+      "command": {
+        "action": "set",
+        "key": "key",
+        "value": "value"
+      },
+      "result": {
+        "outcome": "accepted",
+        "outgoing": [],
+        "evidence": null
+      },
+      "observation": {
+        "values": {
+          "key": "value"
+        }
+      }
+    },
+    "explicitRejected": {
+      "command": {
+        "action": "set",
+        "key": "key",
+        "value": "value"
+      },
+      "result": {
+        "outcome": "rejected",
+        "outgoing": [],
+        "evidence": null
+      },
+      "observation": {
+        "values": {
+          "key": "value"
+        }
+      }
+    }
+  },
+  "recoveries": [
+    {
+      "mode": "configured-drop",
+      "configuredDropRate": 1,
+      "calls": [
+        {
+          "source": 0,
+          "target": 1,
+          "bytes": 26
+        },
+        {
+          "source": 0,
+          "target": 2,
+          "bytes": 26
+        },
+        {
+          "source": 1,
+          "target": 0,
+          "bytes": 2
+        },
+        {
+          "source": 1,
+          "target": 2,
+          "bytes": 2
+        },
+        {
+          "source": 2,
+          "target": 0,
+          "bytes": 2
+        },
+        {
+          "source": 2,
+          "target": 1,
+          "bytes": 2
+        }
+      ],
+      "delivered": [],
+      "pendingMessages": 0,
+      "states": [
+        {
+          "key": "value"
+        },
+        {},
+        {}
+      ],
+      "completeOrderedPairs": false,
+      "converged": false,
+      "verdict": "inconclusive",
+      "statesAfterLaterCommand": [
+        {
+          "key": "value",
+          "later": "changed"
+        },
+        {},
+        {}
+      ],
+      "recoveryMustBeInvalidatedByLaterCommand": true
+    },
+    {
+      "mode": "reliable-all-pairs",
+      "configuredDropRate": 1,
+      "calls": [
+        {
+          "source": 0,
+          "target": 1,
+          "bytes": 26
+        },
+        {
+          "source": 0,
+          "target": 2,
+          "bytes": 26
+        },
+        {
+          "source": 1,
+          "target": 0,
+          "bytes": 26
+        },
+        {
+          "source": 1,
+          "target": 2,
+          "bytes": 26
+        },
+        {
+          "source": 2,
+          "target": 0,
+          "bytes": 26
+        },
+        {
+          "source": 2,
+          "target": 1,
+          "bytes": 26
+        }
+      ],
+      "delivered": [
+        {
+          "source": 0,
+          "target": 1
+        },
+        {
+          "source": 0,
+          "target": 2
+        },
+        {
+          "source": 1,
+          "target": 0
+        },
+        {
+          "source": 1,
+          "target": 2
+        },
+        {
+          "source": 2,
+          "target": 0
+        },
+        {
+          "source": 2,
+          "target": 1
+        }
+      ],
+      "pendingMessages": 0,
+      "states": [
+        {
+          "key": "value"
+        },
+        {
+          "key": "value"
+        },
+        {
+          "key": "value"
+        }
+      ],
+      "completeOrderedPairs": true,
+      "converged": true,
+      "verdict": "passed",
+      "statesAfterLaterCommand": [
+        {
+          "key": "value",
+          "later": "changed"
+        },
+        {
+          "key": "value"
+        },
+        {
+          "key": "value"
+        }
+      ],
+      "recoveryMustBeInvalidatedByLaterCommand": true
+    },
+    {
+      "mode": "single-pair",
+      "configuredDropRate": 1,
+      "calls": [
+        {
+          "source": 0,
+          "target": 1,
+          "bytes": 26
+        }
+      ],
+      "delivered": [
+        {
+          "source": 0,
+          "target": 1
+        }
+      ],
+      "pendingMessages": 0,
+      "states": [
+        {
+          "key": "value"
+        },
+        {
+          "key": "value"
+        },
+        {}
+      ],
+      "completeOrderedPairs": false,
+      "converged": false,
+      "verdict": "inconclusive",
+      "statesAfterLaterCommand": [
+        {
+          "key": "value",
+          "later": "changed"
+        },
+        {
+          "key": "value"
+        },
+        {}
+      ],
+      "recoveryMustBeInvalidatedByLaterCommand": true
+    }
+  ],
+  "limitation": "The examples compare proposed contract interpretations; they do not exercise a product v2 runner."
+}

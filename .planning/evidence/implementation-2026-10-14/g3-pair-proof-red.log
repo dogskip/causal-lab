@@ -1,0 +1,21 @@
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+ ❯ test/bundle-v2.test.ts (7 tests | 1 failed) 188ms
+   × requires each completed pair to emit an actual recovery packet 13ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/bundle-v2.test.ts > requires each completed pair to emit an actual recovery packet
+AssertionError: expected [Function] to throw an error
+ ❯ test/bundle-v2.test.ts:141:772
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  19:46:27
+   Duration  359ms (transform 65ms, setup 0ms, import 94ms, tests 188ms, environment 0ms)
+

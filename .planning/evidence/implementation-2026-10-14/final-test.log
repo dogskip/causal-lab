@@ -1,0 +1,13 @@
+
+> causal-lab@0.2.0 test /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+> vitest run
+
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+
+ Test Files  30 passed (30)
+      Tests  301 passed (301)
+   Start at  19:53:53
+   Duration  3.34s (transform 1.56s, setup 0ms, import 2.83s, tests 7.59s, environment 1ms)
+

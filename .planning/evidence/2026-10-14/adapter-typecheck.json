@@ -1,0 +1,26 @@
+{
+  "scope": "proposed-contract-types",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "typescript": "5.9.3",
+  "moduleResolution": "Bundler",
+  "exitCode": 0,
+  "output": "",
+  "sourceSha256": "d328900af4125d6e4b95e7c9f1d8d766c9914096134b050da8f05e2b344198f7",
+  "fencedBodySha256": "802805f874f154f9d974db8f12567d316ae2dee59bd807a80246d3b2b341043c",
+  "documentSha256": "460369171c946df3400584a6dd2652a24aabc409c9afab6c874b3a221cfe0962",
+  "extraction": "typescript fenced body followed by one LF byte",
+  "command": [
+    "/Users/bjchoi/.nvm/versions/node/v24.18.1/bin/node",
+    "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/node_modules/typescript/bin/tsc",
+    "--noEmit",
+    "--strict",
+    "--target",
+    "ES2024",
+    "--module",
+    "ESNext",
+    "--moduleResolution",
+    "Bundler",
+    "/var/folders/mm/kmj45ls13zzfqssk63kptb7c0000gn/T/causal-lab-design-3yifaqh4/adapter-v2.d.ts"
+  ]
+}

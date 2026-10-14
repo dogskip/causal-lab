@@ -1,0 +1,43 @@
+import { chromium } from "/Users/bjchoi/.npm/_npx/705bc6b22212b352/node_modules/playwright/index.mjs";
+import { writeFile } from "node:fs/promises";
+const [base,artifacts]=process.argv.slice(2);
+const browser=await chromium.launch({headless:true,executablePath:"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"});
+const results={browser:browser.version(),headless:true,consoleErrors:[],pageErrors:[],requests:[],stories:[],cases:[]};
+try{
+ const context=await browser.newContext({viewport:{width:1280,height:1100},reducedMotion:"reduce"});
+ await context.tracing.start({screenshots:true,snapshots:true,sources:true});
+ const page=await context.newPage();
+ page.on("console",msg=>{if(msg.type()==="error")results.consoleErrors.push(msg.text());});
+ page.on("pageerror",e=>results.pageErrors.push(e.message));
+ page.on("request",r=>results.requests.push(r.url()));
+ await page.goto(base,{waitUntil:"networkidle"});
+ await page.locator("#verdict dd").last().waitFor();
+ await page.screenshot({path:`${artifacts}/browser-initial.png`,fullPage:true});
+ const buttons=page.locator("#stories button");
+ for(let i=0;i<await buttons.count();i++){
+   const button=buttons.nth(i);const name=await button.textContent();
+   if(!(await button.isDisabled()))await button.click();
+   results.stories.push({name,verdict:await page.locator("#verdict").innerText(),states:await page.locator("#state-table").innerText(),error:await page.locator("#error").innerText()});
+ }
+ const config={replicas:["a","b"],seed:1,minLatency:5,maxLatency:5,dropRate:0,duplicateRate:0};
+ const scenario={config,steps:[{at:0,action:"put",replica:"a",key:"k",value:"v"},{at:20,action:"heal"}]};
+ await page.locator("#file-input").setInputFiles({name:"replay.json",mimeType:"application/json",buffer:Buffer.from(JSON.stringify(scenario))});
+ await page.waitForFunction(()=>document.querySelector("#scrub").max==="25");
+ await page.locator("#scrub").evaluate(el=>{el.value="5";el.dispatchEvent(new Event("input",{bubbles:true}));});
+ results.cases.push({case:"state-after-delivery",clock:await page.locator("#clock").innerText(),counters:await page.locator("#counters").innerText(),states:await page.locator("#state-table").innerText(),verdict:await page.locator("#verdict").innerText()});
+ await page.screenshot({path:`${artifacts}/browser-replay-time-5.png`,fullPage:true});
+ const future={config,steps:[{at:10,action:"put",replica:"a",key:"k",value:"future"}]};
+ await page.locator("#file-input").setInputFiles({name:"future.json",mimeType:"application/json",buffer:Buffer.from(JSON.stringify(future))});
+ await page.waitForFunction(()=>document.querySelector("#scrub").max==="15");
+ await page.locator("#restart").click();
+ results.cases.push({case:"state-before-first-operation",clock:await page.locator("#clock").innerText(),states:await page.locator("#state-table").innerText()});
+ const proto={config:{...config,replicas:["__proto__","b"],dropRate:1},steps:[{at:0,action:"put",replica:"__proto__",key:"k",value:"left"},{at:0,action:"put",replica:"b",key:"k",value:"right"}]};
+ await page.locator("#file-input").setInputFiles({name:"replica-name.json",mimeType:"application/json",buffer:Buffer.from(JSON.stringify(proto))});
+ await page.waitForFunction(()=>document.querySelector("#scrub").max==="0");
+ results.cases.push({case:"reserved-replica-name",states:await page.locator("#state-table").innerText(),verdict:await page.locator("#verdict").innerText()});
+ await page.screenshot({path:`${artifacts}/browser-replica-name.png`,fullPage:true});
+ await context.tracing.stop({path:`${artifacts}/browser-trace.zip`});
+ await context.close();
+}finally{await browser.close();}
+await writeFile(`${artifacts}/browser-results.json`,JSON.stringify(results,null,2));
+console.log(JSON.stringify(results,null,2));

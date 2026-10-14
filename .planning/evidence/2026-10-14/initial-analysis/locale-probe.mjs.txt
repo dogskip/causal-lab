@@ -1,0 +1,5 @@
+import { executeScenario, parseScenario, scenarioIdentity } from "./workspace/dist/scenario.js";
+import { createHash } from "node:crypto";
+const scenario=parseScenario({config:{replicas:["I","i"],seed:1,minLatency:1,maxLatency:1,dropRate:0,duplicateRate:0},steps:[{at:0,action:"put",replica:"I",key:"k",value:"upper"},{at:0,action:"put",replica:"i",key:"k",value:"lower"},{at:2,action:"heal"}]});
+const report=executeScenario(scenario);
+console.log(JSON.stringify({locale:new Intl.Collator().resolvedOptions().locale,scenarioId:scenarioIdentity(scenario).id,reportHash:createHash("sha256").update(JSON.stringify(report)).digest("hex"),versions:report.versions,states:report.states}));

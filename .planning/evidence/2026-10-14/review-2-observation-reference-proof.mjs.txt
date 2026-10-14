@@ -1,0 +1,7 @@
+import { writeFileSync } from 'node:fs';
+const state={value:0};const adapter={observe:s=>s,command:s=>{s.value+=1;return []}};
+const retained=[];retained.push(adapter.observe(state));const before=JSON.stringify(retained[0]);adapter.command(state);retained.push(adapter.observe(state));const after=JSON.stringify(retained[0]);
+const separated={value:0},safe=[];safe.push(structuredClone(adapter.observe(separated)));const safeBefore=JSON.stringify(safe[0]);adapter.command(separated);safe.push(structuredClone(adapter.observe(separated)));const safeAfter=JSON.stringify(safe[0]);
+const result={scope:'permitted-return-reference-counterexample',productAcceptance:false,node:process.version,before,after,previousObservationChanged:before!==after,separatedBefore:safeBefore,separatedAfter:safeAfter,separatedPreviousObservationChanged:safeBefore!==safeAfter};
+writeFileSync(process.argv[2],JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify(result,null,2));

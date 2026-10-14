@@ -1,0 +1,14 @@
+
+> causal-lab@0.1.0 build /private/var/folders/mm/kmj45ls13zzfqssk63kptb7c0000gn/T/causal-lab-analysis-397hg05c/workspace
+> tsc -p tsconfig.build.json && vite build
+
+vite v8.1.5 building client environment for production...
+[2Ktransforming...✓ 18 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/web/index.html                  4.08 kB │ gzip: 1.76 kB
+dist/web/assets/index-BPpZhCbd.css   0.92 kB │ gzip: 0.41 kB
+dist/web/core.js                    22.18 kB │ gzip: 6.74 kB
+dist/web/index.js                   30.18 kB │ gzip: 9.15 kB
+
+✓ built in 22ms

@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import { DatabaseSync } from 'node:sqlite';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+const sql = readFileSync(process.argv[2], 'utf8');
+const mode = process.argv[4];
+assert.ok(mode === 'before' || mode === 'after');
+const db = new DatabaseSync(':memory:');
+db.exec('PRAGMA foreign_keys=ON');
+db.exec(sql);
+const caseId = 'a'.repeat(64), runId = 'b'.repeat(64);
+const definition = '{"format_version":2,"model_id":"yjs-map"}';
+db.prepare('INSERT INTO verification_cases VALUES(?,?,?,?)').run(caseId, 2, definition, Buffer.byteLength(definition));
+const receipt = status => JSON.stringify({ format_version: 2, case_id: caseId, manifest: { model_id: 'yjs-map' }, status });
+const args = status => [runId, caseId, 2, 'yjs-map', status, receipt(status), Buffer.byteLength(receipt(status))];
+db.prepare('INSERT INTO verification_runs VALUES(?,?,?,?,?,?,?)').run(...args('passed'));
+let replaceAccepted = false;
+try { db.prepare('INSERT OR REPLACE INTO verification_runs VALUES(?,?,?,?,?,?,?)').run(...args('failed')); replaceAccepted = true; } catch {}
+const status = db.prepare('SELECT status FROM verification_runs WHERE run_id=?').get(runId).status;
+assert.equal(replaceAccepted, mode === 'before');
+assert.equal(status, mode === 'before' ? 'failed' : 'passed');
+const invalidHashes = [];
+for (const suffix of ['\u0000', '\u0000g', '\u0000' + 'a'.repeat(20)]) {
+  const id = 'c'.repeat(64) + suffix;
+  let accepted = false;
+  try { db.prepare('INSERT INTO verification_cases VALUES(?,?,?,?)').run(id, 2, definition, Buffer.byteLength(definition)); accepted = true; } catch {}
+  assert.equal(accepted, mode === 'before');
+  invalidHashes.push({ idBytes: Buffer.byteLength(id), accepted });
+}
+const output = { scope: 'original-and-revised-proposed-sql-boundary', productAcceptance: false, node: process.version, sqliteVersion: db.prepare('SELECT sqlite_version() AS version').get().version, schemaSha256: createHash('sha256').update(sql).digest('hex'), mode, replaceAccepted, originalStatus: 'passed', currentStatus: status, invalidHashes };
+writeFileSync(process.argv[3], JSON.stringify(output, null, 2) + '\n');
+console.log(JSON.stringify(output, null, 2));
+db.close();

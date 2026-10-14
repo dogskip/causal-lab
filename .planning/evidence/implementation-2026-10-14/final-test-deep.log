@@ -1,0 +1,13 @@
+
+> causal-lab@0.2.0 test:deep /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+> CAUSAL_LAB_PROPERTY_RUNS=5000 vitest run test/property.test.ts
+
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  19:52:41
+   Duration  3.07s (transform 113ms, setup 0ms, import 321ms, tests 2.57s, environment 0ms)
+

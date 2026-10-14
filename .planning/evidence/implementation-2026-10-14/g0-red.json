@@ -1,0 +1,12 @@
+{
+  "phase": "RED",
+  "command": [
+    "/Users/bjchoi/.nvm/versions/node/v24.18.1/bin/node",
+    "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/node_modules/vitest/vitest.mjs",
+    "run",
+    "test/g0-regression.test.ts",
+    "--reporter=verbose"
+  ],
+  "exitCode": 1,
+  "testSha256": "9b9b1a9ccd4a7a32e21963690dd2f81a6a33c6c8a9f1f8f63cc0ea1a60314314"
+}

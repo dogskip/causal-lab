@@ -1,0 +1,28 @@
+{
+  "pid": 59102,
+  "states": [
+    {
+      "key0": "value0",
+      "key1": "value1",
+      "key3": "value3",
+      "key2": "value2"
+    },
+    {
+      "key1": "value1",
+      "key3": "value3"
+    },
+    {
+      "key2": "value2",
+      "key3": "value3",
+      "key1": "value1"
+    },
+    {
+      "key3": "value3",
+      "key2": "value2",
+      "key0": "value0"
+    }
+  ],
+  "converged": false,
+  "preservesRequestedValues": false,
+  "verdict": "inconclusive"
+}

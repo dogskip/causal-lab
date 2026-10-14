@@ -1,0 +1,32 @@
+{
+  "pid": 44811,
+  "states": [
+    {
+      "wrong-key0": "value0",
+      "key1": "value1",
+      "key3": "value3",
+      "key2": "value2"
+    },
+    {
+      "key1": "value1",
+      "key3": "value3",
+      "key2": "value2",
+      "wrong-key0": "value0"
+    },
+    {
+      "key2": "value2",
+      "key3": "value3",
+      "key1": "value1",
+      "wrong-key0": "value0"
+    },
+    {
+      "key3": "value3",
+      "key2": "value2",
+      "wrong-key0": "value0",
+      "key1": "value1"
+    }
+  ],
+  "converged": true,
+  "preservesRequestedValues": false,
+  "verdict": "failed"
+}

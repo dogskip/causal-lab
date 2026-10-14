@@ -1,0 +1,71 @@
+{
+  "scope": "design-feasibility-prototype",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "implementation": {
+    "name": "yjs",
+    "version": "13.6.27"
+  },
+  "reconciliation": "self document encodeStateAsUpdate full-state exchange",
+  "checks": [
+    {
+      "id": "external-repeatability",
+      "passed": true,
+      "seeds": 256,
+      "executions": 512
+    },
+    {
+      "id": "converged-wrong-state-detected",
+      "passed": true,
+      "recoveryCompleted": true
+    },
+    {
+      "id": "incomplete-recovery-not-passed",
+      "passed": true
+    },
+    {
+      "id": "separate-process-normal-replay",
+      "passed": true,
+      "parentPid": 59015,
+      "replayPid": 59099
+    },
+    {
+      "id": "separate-process-failure-replay",
+      "passed": true,
+      "parentPid": 59015,
+      "replayPid": 59101
+    },
+    {
+      "id": "separate-process-incomplete-replay",
+      "passed": true,
+      "parentPid": 59015,
+      "replayPid": 59102
+    },
+    {
+      "id": "model-specific-conflict-rule",
+      "passed": true,
+      "concurrentValuesRetained": 1
+    },
+    {
+      "id": "reject-code-mismatch",
+      "passed": true
+    },
+    {
+      "id": "reject-version-mismatch",
+      "passed": true
+    },
+    {
+      "id": "reject-packet-mismatch",
+      "passed": true
+    },
+    {
+      "id": "reject-bootstrap-mismatch",
+      "passed": true
+    },
+    {
+      "id": "observation-copy-and-freeze",
+      "passed": true
+    }
+  ],
+  "sampleReceipt": "14eea88aec4a3ae4bec6c04ec39e161e356a24f513770e1ebd17a57b86eb6ace"
+}

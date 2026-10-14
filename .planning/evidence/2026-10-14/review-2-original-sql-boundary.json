@@ -1,0 +1,25 @@
+{
+  "scope": "original-and-revised-proposed-sql-boundary",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "sqliteVersion": "3.53.1",
+  "schemaSha256": "f449dc95e51c9406cdf8d1adea9b4a347703cb26a839d277b0d84fcc168739c2",
+  "mode": "before",
+  "replaceAccepted": true,
+  "originalStatus": "passed",
+  "currentStatus": "failed",
+  "invalidHashes": [
+    {
+      "idBytes": 65,
+      "accepted": true
+    },
+    {
+      "idBytes": 66,
+      "accepted": true
+    },
+    {
+      "idBytes": 85,
+      "accepted": true
+    }
+  ]
+}

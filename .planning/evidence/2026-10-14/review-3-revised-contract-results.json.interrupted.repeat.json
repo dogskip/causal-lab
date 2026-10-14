@@ -1,0 +1,209 @@
+{
+  "pid": 50399,
+  "fixture": {
+    "name": "interrupted",
+    "configuredDropRate": 1,
+    "generatedTests": 1,
+    "attemptedCommands": 3,
+    "committedCommands": 3,
+    "acceptedCommands": 2,
+    "rejectedCommands": 1,
+    "completedRecovery": false,
+    "verdict": "inconclusive",
+    "businessRulePassed": false,
+    "recoveryEvidence": {
+      "policy": "full-state-exchange-v1",
+      "expectedPairs": [
+        {
+          "from": "a",
+          "to": "b"
+        },
+        {
+          "from": "a",
+          "to": "c"
+        },
+        {
+          "from": "b",
+          "to": "a"
+        },
+        {
+          "from": "b",
+          "to": "c"
+        },
+        {
+          "from": "c",
+          "to": "a"
+        },
+        {
+          "from": "c",
+          "to": "b"
+        }
+      ],
+      "completedPairs": [
+        {
+          "from": "a",
+          "to": "b"
+        },
+        {
+          "from": "a",
+          "to": "c"
+        },
+        {
+          "from": "b",
+          "to": "a"
+        },
+        {
+          "from": "b",
+          "to": "c"
+        },
+        {
+          "from": "c",
+          "to": "a"
+        },
+        {
+          "from": "c",
+          "to": "b"
+        }
+      ],
+      "requiredMessages": [
+        {
+          "generation": 1,
+          "from": "a",
+          "to": "b",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "receivedEvent": 5
+        },
+        {
+          "generation": 2,
+          "from": "a",
+          "to": "c",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "receivedEvent": null
+        },
+        {
+          "generation": 3,
+          "from": "b",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": null
+        },
+        {
+          "generation": 4,
+          "from": "b",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": null
+        },
+        {
+          "generation": 5,
+          "from": "c",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": null
+        },
+        {
+          "generation": 6,
+          "from": "c",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "receivedEvent": null
+        },
+        {
+          "generation": 7,
+          "from": "b",
+          "to": "a",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "receivedEvent": null
+        }
+      ],
+      "pending": 6,
+      "held": 0,
+      "invalidated": false,
+      "interrupted": true,
+      "connectionError": false
+    },
+    "finalStates": {
+      "a": {
+        "key": "value"
+      },
+      "b": {
+        "key": "value"
+      },
+      "c": {}
+    },
+    "events": [
+      {
+        "kind": "command",
+        "replica": "a",
+        "request": {
+          "action": "noop"
+        },
+        "outcome": "accepted",
+        "result": {
+          "changed": false
+        },
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "command",
+        "replica": "a",
+        "request": {
+          "action": "denied"
+        },
+        "outcome": "rejected",
+        "result": {
+          "reason": "policy"
+        },
+        "state": {
+          "a": {},
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "command",
+        "replica": "a",
+        "request": {
+          "action": "set",
+          "key": "key",
+          "value": "value"
+        },
+        "outcome": "accepted",
+        "result": {
+          "changed": true
+        },
+        "state": {
+          "a": {
+            "key": "value"
+          },
+          "b": {},
+          "c": {}
+        }
+      },
+      {
+        "kind": "heal-start",
+        "policy": "full-state-exchange-v1"
+      },
+      {
+        "kind": "delivery",
+        "generation": 1,
+        "from": "a",
+        "to": "b",
+        "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+        "state": {
+          "a": {
+            "key": "value"
+          },
+          "b": {
+            "key": "value"
+          },
+          "c": {}
+        }
+      }
+    ]
+  }
+}

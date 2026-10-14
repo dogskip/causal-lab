@@ -1,0 +1,14 @@
+{
+  "scope": "final-r3-revised-type-contract-independent-review",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "typescript": "5.9.3",
+  "exitCode": 0,
+  "output": "",
+  "source": ".planning/evidence/2026-10-14/review-2-final-adapter-v2.d.ts.txt",
+  "sourceSha256": "d328900af4125d6e4b95e7c9f1d8d766c9914096134b050da8f05e2b344198f7",
+  "fencedBodySha256": "802805f874f154f9d974db8f12567d316ae2dee59bd807a80246d3b2b341043c",
+  "documentSha256": "03da5f70b3a98626eeeea5088fcba793f47fa9c49ef678fb96f6851a9e809077",
+  "parentSourceHashMatches": true,
+  "execution": "보관한 .d.ts.txt와 같은 바이트를 임시 .d.ts로 복사하여 strict 검사했다."
+}

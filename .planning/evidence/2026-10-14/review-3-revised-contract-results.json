@@ -1,0 +1,2041 @@
+{
+  "scope": "review-3-revised-contract-design-fixture",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "implementation": {
+    "name": "yjs",
+    "version": "13.6.27"
+  },
+  "sourceSha256": "901e169293bdcb7f2e688a40d9ab5d923fe6ccc5f4c298f9842782038a0387cb",
+  "separateProcessRepetitionCases": 7,
+  "outputs": [
+    {
+      "name": "normal",
+      "configuredDropRate": 1,
+      "generatedTests": 1,
+      "attemptedCommands": 3,
+      "committedCommands": 3,
+      "acceptedCommands": 2,
+      "rejectedCommands": 1,
+      "completedRecovery": true,
+      "verdict": "passed",
+      "businessRulePassed": true,
+      "recoveryEvidence": {
+        "policy": "full-state-exchange-v1",
+        "expectedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "completedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "requiredMessages": [
+          {
+            "generation": 1,
+            "from": "a",
+            "to": "b",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 5
+          },
+          {
+            "generation": 2,
+            "from": "a",
+            "to": "c",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 6
+          },
+          {
+            "generation": 3,
+            "from": "b",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 7
+          },
+          {
+            "generation": 4,
+            "from": "b",
+            "to": "c",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 8
+          },
+          {
+            "generation": 5,
+            "from": "c",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 9
+          },
+          {
+            "generation": 6,
+            "from": "c",
+            "to": "b",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 10
+          },
+          {
+            "generation": 7,
+            "from": "b",
+            "to": "a",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 11
+          },
+          {
+            "generation": 8,
+            "from": "c",
+            "to": "a",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 12
+          },
+          {
+            "generation": 9,
+            "from": "a",
+            "to": "b",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 13
+          }
+        ],
+        "pending": 0,
+        "held": 0,
+        "invalidated": false,
+        "interrupted": false,
+        "connectionError": false
+      },
+      "finalStates": {
+        "a": {
+          "key": "value"
+        },
+        "b": {
+          "key": "value"
+        },
+        "c": {
+          "key": "value"
+        }
+      },
+      "events": [
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "noop"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": false
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "denied"
+          },
+          "outcome": "rejected",
+          "result": {
+            "reason": "policy"
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "set",
+            "key": "key",
+            "value": "value"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": true
+          },
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "heal-start",
+          "policy": "full-state-exchange-v1"
+        },
+        {
+          "kind": "delivery",
+          "generation": 1,
+          "from": "a",
+          "to": "b",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 2,
+          "from": "a",
+          "to": "c",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 3,
+          "from": "b",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 4,
+          "from": "b",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 5,
+          "from": "c",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 6,
+          "from": "c",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 7,
+          "from": "b",
+          "to": "a",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 8,
+          "from": "c",
+          "to": "a",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 9,
+          "from": "a",
+          "to": "b",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "wrong-accept",
+      "configuredDropRate": 1,
+      "generatedTests": 1,
+      "attemptedCommands": 3,
+      "committedCommands": 3,
+      "acceptedCommands": 2,
+      "rejectedCommands": 1,
+      "completedRecovery": true,
+      "verdict": "failed",
+      "businessRulePassed": false,
+      "recoveryEvidence": {
+        "policy": "full-state-exchange-v1",
+        "expectedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "completedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "requiredMessages": [
+          {
+            "generation": 1,
+            "from": "a",
+            "to": "b",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 5
+          },
+          {
+            "generation": 2,
+            "from": "a",
+            "to": "c",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 6
+          },
+          {
+            "generation": 3,
+            "from": "b",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 7
+          },
+          {
+            "generation": 4,
+            "from": "b",
+            "to": "c",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 8
+          },
+          {
+            "generation": 5,
+            "from": "c",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 9
+          },
+          {
+            "generation": 6,
+            "from": "c",
+            "to": "b",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 10
+          },
+          {
+            "generation": 7,
+            "from": "b",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 11
+          },
+          {
+            "generation": 8,
+            "from": "c",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 12
+          },
+          {
+            "generation": 9,
+            "from": "a",
+            "to": "b",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 13
+          }
+        ],
+        "pending": 0,
+        "held": 0,
+        "invalidated": false,
+        "interrupted": false,
+        "connectionError": false
+      },
+      "finalStates": {
+        "a": {},
+        "b": {},
+        "c": {}
+      },
+      "events": [
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "noop"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": false
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "denied"
+          },
+          "outcome": "rejected",
+          "result": {
+            "reason": "policy"
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "wrong-accept",
+            "key": "key",
+            "value": "value"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": true
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "heal-start",
+          "policy": "full-state-exchange-v1"
+        },
+        {
+          "kind": "delivery",
+          "generation": 1,
+          "from": "a",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 2,
+          "from": "a",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 3,
+          "from": "b",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 4,
+          "from": "b",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 5,
+          "from": "c",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 6,
+          "from": "c",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 7,
+          "from": "b",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 8,
+          "from": "c",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 9,
+          "from": "a",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        }
+      ]
+    },
+    {
+      "name": "missing-pair",
+      "configuredDropRate": 1,
+      "generatedTests": 1,
+      "attemptedCommands": 3,
+      "committedCommands": 3,
+      "acceptedCommands": 2,
+      "rejectedCommands": 1,
+      "completedRecovery": false,
+      "verdict": "inconclusive",
+      "businessRulePassed": true,
+      "recoveryEvidence": {
+        "policy": "full-state-exchange-v1",
+        "expectedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "completedPairs": [
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "requiredMessages": [
+          {
+            "generation": 1,
+            "from": "a",
+            "to": "c",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 5
+          },
+          {
+            "generation": 2,
+            "from": "b",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 6
+          },
+          {
+            "generation": 3,
+            "from": "b",
+            "to": "c",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 7
+          },
+          {
+            "generation": 4,
+            "from": "c",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 8
+          },
+          {
+            "generation": 5,
+            "from": "c",
+            "to": "b",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 9
+          },
+          {
+            "generation": 6,
+            "from": "c",
+            "to": "a",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 10
+          },
+          {
+            "generation": 7,
+            "from": "a",
+            "to": "b",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 11
+          },
+          {
+            "generation": 8,
+            "from": "b",
+            "to": "c",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 12
+          }
+        ],
+        "pending": 0,
+        "held": 0,
+        "invalidated": false,
+        "interrupted": false,
+        "connectionError": false
+      },
+      "finalStates": {
+        "a": {
+          "key": "value"
+        },
+        "b": {
+          "key": "value"
+        },
+        "c": {
+          "key": "value"
+        }
+      },
+      "events": [
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "noop"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": false
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "denied"
+          },
+          "outcome": "rejected",
+          "result": {
+            "reason": "policy"
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "set",
+            "key": "key",
+            "value": "value"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": true
+          },
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "heal-start",
+          "policy": "full-state-exchange-v1"
+        },
+        {
+          "kind": "delivery",
+          "generation": 1,
+          "from": "a",
+          "to": "c",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 2,
+          "from": "b",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 3,
+          "from": "b",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 4,
+          "from": "c",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 5,
+          "from": "c",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 6,
+          "from": "c",
+          "to": "a",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 7,
+          "from": "a",
+          "to": "b",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 8,
+          "from": "b",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "new-command",
+      "configuredDropRate": 1,
+      "generatedTests": 1,
+      "attemptedCommands": 4,
+      "committedCommands": 4,
+      "acceptedCommands": 3,
+      "rejectedCommands": 1,
+      "completedRecovery": false,
+      "verdict": "inconclusive",
+      "businessRulePassed": true,
+      "recoveryEvidence": {
+        "policy": "full-state-exchange-v1",
+        "expectedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "completedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "requiredMessages": [
+          {
+            "generation": 1,
+            "from": "a",
+            "to": "b",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 6
+          },
+          {
+            "generation": 2,
+            "from": "a",
+            "to": "c",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 7
+          },
+          {
+            "generation": 3,
+            "from": "b",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 8
+          },
+          {
+            "generation": 4,
+            "from": "b",
+            "to": "c",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 9
+          },
+          {
+            "generation": 5,
+            "from": "c",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 10
+          },
+          {
+            "generation": 6,
+            "from": "c",
+            "to": "b",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 11
+          },
+          {
+            "generation": 7,
+            "from": "b",
+            "to": "a",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 12
+          },
+          {
+            "generation": 8,
+            "from": "c",
+            "to": "a",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 13
+          },
+          {
+            "generation": 9,
+            "from": "a",
+            "to": "b",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 14
+          }
+        ],
+        "pending": 0,
+        "held": 0,
+        "invalidated": true,
+        "interrupted": false,
+        "connectionError": false
+      },
+      "finalStates": {
+        "a": {
+          "key": "value"
+        },
+        "b": {
+          "key": "value"
+        },
+        "c": {
+          "key": "value"
+        }
+      },
+      "events": [
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "noop"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": false
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "denied"
+          },
+          "outcome": "rejected",
+          "result": {
+            "reason": "policy"
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "set",
+            "key": "key",
+            "value": "value"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": true
+          },
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "heal-start",
+          "policy": "full-state-exchange-v1"
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "noop"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": false
+          },
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 1,
+          "from": "a",
+          "to": "b",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {}
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 2,
+          "from": "a",
+          "to": "c",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 3,
+          "from": "b",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 4,
+          "from": "b",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 5,
+          "from": "c",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 6,
+          "from": "c",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 7,
+          "from": "b",
+          "to": "a",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 8,
+          "from": "c",
+          "to": "a",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 9,
+          "from": "a",
+          "to": "b",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {
+              "key": "value"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "new-partition",
+      "configuredDropRate": 1,
+      "generatedTests": 1,
+      "attemptedCommands": 3,
+      "committedCommands": 3,
+      "acceptedCommands": 2,
+      "rejectedCommands": 1,
+      "completedRecovery": false,
+      "verdict": "inconclusive",
+      "businessRulePassed": false,
+      "recoveryEvidence": {
+        "policy": "full-state-exchange-v1",
+        "expectedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "completedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "requiredMessages": [
+          {
+            "generation": 1,
+            "from": "a",
+            "to": "b",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": null
+          },
+          {
+            "generation": 2,
+            "from": "a",
+            "to": "c",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 6
+          },
+          {
+            "generation": 3,
+            "from": "b",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": null
+          },
+          {
+            "generation": 4,
+            "from": "b",
+            "to": "c",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 7
+          },
+          {
+            "generation": 5,
+            "from": "c",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 8
+          },
+          {
+            "generation": 6,
+            "from": "c",
+            "to": "b",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 9
+          },
+          {
+            "generation": 7,
+            "from": "c",
+            "to": "a",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 10
+          },
+          {
+            "generation": 8,
+            "from": "a",
+            "to": "c",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 11
+          },
+          {
+            "generation": 9,
+            "from": "b",
+            "to": "c",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": 12
+          }
+        ],
+        "pending": 0,
+        "held": 2,
+        "invalidated": true,
+        "interrupted": false,
+        "connectionError": false
+      },
+      "finalStates": {
+        "a": {
+          "key": "value"
+        },
+        "b": {},
+        "c": {
+          "key": "value"
+        }
+      },
+      "events": [
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "noop"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": false
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "denied"
+          },
+          "outcome": "rejected",
+          "result": {
+            "reason": "policy"
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "set",
+            "key": "key",
+            "value": "value"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": true
+          },
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "heal-start",
+          "policy": "full-state-exchange-v1"
+        },
+        {
+          "kind": "partition",
+          "from": "a",
+          "to": "b"
+        },
+        {
+          "kind": "delivery",
+          "generation": 2,
+          "from": "a",
+          "to": "c",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 4,
+          "from": "b",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 5,
+          "from": "c",
+          "to": "a",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 6,
+          "from": "c",
+          "to": "b",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 7,
+          "from": "c",
+          "to": "a",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 8,
+          "from": "a",
+          "to": "c",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        },
+        {
+          "kind": "delivery",
+          "generation": 9,
+          "from": "b",
+          "to": "c",
+          "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {
+              "key": "value"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "interrupted",
+      "configuredDropRate": 1,
+      "generatedTests": 1,
+      "attemptedCommands": 3,
+      "committedCommands": 3,
+      "acceptedCommands": 2,
+      "rejectedCommands": 1,
+      "completedRecovery": false,
+      "verdict": "inconclusive",
+      "businessRulePassed": false,
+      "recoveryEvidence": {
+        "policy": "full-state-exchange-v1",
+        "expectedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "completedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "requiredMessages": [
+          {
+            "generation": 1,
+            "from": "a",
+            "to": "b",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": 5
+          },
+          {
+            "generation": 2,
+            "from": "a",
+            "to": "c",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": null
+          },
+          {
+            "generation": 3,
+            "from": "b",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": null
+          },
+          {
+            "generation": 4,
+            "from": "b",
+            "to": "c",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": null
+          },
+          {
+            "generation": 5,
+            "from": "c",
+            "to": "a",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": null
+          },
+          {
+            "generation": 6,
+            "from": "c",
+            "to": "b",
+            "packet_id": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+            "receivedEvent": null
+          },
+          {
+            "generation": 7,
+            "from": "b",
+            "to": "a",
+            "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+            "receivedEvent": null
+          }
+        ],
+        "pending": 6,
+        "held": 0,
+        "invalidated": false,
+        "interrupted": true,
+        "connectionError": false
+      },
+      "finalStates": {
+        "a": {
+          "key": "value"
+        },
+        "b": {
+          "key": "value"
+        },
+        "c": {}
+      },
+      "events": [
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "noop"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": false
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "denied"
+          },
+          "outcome": "rejected",
+          "result": {
+            "reason": "policy"
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "set",
+            "key": "key",
+            "value": "value"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": true
+          },
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "heal-start",
+          "policy": "full-state-exchange-v1"
+        },
+        {
+          "kind": "delivery",
+          "generation": 1,
+          "from": "a",
+          "to": "b",
+          "packet_id": "e5f6c17d2046c670f19243e63fd5b5cd1736e80c9a10852e33fe62734af429c1",
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {
+              "key": "value"
+            },
+            "c": {}
+          }
+        }
+      ]
+    },
+    {
+      "name": "empty-reconcile",
+      "configuredDropRate": 1,
+      "generatedTests": 1,
+      "attemptedCommands": 3,
+      "committedCommands": 3,
+      "acceptedCommands": 2,
+      "rejectedCommands": 1,
+      "completedRecovery": false,
+      "verdict": "error",
+      "businessRulePassed": false,
+      "recoveryEvidence": {
+        "policy": "full-state-exchange-v1",
+        "expectedPairs": [
+          {
+            "from": "a",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "to": "a"
+          },
+          {
+            "from": "b",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "to": "b"
+          }
+        ],
+        "completedPairs": [],
+        "requiredMessages": [],
+        "pending": 0,
+        "held": 0,
+        "invalidated": false,
+        "interrupted": false,
+        "connectionError": true
+      },
+      "finalStates": {
+        "a": {
+          "key": "value"
+        },
+        "b": {},
+        "c": {}
+      },
+      "events": [
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "noop"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": false
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "denied"
+          },
+          "outcome": "rejected",
+          "result": {
+            "reason": "policy"
+          },
+          "state": {
+            "a": {},
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "command",
+          "replica": "a",
+          "request": {
+            "action": "set",
+            "key": "key",
+            "value": "value"
+          },
+          "outcome": "accepted",
+          "result": {
+            "changed": true
+          },
+          "state": {
+            "a": {
+              "key": "value"
+            },
+            "b": {},
+            "c": {}
+          }
+        },
+        {
+          "kind": "heal-start",
+          "policy": "full-state-exchange-v1"
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "The fixture coordinates real Yjs API calls through the proposed method boundary; it is not the product v2 runner.",
+    "The seven child processes repeat fixed cases; recorded-message replay remains demonstrated by the separate original Yjs proof.",
+    "The fixture does not validate general JSON, JCS, package installation, process deadlines, memory, or web/storage integration."
+  ]
+}

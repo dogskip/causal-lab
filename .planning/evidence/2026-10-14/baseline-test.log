@@ -1,0 +1,13 @@
+
+> causal-lab@0.1.0 test /private/var/folders/mm/kmj45ls13zzfqssk63kptb7c0000gn/T/causal-lab-analysis-397hg05c/workspace
+> vitest run
+
+
+ RUN  v4.1.10 /private/var/folders/mm/kmj45ls13zzfqssk63kptb7c0000gn/T/causal-lab-analysis-397hg05c/workspace
+
+
+ Test Files  19 passed (19)
+      Tests  241 passed (241)
+   Start at  16:59:09
+   Duration  1.38s (transform 1.07s, setup 0ms, import 1.54s, tests 2.01s, environment 1ms)
+

@@ -1,0 +1,32 @@
+{
+  "pid": 91887,
+  "states": [
+    {
+      "key0": "value0",
+      "key1": "value1",
+      "key3": "value3",
+      "key2": "value2"
+    },
+    {
+      "key1": "value1",
+      "key3": "value3",
+      "key2": "value2",
+      "key0": "value0"
+    },
+    {
+      "key2": "value2",
+      "key3": "value3",
+      "key1": "value1",
+      "key0": "value0"
+    },
+    {
+      "key3": "value3",
+      "key2": "value2",
+      "key0": "value0",
+      "key1": "value1"
+    }
+  ],
+  "converged": true,
+  "preservesRequestedValues": true,
+  "verdict": "passed"
+}

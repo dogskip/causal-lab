@@ -1,0 +1,157 @@
+[
+  {
+    "case": "reserved-replica-name",
+    "inputReplicas": [
+      "__proto__",
+      "b"
+    ],
+    "reportedReplicas": [
+      "b"
+    ],
+    "hiddenState": {
+      "k": [
+        "left"
+      ]
+    },
+    "httpStatus": 200,
+    "httpReport": {
+      "seed": 1,
+      "virtualTime": 0,
+      "processedEvents": 0,
+      "converged": true,
+      "states": {
+        "b": {
+          "k": [
+            "right"
+          ]
+        }
+      },
+      "versions": {
+        "b": {
+          "b": 1
+        }
+      },
+      "trace": [
+        {
+          "sequence": 1,
+          "time": 0,
+          "kind": "local",
+          "from": "__proto__",
+          "operation": "__proto__:1"
+        },
+        {
+          "sequence": 2,
+          "time": 0,
+          "kind": "dropped",
+          "from": "__proto__",
+          "to": "b",
+          "operation": "__proto__:1"
+        },
+        {
+          "sequence": 3,
+          "time": 0,
+          "kind": "local",
+          "from": "b",
+          "operation": "b:1"
+        },
+        {
+          "sequence": 4,
+          "time": 0,
+          "kind": "dropped",
+          "from": "b",
+          "to": "__proto__",
+          "operation": "b:1"
+        }
+      ]
+    }
+  },
+  {
+    "case": "rejected-operation-mutates",
+    "error": "simulation exceeds 10000 scheduled events",
+    "before": {
+      "states": {
+        "a": {
+          "k": [
+            "accepted"
+          ]
+        },
+        "b": {}
+      },
+      "versions": {
+        "a": {
+          "a": 10000
+        },
+        "b": {}
+      },
+      "traceLength": 20000
+    },
+    "after": {
+      "states": {
+        "a": {
+          "k": [
+            "rejected"
+          ]
+        },
+        "b": {}
+      },
+      "versions": {
+        "a": {
+          "a": 10001
+        },
+        "b": {}
+      },
+      "traceLength": 20001
+    }
+  },
+  {
+    "case": "replay-state-after-delivery",
+    "time": 5,
+    "deliveries": [
+      {
+        "sequence": 3,
+        "time": 5,
+        "kind": "delivered",
+        "from": "a",
+        "to": "b",
+        "operation": "a:1"
+      }
+    ],
+    "displayedState": {
+      "a": {
+        "k": [
+          "v"
+        ]
+      },
+      "b": {}
+    },
+    "actualState": {
+      "a": {
+        "k": [
+          "v"
+        ]
+      },
+      "b": {
+        "k": [
+          "v"
+        ]
+      }
+    },
+    "snapshotTimes": [
+      0,
+      20,
+      25
+    ]
+  },
+  {
+    "case": "replay-state-before-first-operation",
+    "time": 0,
+    "displayedState": {
+      "a": {
+        "k": [
+          "future"
+        ]
+      },
+      "b": {}
+    }
+  }
+]

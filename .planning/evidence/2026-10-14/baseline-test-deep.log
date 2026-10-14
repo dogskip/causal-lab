@@ -1,0 +1,13 @@
+
+> causal-lab@0.1.0 test:deep /private/var/folders/mm/kmj45ls13zzfqssk63kptb7c0000gn/T/causal-lab-analysis-397hg05c/workspace
+> CAUSAL_LAB_PROPERTY_RUNS=5000 vitest run test/property.test.ts
+
+
+ RUN  v4.1.10 /private/var/folders/mm/kmj45ls13zzfqssk63kptb7c0000gn/T/causal-lab-analysis-397hg05c/workspace
+
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  16:59:11
+   Duration  1.99s (transform 30ms, setup 0ms, import 66ms, tests 1.87s, environment 0ms)
+

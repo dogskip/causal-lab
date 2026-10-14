@@ -1,0 +1,153 @@
+
+Running 4 tests using 1 worker
+
+  ✘  1 e2e/g0.spec.ts:19:1 › state follows the actual delivery at time five (5.5s)
+  ✘  2 e2e/g0.spec.ts:29:1 › the initial screen does not contain a future command (5.4s)
+  ✘  3 e2e/g0.spec.ts:38:1 › reserved replica names are visible and different values remain different (5.3s)
+  ✓  4 e2e/g0.spec.ts:46:1 › the real Mermaid parser preserves sender and receiver (335ms)
+
+
+  1) e2e/g0.spec.ts:19:1 › state follows the actual delivery at time five ──────────────────────────
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('#state-table tr').nth(1).locator('td')
+    Timeout: 5000ms
+    - Expected  - 2
+    + Received  + 2
+
+      Array [
+    -   "k",
+    -   "v",
+    +   "k ≠",
+        "v",
+    +   "—",
+      ]
+
+    Call log:
+      - Expect "toHaveText" locator('#state-table tr').nth(1).locator('td') with timeout 5000ms
+      - waiting for locator('#state-table tr').nth(1).locator('td')
+        14 × locator resolved to 3 elements
+
+
+      23 |   await expect(page.locator("#clock")).toHaveText("t=5");
+      24 |   const row = page.locator("#state-table tr").nth(1);
+    > 25 |   await expect(row.locator("td")).toHaveText(["k", "v", "v"]);
+         |                                   ^
+      26 |   await page.screenshot({ path: test.info().outputPath("delivery-state.png"), fullPage: true });
+      27 | });
+      28 |
+        at /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts:25:35
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/trace.zip
+    Usage:
+
+        npx playwright show-trace .planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) e2e/g0.spec.ts:29:1 › the initial screen does not contain a future command ────────────────────
+
+    Error: expect(locator).not.toContainText(expected) failed
+
+    Locator: locator('#state-table')
+    Expected substring: not "later"
+    Received string: "keyabfuture ≠later—"
+    Timeout: 5000ms
+
+    Call log:
+      - Expect "not toContainText" locator('#state-table') with timeout 5000ms
+      - waiting for locator('#state-table')
+        14 × locator resolved to <table border="1" cellspacing="0" cellpadding="4" id="state-table">…</table>
+           - unexpected value "keyabfuture ≠later—"
+
+
+      32 |   await page.locator("#restart").click();
+      33 |   await expect(page.locator("#clock")).toHaveText("t=0");
+    > 34 |   await expect(page.locator("#state-table")).not.toContainText("later");
+         |                                                  ^
+      35 |   await page.screenshot({ path: test.info().outputPath("initial-state.png"), fullPage: true });
+      36 | });
+      37 |
+        at /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts:34:50
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/trace.zip
+    Usage:
+
+        npx playwright show-trace .planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) e2e/g0.spec.ts:38:1 › reserved replica names are visible and different values remain different 
+
+    Error: expect(locator).toHaveText(expected) failed
+
+    Locator: locator('#state-table tr').first().locator('td')
+    Timeout: 5000ms
+    - Expected  - 1
+    + Received  + 0
+
+      Array [
+        "key",
+    -   "__proto__",
+        "b",
+      ]
+
+    Call log:
+      - Expect "toHaveText" locator('#state-table tr').first().locator('td') with timeout 5000ms
+      - waiting for locator('#state-table tr').first().locator('td')
+        14 × locator resolved to 2 elements
+
+
+      38 | test("reserved replica names are visible and different values remain different", async ({ page }) => {
+      39 |   await page.locator("#file-input").setInputFiles({ name: "membership.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify({ config: { ...config, replicas: ["__proto__", "b"], dropRate: 1 }, steps: [{ at: 0, action: "put", replica: "__proto__", key: "k", value: "left" }, { at: 0, action: "put", replica: "b", key: "k", value: "right" }] })) });
+    > 40 |   await expect(page.locator("#state-table tr").first().locator("td")).toHaveText(["key", "__proto__", "b"]);
+         |                                                                       ^
+      41 |   await expect(page.locator("#state-table")).toContainText("left");
+      42 |   await expect(page.locator("#state-table")).toContainText("right");
+      43 |   await expect(page.locator("#verdict")).toContainText("미수렴");
+        at /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts:40:71
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    .planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: .planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    .planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/trace.zip
+    Usage:
+
+        npx playwright show-trace .planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    e2e/g0.spec.ts:19:1 › state follows the actual delivery at time five ───────────────────────────
+    e2e/g0.spec.ts:29:1 › the initial screen does not contain a future command ─────────────────────
+    e2e/g0.spec.ts:38:1 › reserved replica names are visible and different values remain different ─
+  1 passed (19.4s)
+[WebServer] (node:10587) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+(node:10603) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:10905) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11239) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:11520) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

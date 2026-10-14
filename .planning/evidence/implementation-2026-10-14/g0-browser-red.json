@@ -1,0 +1,425 @@
+{
+  "config": {
+    "argv": [
+      "/Users/bjchoi/.nvm/versions/node/v24.18.1/bin/node",
+      "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/node_modules/@playwright/test/cli.js",
+      "test",
+      "e2e/g0.spec.ts"
+    ],
+    "configFile": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/playwright.config.ts",
+    "rootDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "",
+        "testDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+        "snapshotDir": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://127.0.0.1:48123",
+          "headless": true,
+          "channel": "chrome",
+          "screenshot": "on",
+          "trace": "on"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": ""
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": ".planning/evidence/implementation-2026-10-14/browser-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.0",
+    "workers": 1,
+    "webServer": {
+      "command": "node --import tsx e2e/server.ts",
+      "url": "http://127.0.0.1:48123",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "g0.spec.ts",
+      "file": "g0.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "state follows the actual delivery at time five",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5504,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#state-table tr').nth(1).locator('td')\nTimeout: 5000ms\n\u001b[32m- Expected  - 2\u001b[39m\n\u001b[31m+ Received  + 2\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[32m-   \"k\",\u001b[39m\n\u001b[32m-   \"v\",\u001b[39m\n\u001b[31m+   \"k ≠\",\u001b[39m\n\u001b[2m    \"v\",\u001b[22m\n\u001b[31m+   \"—\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" locator('#state-table tr').nth(1).locator('td') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#state-table tr').nth(1).locator('td')\u001b[22m\n\u001b[2m    14 × locator resolved to 3 elements\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#state-table tr').nth(1).locator('td')\nTimeout: 5000ms\n\u001b[32m- Expected  - 2\u001b[39m\n\u001b[31m+ Received  + 2\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[32m-   \"k\",\u001b[39m\n\u001b[32m-   \"v\",\u001b[39m\n\u001b[31m+   \"k ≠\",\u001b[39m\n\u001b[2m    \"v\",\u001b[22m\n\u001b[31m+   \"—\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" locator('#state-table tr').nth(1).locator('td') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#state-table tr').nth(1).locator('td')\u001b[22m\n\u001b[2m    14 × locator resolved to 3 elements\u001b[22m\n\n    at /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts:25:35",
+                    "location": {
+                      "file": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts",
+                      "column": 35,
+                      "line": 25
+                    },
+                    "snippet": "  23 |   await expect(page.locator(\"#clock\")).toHaveText(\"t=5\");\n  24 |   const row = page.locator(\"#state-table tr\").nth(1);\n> 25 |   await expect(row.locator(\"td\")).toHaveText([\"k\", \"v\", \"v\"]);\n     |                                   ^\n  26 |   await page.screenshot({ path: test.info().outputPath(\"delivery-state.png\"), fullPage: true });\n  27 | });\n  28 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts",
+                        "column": 35,
+                        "line": 25
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#state-table tr').nth(1).locator('td')\nTimeout: 5000ms\n\u001b[32m- Expected  - 2\u001b[39m\n\u001b[31m+ Received  + 2\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[32m-   \"k\",\u001b[39m\n\u001b[32m-   \"v\",\u001b[39m\n\u001b[31m+   \"k ≠\",\u001b[39m\n\u001b[2m    \"v\",\u001b[22m\n\u001b[31m+   \"—\",\u001b[39m\n\u001b[2m  ]\u001b[22m\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" locator('#state-table tr').nth(1).locator('td') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#state-table tr').nth(1).locator('td')\u001b[22m\n\u001b[2m    14 × locator resolved to 3 elements\u001b[22m\n\n\n  23 |   await expect(page.locator(\"#clock\")).toHaveText(\"t=5\");\n  24 |   const row = page.locator(\"#state-table tr\").nth(1);\n> 25 |   await expect(row.locator(\"td\")).toHaveText([\"k\", \"v\", \"v\"]);\n     |                                   ^\n  26 |   await page.screenshot({ path: test.info().outputPath(\"delivery-state.png\"), fullPage: true });\n  27 | });\n  28 |\n    at /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts:25:35"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T09:37:06.830Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-state-follows-the-actual-delivery-at-time-five/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts",
+                    "column": 35,
+                    "line": 25
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-d5a86f5be683c3672625",
+          "file": "g0.spec.ts",
+          "line": 19,
+          "column": 1
+        },
+        {
+          "title": "the initial screen does not contain a future command",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5378,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#state-table')\nExpected substring: not \u001b[32m\"later\"\u001b[39m\nReceived string: \u001b[31m\"keyabfuture ≠\u001b[7mlater\u001b[27m—\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"not toContainText\" locator('#state-table') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#state-table')\u001b[22m\n\u001b[2m    14 × locator resolved to <table border=\"1\" cellspacing=\"0\" cellpadding=\"4\" id=\"state-table\">…</table>\u001b[22m\n\u001b[2m       - unexpected value \"keyabfuture ≠later—\"\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#state-table')\nExpected substring: not \u001b[32m\"later\"\u001b[39m\nReceived string: \u001b[31m\"keyabfuture ≠\u001b[7mlater\u001b[27m—\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"not toContainText\" locator('#state-table') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#state-table')\u001b[22m\n\u001b[2m    14 × locator resolved to <table border=\"1\" cellspacing=\"0\" cellpadding=\"4\" id=\"state-table\">…</table>\u001b[22m\n\u001b[2m       - unexpected value \"keyabfuture ≠later—\"\u001b[22m\n\n    at /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts:34:50",
+                    "location": {
+                      "file": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts",
+                      "column": 50,
+                      "line": 34
+                    },
+                    "snippet": "  32 |   await page.locator(\"#restart\").click();\n  33 |   await expect(page.locator(\"#clock\")).toHaveText(\"t=0\");\n> 34 |   await expect(page.locator(\"#state-table\")).not.toContainText(\"later\");\n     |                                                  ^\n  35 |   await page.screenshot({ path: test.info().outputPath(\"initial-state.png\"), fullPage: true });\n  36 | });\n  37 |"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts",
+                        "column": 50,
+                        "line": 34
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).not.\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#state-table')\nExpected substring: not \u001b[32m\"later\"\u001b[39m\nReceived string: \u001b[31m\"keyabfuture ≠\u001b[7mlater\u001b[27m—\"\u001b[39m\nTimeout: 5000ms\n\nCall log:\n\u001b[2m  - Expect \"not toContainText\" locator('#state-table') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#state-table')\u001b[22m\n\u001b[2m    14 × locator resolved to <table border=\"1\" cellspacing=\"0\" cellpadding=\"4\" id=\"state-table\">…</table>\u001b[22m\n\u001b[2m       - unexpected value \"keyabfuture ≠later—\"\u001b[22m\n\n\n  32 |   await page.locator(\"#restart\").click();\n  33 |   await expect(page.locator(\"#clock\")).toHaveText(\"t=0\");\n> 34 |   await expect(page.locator(\"#state-table\")).not.toContainText(\"later\");\n     |                                                  ^\n  35 |   await page.screenshot({ path: test.info().outputPath(\"initial-state.png\"), fullPage: true });\n  36 | });\n  37 |\n    at /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts:34:50"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T09:37:13.325Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-initial-screen-does-not-contain-a-future-command/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts",
+                    "column": 50,
+                    "line": 34
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-e93ac9f793f44766edb1",
+          "file": "g0.spec.ts",
+          "line": 29,
+          "column": 1
+        },
+        {
+          "title": "reserved replica names are visible and different values remain different",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 5318,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#state-table tr').first().locator('td')\nTimeout: 5000ms\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 0\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"key\",\u001b[22m\n\u001b[32m-   \"__proto__\",\u001b[39m\n\u001b[2m    \"b\",\u001b[22m\n\u001b[2m  ]\u001b[22m\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" locator('#state-table tr').first().locator('td') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#state-table tr').first().locator('td')\u001b[22m\n\u001b[2m    14 × locator resolved to 2 elements\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#state-table tr').first().locator('td')\nTimeout: 5000ms\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 0\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"key\",\u001b[22m\n\u001b[32m-   \"__proto__\",\u001b[39m\n\u001b[2m    \"b\",\u001b[22m\n\u001b[2m  ]\u001b[22m\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" locator('#state-table tr').first().locator('td') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#state-table tr').first().locator('td')\u001b[22m\n\u001b[2m    14 × locator resolved to 2 elements\u001b[22m\n\n    at /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts:40:71",
+                    "location": {
+                      "file": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts",
+                      "column": 71,
+                      "line": 40
+                    },
+                    "snippet": "  38 | test(\"reserved replica names are visible and different values remain different\", async ({ page }) => {\n  39 |   await page.locator(\"#file-input\").setInputFiles({ name: \"membership.json\", mimeType: \"application/json\", buffer: Buffer.from(JSON.stringify({ config: { ...config, replicas: [\"__proto__\", \"b\"], dropRate: 1 }, steps: [{ at: 0, action: \"put\", replica: \"__proto__\", key: \"k\", value: \"left\" }, { at: 0, action: \"put\", replica: \"b\", key: \"k\", value: \"right\" }] })) });\n> 40 |   await expect(page.locator(\"#state-table tr\").first().locator(\"td\")).toHaveText([\"key\", \"__proto__\", \"b\"]);\n     |                                                                       ^\n  41 |   await expect(page.locator(\"#state-table\")).toContainText(\"left\");\n  42 |   await expect(page.locator(\"#state-table\")).toContainText(\"right\");\n  43 |   await expect(page.locator(\"#verdict\")).toContainText(\"미수렴\");"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts",
+                        "column": 71,
+                        "line": 40
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoHaveText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#state-table tr').first().locator('td')\nTimeout: 5000ms\n\u001b[32m- Expected  - 1\u001b[39m\n\u001b[31m+ Received  + 0\u001b[39m\n\n\u001b[2m  Array [\u001b[22m\n\u001b[2m    \"key\",\u001b[22m\n\u001b[32m-   \"__proto__\",\u001b[39m\n\u001b[2m    \"b\",\u001b[22m\n\u001b[2m  ]\u001b[22m\n\nCall log:\n\u001b[2m  - Expect \"toHaveText\" locator('#state-table tr').first().locator('td') with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('#state-table tr').first().locator('td')\u001b[22m\n\u001b[2m    14 × locator resolved to 2 elements\u001b[22m\n\n\n  38 | test(\"reserved replica names are visible and different values remain different\", async ({ page }) => {\n  39 |   await page.locator(\"#file-input\").setInputFiles({ name: \"membership.json\", mimeType: \"application/json\", buffer: Buffer.from(JSON.stringify({ config: { ...config, replicas: [\"__proto__\", \"b\"], dropRate: 1 }, steps: [{ at: 0, action: \"put\", replica: \"__proto__\", key: \"k\", value: \"left\" }, { at: 0, action: \"put\", replica: \"b\", key: \"k\", value: \"right\" }] })) });\n> 40 |   await expect(page.locator(\"#state-table tr\").first().locator(\"td\")).toHaveText([\"key\", \"__proto__\", \"b\"]);\n     |                                                                       ^\n  41 |   await expect(page.locator(\"#state-table\")).toContainText(\"left\");\n  42 |   await expect(page.locator(\"#state-table\")).toContainText(\"right\");\n  43 |   await expect(page.locator(\"#verdict\")).toContainText(\"미수렴\");\n    at /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts:40:71"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T09:37:19.286Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-reserved-replica-names--f8931-ent-values-remain-different/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/e2e/g0.spec.ts",
+                    "column": 71,
+                    "line": 40
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-778d8ee07538490a1fee",
+          "file": "g0.spec.ts",
+          "line": 38,
+          "column": 1
+        },
+        {
+          "title": "the real Mermaid parser preserves sender and receiver",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "headless",
+                  "description": "true; Playwright CLI"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "",
+              "projectName": "",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 335,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-14T09:37:25.198Z",
+                  "annotations": [
+                    {
+                      "type": "headless",
+                      "description": "true; Playwright CLI"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-real-Mermaid-parser-preserves-sender-and-receiver/test-finished-1.png"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/.planning/evidence/implementation-2026-10-14/browser/g0-the-real-Mermaid-parser-preserves-sender-and-receiver/trace.zip"
+                    }
+                  ]
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "b8b2b18e158aa28071e7-0378819c5020a110cd67",
+          "file": "g0.spec.ts",
+          "line": 46,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-14T09:37:06.514Z",
+    "duration": 19437.125,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 3,
+    "flaky": 0
+  }
+}

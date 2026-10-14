@@ -1,0 +1,90 @@
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { writeFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+import { resolve } from 'node:path';
+
+const require = createRequire(resolve(process.env.CAUSAL_PROOF_DIR, 'package.json'));
+const Y = require('yjs');
+const packageInfo = require('yjs/package.json');
+const canonical = value => {
+  if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';
+  if (value !== null && typeof value === 'object') {
+    return '{' + Object.keys(value).sort().map(key => JSON.stringify(key) + ':' + canonical(value[key])).join(',') + '}';
+  }
+  return JSON.stringify(value);
+};
+const digest = value => createHash('sha256').update(canonical(value)).digest('hex');
+const packetDigest = base64 => createHash('sha256').update(Buffer.from(base64, 'base64')).digest('hex');
+const random = seed => {
+  let state = seed >>> 0;
+  return () => {
+    state = (Math.imul(state, 1664525) + 1013904223) >>> 0;
+    return state / 4294967296;
+  };
+};
+const makeDocs = count => Array.from({ length: count }, (_, index) => {
+  const doc = new Y.Doc({ guid: 'proof-document' });
+  doc.clientID = index + 1;
+  return doc;
+});
+
+function execute(seed, injectFailure = false) {
+  const docs = makeDocs(4);
+  const next = random(seed);
+  const trace = [];
+  try {
+    const packets = [];
+    for (let source = 0; source < docs.length; source += 1) {
+      const doc = docs[source];
+      let update;
+      doc.once('update', bytes => { update = Uint8Array.from(bytes); });
+      doc.getMap('values').set('key' + source, 'value' + source);
+      assert.ok(update);
+      packets.push({ source, bytes: Buffer.from(update).toString('base64') });
+      trace.push({ kind: 'local', source, target: source, command: { key: 'key' + source, value: 'value' + source }, packet: packetDigest(Buffer.from(update).toString('base64')) });
+    }
+    const deliveries = [];
+    for (const packet of packets) {
+      for (let target = 0; target < docs.length; target += 1) {
+        if (target === packet.source || next() < 0.35) continue;
+        deliveries.push({ ...packet, target, order: next() });
+        if (next() < 0.5) deliveries.push({ ...packet, target, order: next() });
+      }
+    }
+    deliveries.sort((a, b) => a.order - b.order);
+    for (const delivery of deliveries) {
+      Y.applyUpdate(docs[delivery.target], Buffer.from(delivery.bytes, 'base64'));
+      trace.push({ kind: 'delivered', source: delivery.source, target: delivery.target, packet: packetDigest(delivery.bytes) });
+    }
+    if (!injectFailure) {
+      for (const packet of packets) {
+        for (let target = 0; target < docs.length; target += 1) {
+          if (target === packet.source) continue;
+          Y.applyUpdate(docs[target], Buffer.from(packet.bytes, 'base64'));
+          trace.push({ kind: 'reconciled', source: packet.source, target, packet: packetDigest(packet.bytes) });
+        }
+      }
+    } else {
+      docs[0].getMap('values').set('only-local', 'injected');
+    }
+    const states = docs.map(doc => doc.getMap('values').toJSON());
+    const expected = Object.fromEntries(Array.from({ length: 4 }, (_, index) => ['key' + index, 'value' + index]));
+    const passed = states.every(state => canonical(state) === canonical(expected));
+    return { seed, implementation: { name: 'yjs', version: packageInfo.version }, bootstrap: docs.map(doc => ({ clientID: doc.clientID, guid: doc.guid })), packets, trace, states, verdict: passed ? 'passed' : 'failed' };
+  } finally {
+    for (const doc of docs) doc.destroy();
+  }
+}
+
+
+const original = execute(19, true);
+const replicas=makeDocs(4);
+for(const event of original.trace){
+  if(event.kind==='local'){replicas[event.target].getMap('values').set(event.command.key,event.command.value);}
+  else {const packet=original.packets.find(item=>packetDigest(item.bytes)===event.packet);Y.applyUpdate(replicas[event.target],Buffer.from(packet.bytes,'base64'));}
+}
+const replayStates=replicas.map(doc=>doc.getMap('values').toJSON());
+const output={node:process.version,implementation:packageInfo.version,test:'failure-packet-replay',equal:canonical(replayStates)===canonical(original.states),unrecordedLocalValue:original.states[0]['only-local'],replayValue:replayStates[0]['only-local']??null,originalStates:original.states,replayStates,trace:original.trace};
+for(const doc of replicas)doc.destroy();
+console.log(JSON.stringify(output,null,2));

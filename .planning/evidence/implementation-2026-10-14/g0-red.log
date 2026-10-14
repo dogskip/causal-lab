@@ -1,0 +1,309 @@
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+ × test/g0-regression.test.ts > G0 requirement regressions > preserves every valid replica name as an own property before comparing states 3ms
+   → expected [ 'constructor', 'toString' ] to deeply equal [ '__proto__', 'constructor', …(1) ]
+ × test/g0-regression.test.ts > G0 requirement regressions > orders version counters without locale-dependent collation 14ms
+   → expected [ 'i', 'I' ] to deeply equal [ 'I', 'i' ]
+ × test/g0-regression.test.ts > G0 requirement regressions > leaves all public state unchanged when put exceeds the event budget 365ms
+   → expected { seed: 19, virtualTime: +0, …(5) } to deeply equal { seed: 19, virtualTime: +0, …(5) }
+ × test/g0-regression.test.ts > G0 requirement regressions > leaves all public state unchanged when remove exceeds the event budget 308ms
+   → expected { seed: 19, virtualTime: +0, …(5) } to deeply equal { seed: 19, virtualTime: +0, …(5) }
+ × test/g0-regression.test.ts > G0 requirement regressions > leaves held messages, partitions, counters and RNG unchanged when heal exceeds the budget 280ms
+   → expected { seed: 19, virtualTime: 1, …(5) } to deeply equal { seed: 19, virtualTime: 1, …(5) }
+ × test/g0-regression.test.ts > G0 requirement regressions > rejects an overflowing scheduled arrival before changing the local replica 1ms
+   → expected [Function] to throw an error
+ × test/g0-regression.test.ts > G0 requirement regressions > does not display a future operation before the first recorded state 0ms
+   → expected { at: 10, …(1) } to be undefined
+ × test/g0-regression.test.ts > G0 requirement regressions > captures actual state immediately after a message delivery 0ms
+   → expected { a: {}, b: {} } to deeply equal { a: { k: [ 'v' ] }, b: {} }
+ × test/g0-regression.test.ts > G0 requirement regressions > puts the receiver before the Mermaid label separator 1ms
+   → expected 'sequenceDiagram\nparticipant a\nparti…' to contain 'a->>b: deliver a:1 (t=5)'
+ × test/g0-regression.test.ts > G0 requirement regressions > rejects a dangling symbolic link without creating its target 8ms
+   → expected [Function] to throw an error
+
+ Test Files  1 failed (1)
+      Tests  10 failed (10)
+   Start at  18:00:41
+   Duration  1.14s (transform 32ms, setup 0ms, import 43ms, tests 980ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > preserves every valid replica name as an own property before comparing states
+AssertionError: expected [ 'constructor', 'toString' ] to deeply equal [ '__proto__', 'constructor', …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "__proto__",
+    "constructor",
+    "toString",
+  ]
+
+ ❯ test/g0-regression.test.ts:20:40
+     18|     sim.put("constructor", "k", "second");
+     19|     const report = sim.report();
+     20|     expect(Object.keys(report.states)).toEqual(["__proto__", "construc…
+       |                                        ^
+     21|     expect(Object.hasOwn(report.states, "__proto__")).toBe(true);
+     22|     expect(report.states["__proto__"]).toEqual({ k: ["first"] });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > orders version counters without locale-dependent collation
+AssertionError: expected [ 'i', 'I' ] to deeply equal [ 'I', 'i' ]
+
+- Expected
++ Received
+
+  [
+-   "I",
+    "i",
++   "I",
+  ]
+
+ ❯ test/g0-regression.test.ts:31:42
+     29|     vector.observe({ replica: "i", counter: 1 });
+     30|     vector.observe({ replica: "I", counter: 1 });
+     31|     expect(Object.keys(vector.toJSON())).toEqual(["I", "i"]);
+       |                                          ^
+     32|   });
+     33|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > leaves all public state unchanged when put exceeds the event budget
+AssertionError: expected { seed: 19, virtualTime: +0, …(5) } to deeply equal { seed: 19, virtualTime: +0, …(5) }
+
+- Expected
++ Received
+
+@@ -3,11 +3,11 @@
+    "processedEvents": 0,
+    "seed": 19,
+    "states": {
+      "a": {
+        "k": [
+-         "before",
++         "after",
+        ],
+      },
+      "b": {},
+    },
+    "trace": [
+@@ -58569,10 +58569,11 @@
+        "operation": "a:3904",
+        "sequence": 7808,
+        "time": 0,
+        "to": "b",
+      },
++     [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+
+ ❯ test/g0-regression.test.ts:40:28
+     38|       const before = sim.report();
+     39|       expect(() => action === "put" ? sim.put("a", "k", "after") : sim…
+     40|       expect(sim.report()).toEqual(before);
+       |                            ^
+     41|     });
+     42|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > leaves all public state unchanged when remove exceeds the event budget
+AssertionError: expected { seed: 19, virtualTime: +0, …(5) } to deeply equal { seed: 19, virtualTime: +0, …(5) }
+
+- Expected
++ Received
+
+@@ -1,15 +1,11 @@
+  {
+-   "converged": false,
++   "converged": true,
+    "processedEvents": 0,
+    "seed": 19,
+    "states": {
+-     "a": {
+-       "k": [
+-         "before",
+-       ],
+-     },
++     "a": {},
+      "b": {},
+    },
+    "trace": [
+      {
+        "from": "a",
+@@ -58569,10 +58565,11 @@
+        "operation": "a:3904",
+        "sequence": 7808,
+        "time": 0,
+        "to": "b",
+      },
++     [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+
+ ❯ test/g0-regression.test.ts:40:28
+     38|       const before = sim.report();
+     39|       expect(() => action === "put" ? sim.put("a", "k", "after") : sim…
+     40|       expect(sim.report()).toEqual(before);
+       |                            ^
+     41|     });
+     42|   }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > leaves held messages, partitions, counters and RNG unchanged when heal exceeds the budget
+AssertionError: expected { seed: 19, virtualTime: 1, …(5) } to deeply equal { seed: 19, virtualTime: 1, …(5) }
+
+- Expected
++ Received
+
+@@ -80368,9 +80368,11 @@
+      [Object],
+      [Object],
+      [Object],
+      [Object],
+      [Object],
++     [Object],
++     [Object],
+    ],
+    "versions": [Object],
+    "virtualTime": 1,
+  }
+
+ ❯ test/g0-regression.test.ts:51:26
+     49|     const before = sim.report();
+     50|     expect(() => sim.healAll()).toThrow(/events/);
+     51|     expect(sim.report()).toEqual(before);
+       |                          ^
+     52|     expect(() => sim.healAll()).toThrow(/events/);
+     53|     expect(sim.report()).toEqual(before);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > rejects an overflowing scheduled arrival before changing the local replica
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/g0-regression.test.ts:60:49
+     58|     sim.advance(Number.MAX_SAFE_INTEGER);
+     59|     const before = sim.report();
+     60|     expect(() => sim.put("a", "k", "overflow")).toThrow(/time|overflow…
+       |                                                 ^
+     61|     expect(sim.report()).toEqual(before);
+     62|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > does not display a future operation before the first recorded state
+AssertionError: expected { at: 10, …(1) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "at": 10,
+  "states": {
+    "a": {
+      "k": [
+        "future",
+      ],
+    },
+    "b": {},
+  },
+}
+
+ ❯ test/g0-regression.test.ts:65:82
+     63|
+     64|   it("does not display a future operation before the first recorded st…
+     65|     expect(snapshotAt([{ at: 10, states: { a: { k: ["future"] }, b: {}…
+       |                                                                                  ^
+     66|   });
+     67|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > captures actual state immediately after a message delivery
+AssertionError: expected { a: {}, b: {} } to deeply equal { a: { k: [ 'v' ] }, b: {} }
+
+- Expected
++ Received
+
+  {
+-   "a": {
+-     "k": [
+-       "v",
+-     ],
+-   },
++   "a": {},
+    "b": {},
+  }
+
+ ❯ test/g0-regression.test.ts:78:39
+     76|     });
+     77|     const replay = createReplay(report, snapshots);
+     78|     expect(frameAt(replay, 0).states).toEqual({ a: { k: ["v"] }, b: {}…
+       |                                       ^
+     79|     expect(frameAt(replay, 5).states).toEqual({ a: { k: ["v"] }, b: { …
+     80|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > puts the receiver before the Mermaid label separator
+AssertionError: expected 'sequenceDiagram\nparticipant a\nparti…' to contain 'a->>b: deliver a:1 (t=5)'
+
+- Expected
++ Received
+
+- a->>b: deliver a:1 (t=5)
++ sequenceDiagram
++ participant a
++ participant b
++ a ->> deliver a:1 (t=5): b
+
+ ❯ test/g0-regression.test.ts:84:20
+     82|   it("puts the receiver before the Mermaid label separator", () => {
+     83|     const output = traceToMermaid([{ sequence: 1, time: 5, kind: "deli…
+     84|     expect(output).toContain("a->>b: deliver a:1 (t=5)");
+       |                    ^
+     85|   });
+     86|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  test/g0-regression.test.ts > G0 requirement regressions > rejects a dangling symbolic link without creating its target
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ test/g0-regression.test.ts:94:62
+     92|     try {
+     93|       symlinkSync(target, link);
+     94|       expect(() => { catalog = new ScenarioCatalog(link); }).toThrow(/…
+       |                                                              ^
+     95|       expect(existsSync(target)).toBe(false);
+     96|     } finally {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+

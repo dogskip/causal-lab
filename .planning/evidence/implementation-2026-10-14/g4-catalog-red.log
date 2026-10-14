@@ -1,0 +1,25 @@
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+ ❯ test/verification-catalog.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/verification-catalog.test.ts [ test/verification-catalog.test.ts ]
+Error: Cannot find module '../src/node/catalog.js' imported from /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/test/verification-catalog.test.ts
+ ❯ test/verification-catalog.test.ts:6:1
+      4| import { DatabaseSync } from 'node:sqlite';
+      5| import { expect, it } from 'vitest';
+      6| import { VerificationCatalog, restoreVerificationCatalog } from '../sr…
+       | ^
+      7| import { ScenarioCatalog } from '../src/catalog.js';
+      8| import { createBuiltinContext } from '../src/node/registry.js';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  19:39:10
+   Duration  89ms (transform 12ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+

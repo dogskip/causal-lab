@@ -1,0 +1,63 @@
+import assert from 'node:assert/strict';
+import { createRequire } from 'node:module';
+import { resolve } from 'node:path';
+import { writeFileSync } from 'node:fs';
+
+const require = createRequire(resolve(process.env.CAUSAL_PROOF_DIR, 'package.json'));
+const Y = require('yjs');
+const packageInfo = require('yjs/package.json');
+const observation = { values: { key: 'value' } };
+const command = { action: 'set', key: 'key', value: 'value' };
+const legacy = outcome => ({ command, outgoing: [], observation });
+const explicit = outcome => ({ command, result: { outcome, outgoing: [], evidence: null }, observation });
+assert.deepEqual(legacy('accepted'), legacy('rejected'));
+assert.notDeepEqual(explicit('accepted'), explicit('rejected'));
+
+function recover(mode) {
+  const docs = Array.from({ length: 3 }, (_, index) => {
+    const doc = new Y.Doc({ guid: 'review-3-recovery' });
+    doc.clientID = index + 1;
+    return doc;
+  });
+  const calls = [];
+  const delivered = [];
+  try {
+    docs[0].getMap('values').set('key', 'value');
+    for (let source = 0; source < docs.length; source += 1) {
+      for (let target = 0; target < docs.length; target += 1) {
+        if (source === target || (mode === 'single-pair' && (source !== 0 || target !== 1))) continue;
+        const bytes = Y.encodeStateAsUpdate(docs[source]);
+        calls.push({ source, target, bytes: bytes.length });
+        if (mode === 'configured-drop') continue;
+        Y.applyUpdate(docs[target], bytes);
+        delivered.push({ source, target });
+      }
+    }
+    const states = docs.map(doc => doc.getMap('values').toJSON());
+    const completeOrderedPairs = calls.length === 6 && delivered.length === 6;
+    const converged = states.every(value => JSON.stringify(value) === JSON.stringify(states[0]));
+    const verdict = !completeOrderedPairs ? 'inconclusive' : converged ? 'passed' : 'failed';
+    const completedStates = structuredClone(states);
+    docs[0].getMap('values').set('later', 'changed');
+    const statesAfterLaterCommand = docs.map(doc => doc.getMap('values').toJSON());
+    return { mode, configuredDropRate: 1, calls, delivered, pendingMessages: 0, states: completedStates, completeOrderedPairs, converged, verdict, statesAfterLaterCommand, recoveryMustBeInvalidatedByLaterCommand: true };
+  } finally {
+    for (const doc of docs) doc.destroy();
+  }
+}
+const recoveries = ['configured-drop', 'reliable-all-pairs', 'single-pair'].map(recover);
+assert.equal(recoveries[0].verdict, 'inconclusive');
+assert.equal(recoveries[1].verdict, 'passed');
+assert.equal(recoveries[2].verdict, 'inconclusive');
+assert.equal(recoveries[2].converged, false);
+const output = {
+  scope: 'review-3-contract-ambiguity-counterexamples',
+  productAcceptance: false,
+  node: process.version,
+  implementation: { name: 'yjs', version: packageInfo.version },
+  commandResult: { oldMessagesOnlyCannotDistinguishOutcomes: true, acceptedNoOp: legacy('accepted'), rejectedCommand: legacy('rejected'), explicitAccepted: explicit('accepted'), explicitRejected: explicit('rejected') },
+  recoveries,
+  limitation: 'The examples compare proposed contract interpretations; they do not exercise a product v2 runner.'
+};
+writeFileSync(process.argv[2], JSON.stringify(output, null, 2) + '\n');
+console.log(JSON.stringify({ scope: output.scope, productAcceptance: false, oldMessagesOnlyCannotDistinguishOutcomes: true, recoveryVerdicts: recoveries.map(item => ({ mode: item.mode, calls: item.calls.length, delivered: item.delivered.length, pendingMessages: item.pendingMessages, verdict: item.verdict })) }, null, 2));

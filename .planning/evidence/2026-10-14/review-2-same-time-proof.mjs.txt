@@ -1,0 +1,19 @@
+import { createRequire } from 'node:module';
+import { writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+const require=createRequire(resolve(process.env.CAUSAL_PROOF_DIR,'package.json'));
+const Y=require('yjs');
+function experiment(deliveryBeforeCommand){
+ const a=new Y.Doc({guid:'same-time'}),b=new Y.Doc({guid:'same-time'});a.clientID=1;b.clientID=2;
+ a.getMap('values').set('k','v');const pending=Y.encodeStateAsUpdate(a);
+ if(deliveryBeforeCommand)Y.applyUpdate(b,pending);
+ b.getMap('values').delete('k');
+ if(!deliveryBeforeCommand)Y.applyUpdate(b,pending);
+ const av=Y.encodeStateVector(a),bv=Y.encodeStateVector(b);
+ const ab=Y.encodeStateAsUpdate(a,bv),ba=Y.encodeStateAsUpdate(b,av);
+ Y.applyUpdate(a,ba);Y.applyUpdate(b,ab);
+ const output={deliveryBeforeCommand,replicas:[a.getMap('values').toJSON(),b.getMap('values').toJSON()]};a.destroy();b.destroy();return output;
+}
+const result={node:process.version,implementation:require('yjs/package.json').version,case:'a put at 0, pending delivery at 5, b delete at 5',results:[experiment(true),experiment(false)]};
+writeFileSync(process.argv[2],JSON.stringify(result,null,2)+'\n');
+console.log(JSON.stringify(result,null,2));

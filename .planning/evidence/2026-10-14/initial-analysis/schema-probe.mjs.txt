@@ -1,0 +1,36 @@
+import { createRequire } from "node:module";
+import { readFileSync } from "node:fs";
+import { createApp } from "./workspace/dist/app.js";
+import { ScenarioCatalog } from "./workspace/dist/catalog.js";
+import { parseScenario } from "./workspace/dist/scenario.js";
+const require=createRequire(import.meta.url);
+const Ajv=require("./workspace/node_modules/.pnpm/ajv@6.15.0/node_modules/ajv");
+const openapi=JSON.parse(readFileSync(new URL("./workspace/docs/openapi.json",import.meta.url),"utf8"));
+function deref(value){
+ if(Array.isArray(value))return value.map(deref);
+ if(value&&typeof value==="object"){
+  if(value.$ref){
+   if(value.$ref.startsWith("#/"))return deref(value.$ref.slice(2).split("/").reduce((v,k)=>v[k],openapi));
+   return deref(JSON.parse(readFileSync(new URL(value.$ref,new URL("./workspace/docs/openapi.json",import.meta.url)),"utf8")));
+  }
+  return Object.fromEntries(Object.entries(value).filter(([key])=>key!=="$schema"&&key!=="$id").map(([key,v])=>[key,deref(v)]));
+ }
+ return value;
+}
+const catalog=new ScenarioCatalog(":memory:");
+try{
+ const app=createApp(catalog);
+ const scenario={config:{replicas:["a","b"],seed:1,minLatency:1,maxLatency:1,dropRate:0,duplicateRate:0},steps:[]};
+ const ref=catalog.putScenario(parseScenario(scenario));
+ const response=await app.request(`/v1/scenarios/${ref.id}`);
+ const data=await response.json();
+ const validate=new Ajv({allErrors:true}).compile(deref(openapi.components.schemas.StoredScenario));
+ const valid=validate(data);
+ const results=[{case:"stored-scenario-response",httpStatus:response.status,responseKeys:Object.keys(data),schemaValid:valid,validationErrors:validate.errors}];
+ const unicode={...scenario,steps:[{at:0,action:"put",replica:"a",key:"k",value:"한".repeat(2000)}]};
+ const validateInput=new Ajv({allErrors:true}).compile(deref(openapi.components.schemas.Scenario));
+ const inputValid=validateInput(unicode);
+ const reject=await app.request("/v1/run",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(unicode)});
+ results.push({case:"unicode-value-length",characters:2000,bytes:Buffer.byteLength(unicode.steps[0].value),schemaValid:inputValid,httpStatus:reject.status,response:await reject.json()});
+ console.log(JSON.stringify(results,null,2));
+}finally{catalog.close();}

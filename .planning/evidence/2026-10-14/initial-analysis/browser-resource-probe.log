@@ -1,0 +1,16 @@
+{
+  "errors": [
+    {
+      "message": "Failed to load resource: the server responded with a status of 404 (File not found)",
+      "location": {
+        "url": "http://127.0.0.1:54722/favicon.ico",
+        "line": 0,
+        "column": 0,
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ]
+}
+
+server_responses: [{'path': '/', 'status': <HTTPStatus.OK: 200>}, {'path': '/assets/index-BPpZhCbd.css', 'status': <HTTPStatus.OK: 200>}, {'path': '/index.js', 'status': <HTTPStatus.OK: 200>}, {'path': '/core.js', 'status': <HTTPStatus.OK: 200>}, {'path': '/favicon.ico', 'status': <HTTPStatus.NOT_FOUND: 404>}]

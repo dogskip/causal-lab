@@ -1,0 +1,108 @@
+{
+  "scope": "proposed-schema-fixture",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "sqliteVersion": "3.53.1",
+  "checks": [
+    {
+      "id": "migration-idempotent",
+      "passed": true
+    },
+    {
+      "id": "foreign-keys-enabled",
+      "passed": true
+    },
+    {
+      "id": "valid-case-and-run",
+      "passed": true
+    },
+    {
+      "id": "invalid-hash-shape",
+      "passed": true
+    },
+    {
+      "id": "wrong-definition-bytes",
+      "passed": true
+    },
+    {
+      "id": "invalid-json",
+      "passed": true
+    },
+    {
+      "id": "wrong-format",
+      "passed": true
+    },
+    {
+      "id": "foreign-key-orphan",
+      "passed": true
+    },
+    {
+      "id": "status-mismatch",
+      "passed": true
+    },
+    {
+      "id": "model-mismatch",
+      "passed": true
+    },
+    {
+      "id": "missing-required-json-field",
+      "passed": true
+    },
+    {
+      "id": "wrong-receipt-bytes",
+      "passed": true
+    },
+    {
+      "id": "reject-case-replace",
+      "passed": true
+    },
+    {
+      "id": "reject-case-ignore",
+      "passed": true
+    },
+    {
+      "id": "reject-case-nul",
+      "passed": true
+    },
+    {
+      "id": "reject-run-replace",
+      "passed": true
+    },
+    {
+      "id": "reject-run-ignore",
+      "passed": true
+    },
+    {
+      "id": "reject-run-nul",
+      "passed": true
+    },
+    {
+      "id": "missing-case-format",
+      "passed": true
+    },
+    {
+      "id": "immutable-update",
+      "passed": true
+    },
+    {
+      "id": "immutable-delete",
+      "passed": true
+    },
+    {
+      "id": "transaction-rollback",
+      "passed": true
+    },
+    {
+      "id": "live-backup-consistency",
+      "passed": true
+    },
+    {
+      "id": "reopen-preserves-receipt",
+      "passed": true
+    },
+    {
+      "id": "integrity-and-foreign-keys",
+      "passed": true
+    }
+  ]
+}

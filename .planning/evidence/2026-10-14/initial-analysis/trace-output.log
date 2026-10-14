@@ -1,0 +1,4 @@
+sequenceDiagram
+participant a
+participant b
+a ->> deliver a:1 (t=1): b

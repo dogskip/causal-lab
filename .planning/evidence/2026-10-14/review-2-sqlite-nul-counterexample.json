@@ -1,0 +1,25 @@
+{
+  "node": "v24.18.1",
+  "sqliteVersion": "3.53.1",
+  "test": "hash-shape-embedded-nul",
+  "cases": [
+    {
+      "idBytes": 65,
+      "accepted": true,
+      "error": null,
+      "length": 64
+    },
+    {
+      "idBytes": 66,
+      "accepted": true,
+      "error": null,
+      "length": 64
+    },
+    {
+      "idBytes": 85,
+      "accepted": true,
+      "error": null,
+      "length": 64
+    }
+  ]
+}

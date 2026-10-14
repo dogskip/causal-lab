@@ -1,0 +1,136 @@
+import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
+import { createRequire } from 'node:module';
+import { resolve } from 'node:path';
+import { writeFileSync, readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+
+const require = createRequire(resolve(process.env.CAUSAL_PROOF_DIR, 'package.json'));
+const Y = require('yjs');
+const packageInfo = require('yjs/package.json');
+const ids = ['a', 'b', 'c'];
+const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const own = value => JSON.parse(JSON.stringify(value));
+const adapter = {
+  create(bootstrap) {
+    const doc = new Y.Doc({ guid: 'review-3-revised-contract' });
+    doc.clientID = bootstrap.clientId;
+    return { doc, peers: bootstrap.peers, replySent: false };
+  },
+  command(state, command, context) {
+    if (command.action === 'denied') return { outcome: 'rejected', result: { reason: 'policy' }, outgoing: [] };
+    if (command.action === 'noop') return { outcome: 'accepted', result: { changed: false }, outgoing: [] };
+    if (command.action === 'wrong-accept') return { outcome: 'accepted', result: { changed: true }, outgoing: [] };
+    let update;
+    state.doc.once('update', bytes => { update = Uint8Array.from(bytes); });
+    state.doc.getMap('values').set(command.key, command.value);
+    assert.ok(update);
+    return { outcome: 'accepted', result: { changed: true }, outgoing: state.peers.map(to => ({ to, sessionId: context.sessionId, bytes: update })) };
+  },
+  reconcile(state, peer, sessionId) {
+    return [{ to: peer, sessionId, bytes: Y.encodeStateAsUpdate(state.doc) }];
+  },
+  receive(state, from, sessionId, bytes) {
+    Y.applyUpdate(state.doc, bytes);
+    if (state.replySent) return [];
+    state.replySent = true;
+    return [{ to: from, sessionId, bytes: Y.encodeStateAsUpdate(state.doc) }];
+  },
+  observe(state) { return own(state.doc.getMap('values').toJSON()); },
+  close(state) { state.doc.destroy(); }
+};
+
+function fixture(name) {
+  const states = new Map(ids.map((id, index) => [id, adapter.create({ clientId: index + 1, peers: ids.filter(peer => peer !== id) })]));
+  const events = [];
+  const queued = [];
+  const held = [];
+  const required = [];
+  let sequence = 0;
+  let invalidated = false;
+  let interrupted = false;
+  let connectionError = false;
+  const context = replica => ({ replica, virtualTime: 0, eventSequence: events.length + 1, sessionId: 'recovery-1', randomUint32: () => 0 });
+  const observe = () => Object.fromEntries(ids.map(id => [id, adapter.observe(states.get(id))]));
+  const command = (id, request) => {
+    const result = adapter.command(states.get(id), request, context(id));
+    events.push({ kind: 'command', replica: id, request: own(request), outcome: result.outcome, result: own(result.result), state: observe() });
+    return result;
+  };
+  const enqueue = (from, outgoing, kind) => {
+    const bytes = Uint8Array.from(outgoing.bytes);
+    const item = { generation: ++sequence, from, to: outgoing.to, sessionId: outgoing.sessionId, packet_id: sha(bytes), bytes, kind };
+    queued.push(item);
+    required.push({ generation: item.generation, from, to: item.to, packet_id: item.packet_id, receivedEvent: null });
+  };
+  try {
+    command('a', { action: 'noop' });
+    command('a', { action: 'denied' });
+    const changed = command('a', { action: name === 'wrong-accept' ? 'wrong-accept' : 'set', key: 'key', value: 'value' });
+    assert.equal(changed.outcome, 'accepted');
+    const expectedPairs = ids.flatMap(from => ids.filter(to => to !== from).map(to => ({ from, to })));
+    const completedPairs = [];
+    events.push({ kind: 'heal-start', policy: 'full-state-exchange-v1' });
+    for (const pair of expectedPairs) {
+      if (name === 'missing-pair' && pair.from === 'a' && pair.to === 'b') continue;
+      const outgoing = name === 'empty-reconcile' ? [] : adapter.reconcile(states.get(pair.from), pair.to, 'recovery-1', context(pair.from));
+      if (outgoing.length === 0 || outgoing.some(item => item.to !== pair.to)) { connectionError = true; break; }
+      completedPairs.push(pair);
+      for (const item of outgoing) enqueue(pair.from, item, 'recovery');
+    }
+    if (name === 'new-command') {
+      command('a', { action: 'noop' });
+      invalidated = true;
+    }
+    if (name === 'new-partition') {
+      events.push({ kind: 'partition', from: 'a', to: 'b' });
+      invalidated = true;
+    }
+    let deliveryCount = 0;
+    while (queued.length > 0 && !connectionError) {
+      if (name === 'interrupted' && deliveryCount === 1) { interrupted = true; break; }
+      const item = queued.shift();
+      if (name === 'new-partition' && ((item.from === 'a' && item.to === 'b') || (item.from === 'b' && item.to === 'a'))) {
+        held.push(item);
+        continue;
+      }
+      const outgoing = adapter.receive(states.get(item.to), item.from, item.sessionId, item.bytes, context(item.to));
+      events.push({ kind: 'delivery', generation: item.generation, from: item.from, to: item.to, packet_id: item.packet_id, state: observe() });
+      required.find(record => record.generation === item.generation).receivedEvent = events.length;
+      deliveryCount += 1;
+      for (const reply of outgoing) enqueue(item.to, reply, 'response');
+    }
+    const completedRecovery = !connectionError && !interrupted && !invalidated && completedPairs.length === expectedPairs.length && required.every(item => item.receivedEvent !== null) && queued.length === 0 && held.length === 0;
+    const finalStates = observe();
+    const businessRulePassed = ids.every(id => finalStates[id].key === 'value');
+    const verdict = connectionError ? 'error' : !completedRecovery ? 'inconclusive' : businessRulePassed ? 'passed' : 'failed';
+    return { name, configuredDropRate: 1, generatedTests: 1, attemptedCommands: name === 'new-command' ? 4 : 3, committedCommands: events.filter(event => event.kind === 'command').length, acceptedCommands: events.filter(event => event.kind === 'command' && event.outcome === 'accepted').length, rejectedCommands: events.filter(event => event.kind === 'command' && event.outcome === 'rejected').length, completedRecovery, verdict, businessRulePassed, recoveryEvidence: { policy: 'full-state-exchange-v1', expectedPairs, completedPairs, requiredMessages: required, pending: queued.length, held: held.length, invalidated, interrupted, connectionError }, finalStates, events };
+  } finally {
+    for (const state of states.values()) adapter.close(state);
+  }
+}
+
+if (process.argv[2] === '--fixture') {
+  writeFileSync(process.argv[4], JSON.stringify({ pid: process.pid, fixture: fixture(process.argv[3]) }, null, 2) + '\n');
+} else {
+  const names = ['normal', 'wrong-accept', 'missing-pair', 'new-command', 'new-partition', 'interrupted', 'empty-reconcile'];
+  const expected = ['passed', 'failed', 'inconclusive', 'inconclusive', 'inconclusive', 'inconclusive', 'error'];
+  const outputs = names.map(fixture);
+  outputs.forEach((item, index) => assert.equal(item.verdict, expected[index]));
+  assert.equal(outputs[0].recoveryEvidence.expectedPairs.length, 6);
+  assert.equal(outputs[0].recoveryEvidence.requiredMessages.length, 9);
+  assert.equal(outputs[0].acceptedCommands, 2);
+  assert.equal(outputs[0].rejectedCommands, 1);
+  assert.equal(outputs[2].businessRulePassed, true);
+  for (const output of outputs) {
+    const path = process.argv[2] + '.' + output.name + '.repeat.json';
+    const child = spawnSync(process.execPath, [process.argv[1], '--fixture', output.name, path], { env: process.env, encoding: 'utf8' });
+    assert.equal(child.status, 0, child.stderr);
+    const repeated = JSON.parse(readFileSync(path, 'utf8'));
+    assert.notEqual(repeated.pid, process.pid);
+    assert.deepEqual(repeated.fixture, output);
+  }
+  const result = { scope: 'review-3-revised-contract-design-fixture', productAcceptance: false, node: process.version, implementation: { name: 'yjs', version: packageInfo.version }, sourceSha256: sha(readFileSync(process.argv[1])), separateProcessRepetitionCases: 7, outputs, limitations: ['The fixture coordinates real Yjs API calls through the proposed method boundary; it is not the product v2 runner.', 'The seven child processes repeat fixed cases; recorded-message replay remains demonstrated by the separate original Yjs proof.', 'The fixture does not validate general JSON, JCS, package installation, process deadlines, memory, or web/storage integration.'] };
+  writeFileSync(process.argv[2], JSON.stringify(result, null, 2) + '\n');
+  console.log(JSON.stringify({ scope: result.scope, productAcceptance: false, node: result.node, implementation: result.implementation, separateProcessRepetitionCases: 7, outcomes: outputs.map(item => ({ name: item.name, verdict: item.verdict, completedRecovery: item.completedRecovery, pairs: item.recoveryEvidence.completedPairs.length, requiredMessages: item.recoveryEvidence.requiredMessages.length, pending: item.recoveryEvidence.pending, held: item.recoveryEvidence.held })) }, null, 2));
+}

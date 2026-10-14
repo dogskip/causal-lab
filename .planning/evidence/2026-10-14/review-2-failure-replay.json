@@ -1,0 +1,167 @@
+{
+  "node": "v24.18.1",
+  "implementation": "13.6.27",
+  "test": "failure-packet-replay",
+  "equal": false,
+  "unrecordedLocalValue": "injected",
+  "replayValue": null,
+  "originalStates": [
+    {
+      "key0": "value0",
+      "key1": "value1",
+      "key3": "value3",
+      "key2": "value2",
+      "only-local": "injected"
+    },
+    {
+      "key1": "value1",
+      "key3": "value3"
+    },
+    {
+      "key2": "value2",
+      "key3": "value3",
+      "key1": "value1"
+    },
+    {
+      "key3": "value3",
+      "key2": "value2",
+      "key0": "value0"
+    }
+  ],
+  "replayStates": [
+    {
+      "key0": "value0",
+      "key1": "value1",
+      "key3": "value3",
+      "key2": "value2"
+    },
+    {
+      "key1": "value1",
+      "key3": "value3"
+    },
+    {
+      "key2": "value2",
+      "key3": "value3",
+      "key1": "value1"
+    },
+    {
+      "key3": "value3",
+      "key2": "value2",
+      "key0": "value0"
+    }
+  ],
+  "trace": [
+    {
+      "kind": "local",
+      "source": 0,
+      "target": 0,
+      "command": {
+        "key": "key0",
+        "value": "value0"
+      },
+      "packet": "9f7fd06c2c95f3109eaac7db76eaa157e6da5e6615671e7316202d43138cb03c"
+    },
+    {
+      "kind": "local",
+      "source": 1,
+      "target": 1,
+      "command": {
+        "key": "key1",
+        "value": "value1"
+      },
+      "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+    },
+    {
+      "kind": "local",
+      "source": 2,
+      "target": 2,
+      "command": {
+        "key": "key2",
+        "value": "value2"
+      },
+      "packet": "e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2"
+    },
+    {
+      "kind": "local",
+      "source": 3,
+      "target": 3,
+      "command": {
+        "key": "key3",
+        "value": "value3"
+      },
+      "packet": "d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f"
+    },
+    {
+      "kind": "delivered",
+      "source": 1,
+      "target": 0,
+      "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+    },
+    {
+      "kind": "delivered",
+      "source": 2,
+      "target": 3,
+      "packet": "e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2"
+    },
+    {
+      "kind": "delivered",
+      "source": 3,
+      "target": 1,
+      "packet": "d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f"
+    },
+    {
+      "kind": "delivered",
+      "source": 3,
+      "target": 0,
+      "packet": "d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f"
+    },
+    {
+      "kind": "delivered",
+      "source": 0,
+      "target": 3,
+      "packet": "9f7fd06c2c95f3109eaac7db76eaa157e6da5e6615671e7316202d43138cb03c"
+    },
+    {
+      "kind": "delivered",
+      "source": 3,
+      "target": 2,
+      "packet": "d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f"
+    },
+    {
+      "kind": "delivered",
+      "source": 2,
+      "target": 0,
+      "packet": "e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2"
+    },
+    {
+      "kind": "delivered",
+      "source": 2,
+      "target": 3,
+      "packet": "e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2"
+    },
+    {
+      "kind": "delivered",
+      "source": 1,
+      "target": 0,
+      "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+    },
+    {
+      "kind": "delivered",
+      "source": 1,
+      "target": 2,
+      "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+    },
+    {
+      "kind": "delivered",
+      "source": 0,
+      "target": 3,
+      "packet": "9f7fd06c2c95f3109eaac7db76eaa157e6da5e6615671e7316202d43138cb03c"
+    },
+    {
+      "kind": "delivered",
+      "source": 1,
+      "target": 2,
+      "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+    }
+  ]
+}

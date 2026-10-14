@@ -1,0 +1,74 @@
+{
+  "node": "v24.18.1",
+  "sqliteVersion": "3.53.1",
+  "defaults": {
+    "recursive_triggers": 0
+  },
+  "test": "replace-immutable-run",
+  "before": "passed",
+  "replaceAccepted": true,
+  "after": "failed",
+  "error": null,
+  "typeTests": [
+    {
+      "field": "format_version",
+      "value": null,
+      "accepted": false
+    },
+    {
+      "field": "format_version",
+      "value": [],
+      "accepted": false
+    },
+    {
+      "field": "format_version",
+      "value": {},
+      "accepted": false
+    },
+    {
+      "field": "format_version",
+      "value": true,
+      "accepted": false
+    },
+    {
+      "field": "case_id",
+      "value": null,
+      "accepted": false
+    },
+    {
+      "field": "case_id",
+      "value": [],
+      "accepted": false
+    },
+    {
+      "field": "case_id",
+      "value": {},
+      "accepted": false
+    },
+    {
+      "field": "case_id",
+      "value": true,
+      "accepted": false
+    },
+    {
+      "field": "status",
+      "value": null,
+      "accepted": false
+    },
+    {
+      "field": "status",
+      "value": [],
+      "accepted": false
+    },
+    {
+      "field": "status",
+      "value": {},
+      "accepted": false
+    },
+    {
+      "field": "status",
+      "value": true,
+      "accepted": false
+    }
+  ]
+}

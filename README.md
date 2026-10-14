@@ -1,14 +1,33 @@
+---
+title: "Causal Lab"
+authority_level: entrypoint
+ssot: true
+owner: shared
+status: partial
+last_updated: 2026-10-14
+derived_from: ["docs/verification.md", ".planning/IMPLEMENTATION.md"]
+source_of_truth_for: ["project entrypoint"]
+must_not_be_overridden_by: []
+ai_edit_policy: editable-but-must-not-contradict-sources
+---
+
 # Causal Lab
 
-**Two servers, one network partition, a write on each side — then the link comes back. Which value survives?** With Causal Lab, both do. It replays that situation on a virtual clock so you can watch where messages were held or dropped and see every replica end on the same value.
+Verify actual CRDT implementations, detect incorrect but converged results, and share replayable failure files. Causal Lab 0.2.0 adds a verification SDK, a separate-process CLI, read-only browser evidence viewer, and an optional SQLite store. The existing deterministic OR-Map playground and v1 HTTP server remain available.
 
-Under the hood it is a deterministic simulator of an observed-remove CRDT map: a seeded run uses virtual time only, so the same scenario produces the same trace on every machine. Open the [browser playground](#browser-playground) to see it in a few seconds, or drive it from the [HTTP API](#quickstart) or the REPL.
+Start with [verification usage and current scope](docs/verification.md), [a passing Yjs case](examples/verification/yjs.json), or [an intentional rule failure](examples/verification/failure.json). The approved requirements and remaining acceptance checks are tracked in [.planning/IMPLEMENTATION.md](.planning/IMPLEMENTATION.md). External consumer acceptance and the 10,000-event performance proof remain pending.
 
-Each replica records dotted operations and a version vector. Put and remove operations carry the exact dots they observed; tombstones make late and duplicated delivery harmless. Healing performs a reliable anti-entropy pass and reports whether all replicas converged to the same canonical state.
+```sh
+pnpm install
+pnpm build
+pnpm verify verify examples/verification/yjs.json --out ./verification-results
+```
 
-An optional content-addressed SQLite catalog persists validated scenarios and immutable deterministic run receipts. It is deliberately outside the simulation core: no storage call, clock, or generated identifier can affect convergence behavior.
+Open `verification.html` in the built site to inspect a result file. Use the CLI's `replay` command to execute the same target and compare the entire receipt. Browser inspection does not execute target code.
 
-## Boundary
+The legacy simulator uses dotted operations, observed removals, virtual time and seeded network faults. Its optional v1 catalog is separate from the new verification database.
+
+## Legacy simulator boundary
 
 - at most 12 replicas and 10,000 scheduled events
 - at most 2 MiB per JSON request

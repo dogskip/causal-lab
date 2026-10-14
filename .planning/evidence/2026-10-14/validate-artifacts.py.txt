@@ -1,0 +1,164 @@
+from pathlib import Path
+import hashlib
+import json
+import re
+import subprocess
+
+root = Path.cwd()
+evidence = root / '.planning/evidence/2026-10-14'
+checks = []
+
+def sha(data):
+    return hashlib.sha256(data).hexdigest()
+
+def check(name, passed, detail):
+    checks.append({'id': name, 'passed': bool(passed), 'detail': detail})
+
+def read_json(path):
+    return json.loads(path.read_text())
+
+baseline = read_json(evidence / 'baseline-manifest.json')
+allowed = {'.planning/PROJECT.md', '.planning/DESIGN.md', 'docs/glossary.md'}
+changed = []
+missing = []
+for name, entry in baseline.items():
+    path = root / name
+    if not path.is_file():
+        missing.append(name)
+    elif sha(path.read_bytes()) != entry['sha256']:
+        changed.append(name)
+check('original-files-preserved', not missing and set(changed) <= allowed,
+      {'baselineFiles': len(baseline), 'changed': changed, 'missing': missing})
+
+inputs = [
+    '.planning/PROJECT.md', '.planning/DESIGN.md', '.planning/RESEARCH.md',
+    '.planning/REVIEW.md', '.planning/contracts/adapter-v2.md',
+    '.planning/contracts/verification-catalog.sql', 'docs/glossary.md',
+    '.planning/evidence/2026-10-14/proofs.md',
+    '.planning/evidence/2026-10-14/yjs-results.json',
+    '.planning/evidence/2026-10-14/sqlite-results.json',
+    '.planning/evidence/2026-10-14/adapter-typecheck.json',
+]
+for number in range(1, 4):
+    report = read_json(evidence / f'review-{number}.json')
+    reviewed = {entry['path']: entry['sha256'] for entry in report.get('finalReviewedInputs', [])}
+    mismatch = [name for name in inputs if reviewed.get(name) != sha((root / name).read_bytes())]
+    check(f'review-{number}-final-inputs', not mismatch,
+          {'mismatches': mismatch, 'inputCount': len(reviewed)})
+    check(f'review-{number}-design-only-acceptance',
+          report.get('designAcceptance') is True and report.get('productAcceptance') is False
+          and report.get('openImportantFindings') == 0,
+          {'designAcceptance': report.get('designAcceptance'),
+           'productAcceptance': report.get('productAcceptance'),
+           'openImportantFindings': report.get('openImportantFindings')})
+
+parsed = []
+for path in sorted(evidence.glob('*.json')):
+    if path.name in {'manifest.json', 'validation.json'}:
+        continue
+    read_json(path)
+    parsed.append(path.name)
+check('evidence-json-parses', True, {'files': parsed})
+
+required = {'title', 'authority_level', 'ssot', 'owner', 'status', 'last_updated',
+            'derived_from', 'source_of_truth_for', 'must_not_be_overridden_by', 'ai_edit_policy'}
+words = []
+for line in Path('/Users/bjchoi/.agents/skills/humanize-korean/words.tsv').read_text().splitlines():
+    if line and not line.startswith('#'):
+        word = line.split('\t')[0]
+        if len(word) > 1:
+            words.append(word)
+for name in [name for name in inputs if name.endswith('.md')]:
+    text = (root / name).read_text()
+    header = text.split('---', 2)[1] if text.startswith('---\n') else ''
+    fields = set(re.findall(r'^([A-Za-z_]+):', header, re.M))
+    check('document-authority:' + name, required <= fields,
+          {'missing': sorted(required - fields)})
+    candidates = [{'line': number, 'word': word}
+                  for number, line in enumerate(text.splitlines(), 1)
+                  for word in words if word in line]
+    check('korean-word-candidates:' + name, not candidates, candidates)
+    broken = []
+    for target in re.findall(r'\[[^\]]*\]\(([^)]+)\)', text):
+        if '://' in target or target.startswith('#'):
+            continue
+        path = target.split('#', 1)[0]
+        if not ((root / name).parent / path).exists():
+            broken.append(target)
+    check('document-local-links:' + name, not broken, broken)
+
+source = (evidence / 'proofs.md').read_text()
+javascript = re.findall(r'```javascript\n(.*?)\n```', source, re.S)
+yjs = read_json(evidence / 'yjs-results.json')
+sqlite = read_json(evidence / 'sqlite-results.json')
+check('yjs-tested-source', sha((javascript[0] + '\n').encode()) == yjs['sample']['codeSha256'],
+      {'sha256': yjs['sample']['codeSha256']})
+check('yjs-scoped-results', yjs['productAcceptance'] is False
+      and all(item['passed'] for item in yjs['checks'])
+      and yjs['implementation']['version'] == '13.6.27',
+      {'checks': len(yjs['checks']), 'implementation': yjs['implementation']})
+check('sqlite-scoped-results', sqlite['productAcceptance'] is False
+      and all(item['passed'] for item in sqlite['checks']),
+      {'checks': len(sqlite['checks']), 'sqliteVersion': sqlite['sqliteVersion']})
+lock = (evidence / 'yjs-pnpm-lock.yaml').read_text()
+check('yjs-pinned-dependency', 'specifier: 13.6.27' in lock and 'yjs@13.6.27:' in lock,
+      {'sha256': sha(lock.encode())})
+
+for name, verdict in [('normal', 'passed'), ('failure', 'failed'), ('incomplete', 'inconclusive')]:
+    original = read_json(evidence / f'yjs-results.json.{name}.json')
+    replay = read_json(evidence / f'yjs-results.json.{name}.replay.json')
+    item = next(item for item in yjs['checks'] if item['id'] == f'separate-process-{name}-replay')
+    check('separate-process-replay:' + name,
+          original['verdict'] == replay['verdict'] == verdict
+          and item['parentPid'] != replay['pid'] == item['replayPid']
+          and original['states'] == replay['states'],
+          {'expectedVerdict': verdict, 'replayPid': replay['pid']})
+    for packet in original['packets']:
+        import base64
+        data = base64.b64decode(packet['bytes'], validate=True)
+        check('packet:' + name + ':' + packet['id'],
+              len(data) == packet['byteLength'] and sha(data) == packet['id'],
+              {'byteLength': packet['byteLength']})
+
+adapter_path = root / '.planning/contracts/adapter-v2.md'
+body = re.findall(r'```typescript\n(.*?)\n```', adapter_path.read_text(), re.S)[0]
+types = read_json(evidence / 'adapter-typecheck.json')
+check('adapter-tested-source', types['exitCode'] == 0
+      and types['sourceSha256'] == sha((body + '\n').encode())
+      and types['fencedBodySha256'] == sha(body.encode())
+      and types['documentSha256'] == sha(adapter_path.read_bytes()),
+      {'sourceSha256': types['sourceSha256'], 'exitCode': types['exitCode']})
+
+contract = read_json(evidence / 'review-3-revised-contract-results.json')
+raw_sources = {sha(path.read_bytes()) for path in evidence.glob('*.txt')}
+verdicts = sorted(item['verdict'] for item in contract['outputs'])
+check('revised-contract-scoped-results', contract['productAcceptance'] is False
+      and contract['sourceSha256'] in raw_sources
+      and contract['separateProcessRepetitionCases'] == 7
+      and verdicts == sorted(['passed', 'failed', 'inconclusive', 'inconclusive',
+                             'inconclusive', 'inconclusive', 'error']),
+      {'cases': [(item['name'], item['verdict']) for item in contract['outputs']],
+       'sourceSha256': contract['sourceSha256']})
+
+prior = read_json(evidence / 'baseline-results.json')
+check('unchanged-product-regression', prior['sourceEqualityVerified'] is True
+      and prior['productAcceptance'] is False and all(item['exitCode'] == 0 for item in prior['results']),
+      {'node': prior['node'], 'pnpm': prior['pnpm'], 'tasks': prior['results']})
+unexpected_sources = [path.name for path in evidence.iterdir() if path.suffix in {'.js', '.mjs', '.ts'}]
+check('evidence-does-not-enter-eslint-project', not unexpected_sources, unexpected_sources)
+
+command = ['/Users/bjchoi/.nvm/versions/node/v24.18.1/bin/node',
+           str(root / 'node_modules/eslint/bin/eslint.js'), '.']
+result = subprocess.run(command, cwd=root, text=True, capture_output=True)
+(evidence / 'final-lint.log').write_text(result.stdout + result.stderr)
+check('final-lint', result.returncode == 0, {'command': command, 'exitCode': result.returncode})
+result = subprocess.run(['git', 'diff', '--check'], cwd=root, text=True, capture_output=True)
+check('git-diff-whitespace', result.returncode == 0,
+      {'command': ['git', 'diff', '--check'], 'exitCode': result.returncode, 'output': result.stdout + result.stderr})
+
+output = {'scope': 'design-artifact-consistency', 'productAcceptance': False,
+          'allPassed': all(item['passed'] for item in checks), 'checks': checks}
+(evidence / 'validation.json').write_text(json.dumps(output, ensure_ascii=False, indent=2) + '\n')
+print(json.dumps({'scope': output['scope'], 'checks': len(checks), 'allPassed': output['allPassed'],
+                  'failed': [item for item in checks if not item['passed']]}, ensure_ascii=False))
+raise SystemExit(0 if output['allPassed'] else 1)

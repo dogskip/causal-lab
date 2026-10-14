@@ -1,0 +1,43 @@
+{
+  "node": "v24.18.1",
+  "pnpm": "10.28.2",
+  "sourceEqualityVerified": true,
+  "productAcceptance": false,
+  "results": [
+    {
+      "task": "lint",
+      "exitCode": 0,
+      "scope": "unchanged-product-regression",
+      "location": "original-read-only",
+      "log": ".planning/evidence/2026-10-14/baseline-lint.log"
+    },
+    {
+      "task": "typecheck",
+      "exitCode": 0,
+      "scope": "unchanged-product-regression",
+      "location": "original-read-only",
+      "log": ".planning/evidence/2026-10-14/baseline-typecheck.log"
+    },
+    {
+      "task": "build",
+      "exitCode": 0,
+      "scope": "unchanged-product-regression",
+      "location": "isolated-identical-source",
+      "log": ".planning/evidence/2026-10-14/baseline-build.log"
+    },
+    {
+      "task": "test",
+      "exitCode": 0,
+      "scope": "unchanged-product-regression",
+      "location": "isolated-identical-source",
+      "log": ".planning/evidence/2026-10-14/baseline-test.log"
+    },
+    {
+      "task": "test:deep",
+      "exitCode": 0,
+      "scope": "unchanged-product-regression",
+      "location": "isolated-identical-source",
+      "log": ".planning/evidence/2026-10-14/baseline-test-deep.log"
+    }
+  ]
+}

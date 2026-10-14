@@ -1,0 +1,75 @@
+{
+  "scope": "review-3-revised-contract-design-fixture",
+  "productAcceptance": false,
+  "node": "v24.18.1",
+  "implementation": {
+    "name": "yjs",
+    "version": "13.6.27"
+  },
+  "separateProcessRepetitionCases": 7,
+  "outcomes": [
+    {
+      "name": "normal",
+      "verdict": "passed",
+      "completedRecovery": true,
+      "pairs": 6,
+      "requiredMessages": 9,
+      "pending": 0,
+      "held": 0
+    },
+    {
+      "name": "wrong-accept",
+      "verdict": "failed",
+      "completedRecovery": true,
+      "pairs": 6,
+      "requiredMessages": 9,
+      "pending": 0,
+      "held": 0
+    },
+    {
+      "name": "missing-pair",
+      "verdict": "inconclusive",
+      "completedRecovery": false,
+      "pairs": 5,
+      "requiredMessages": 8,
+      "pending": 0,
+      "held": 0
+    },
+    {
+      "name": "new-command",
+      "verdict": "inconclusive",
+      "completedRecovery": false,
+      "pairs": 6,
+      "requiredMessages": 9,
+      "pending": 0,
+      "held": 0
+    },
+    {
+      "name": "new-partition",
+      "verdict": "inconclusive",
+      "completedRecovery": false,
+      "pairs": 6,
+      "requiredMessages": 9,
+      "pending": 0,
+      "held": 2
+    },
+    {
+      "name": "interrupted",
+      "verdict": "inconclusive",
+      "completedRecovery": false,
+      "pairs": 6,
+      "requiredMessages": 7,
+      "pending": 6,
+      "held": 0
+    },
+    {
+      "name": "empty-reconcile",
+      "verdict": "error",
+      "completedRecovery": false,
+      "pairs": 0,
+      "requiredMessages": 0,
+      "pending": 0,
+      "held": 0
+    }
+  ]
+}

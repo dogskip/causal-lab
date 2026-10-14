@@ -1,0 +1,71 @@
+{
+  "browser": "155.0.8059.41",
+  "headless": true,
+  "consoleErrors": [
+    "Failed to load resource: the server responded with a status of 404 (File not found)"
+  ],
+  "pageErrors": [],
+  "requests": [
+    "http://127.0.0.1:53754/",
+    "http://127.0.0.1:53754/index.js",
+    "http://127.0.0.1:53754/assets/index-BPpZhCbd.css",
+    "http://127.0.0.1:53754/core.js"
+  ],
+  "stories": [
+    {
+      "name": "분할 → 복구",
+      "verdict": "결과\n수렴\n화면\nt=6 · 복제본 값 동일\n사건\n1건 처리\n시나리오\nexamples/partition-heal.json\n영수증\n2044be377c32e0a38d94abc0c04584b2761ddcc1e5fe0745c0aad23f6148aa89",
+      "states": "key\ta\tb\nmode\tsafe\tsafe",
+      "error": ""
+    },
+    {
+      "name": "동시 쓰기 보존",
+      "verdict": "결과\n수렴\n화면\nt=7 · 복제본 값 동일\n사건\n6건 처리\n시나리오\nexamples/concurrent-put.json\n영수증\ndbd966c84e25ed8a715684cbf1cf26b91842168ede53a29f2102fe3b3d6a71d7",
+      "states": "key\ta\tb\ncolor\tblue red\tblue red",
+      "error": ""
+    },
+    {
+      "name": "관찰된 제거",
+      "verdict": "결과\n수렴\n화면\nt=8 · 복제본 값 동일\n사건\n9건 처리\n시나리오\nexamples/observed-remove.json\n영수증\n477f4c01370299d8c52ddbcb591fb8b12c6bcec9f6a2cff3ce4b3eda40aa5826",
+      "states": "key\ta\tb\nk\tv2\tv2",
+      "error": ""
+    },
+    {
+      "name": "중복 도착",
+      "verdict": "결과\n수렴\n화면\nt=15 · 복제본 값 동일\n사건\n20건 처리\n시나리오\nexamples/duplicates.json\n영수증\n45abbb1806e2b59d6f089f7fab5d7a50f6e12b837af7abe424b917311bd037c1",
+      "states": "key\ta\tb\tc\nk\t2\t2\t2",
+      "error": ""
+    },
+    {
+      "name": "5복제본 전파",
+      "verdict": "결과\n수렴\n화면\nt=12 · 복제본 값 동일\n사건\n19건 처리\n시나리오\nexamples/fan-out.json\n영수증\n5e0691bec36e925d09f64ea8837be9e6957518eaa87e154595df877adf2e5c18",
+      "states": "key\tn1\tn2\tn3\tn4\tn5\nconfig\tv2\tv2\tv2\tv2\tv2",
+      "error": ""
+    },
+    {
+      "name": "3복제본 + 패킷 손실",
+      "verdict": "결과\n수렴\n화면\nt=13 · 복제본 값 동일\n사건\n13건 처리\n시나리오\nexamples/three-replica-drop.json\n영수증\n5f9453fbd9a5021b9d093580c49c3d65148800f1e253599fc9f930a8b581e666",
+      "states": "key\talpha\tbeta\tgamma\nleader\tbeta\tbeta\tbeta",
+      "error": ""
+    }
+  ],
+  "cases": [
+    {
+      "case": "state-after-delivery",
+      "clock": "t=5",
+      "counters": "쓰기·제거 1 · 전송 대기 1 · 도착 1 · 보류 0 · 손실 0",
+      "states": "key\ta\tb\nk ≠\tv\t—",
+      "verdict": "결과\n수렴\n화면\nt=5 · 키 1개 불일치\n사건\n3건 처리\n시나리오\n직접 편집\n영수증\n526e9095d60d510ef4dd80ad88abc9406dc87402d38ec0f5a76e0783600a2010"
+    },
+    {
+      "case": "state-before-first-operation",
+      "clock": "t=0",
+      "states": "key\ta\tb\nk ≠\tfuture\t—"
+    },
+    {
+      "case": "reserved-replica-name",
+      "states": "key\tb\nk\tright",
+      "verdict": "결과\n수렴\n화면\nt=0 · 복제본 값 동일\n사건\n0건 처리\n시나리오\n직접 편집\n영수증\nac38897307b052c37b705523c71046d92a2a6e7939c1b11302fc8e3b72c287df"
+    }
+  ]
+}

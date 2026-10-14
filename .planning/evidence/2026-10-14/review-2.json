@@ -1,0 +1,2369 @@
+{
+  "review": "2심 독립 반례 검토",
+  "date": "2026-10-14",
+  "scope": "설계 문서·제안 타입·제안 SQLite·임시 Yjs 실험. 제품 코드 구현·제품 합격 검사가 아니다.",
+  "decision": "accepted-for-implementation",
+  "productAcceptance": false,
+  "reviewed_files": [
+    {
+      "path": ".planning/PROJECT.md",
+      "sha256": "2916f1cfbf0132137f79dde0ef76992a8cea61ce3566b8fe863661b50ad6b73b"
+    },
+    {
+      "path": ".planning/DESIGN.md",
+      "sha256": "790bda373794e8fed97e78fa08bdfc6b5ce72f2d2b57a42964dde2aebcc7e17f"
+    },
+    {
+      "path": ".planning/RESEARCH.md",
+      "sha256": "66dad80ffa5838e205d49ebe15601b485f85ded236dc0ecdc2efbb505920fcf2"
+    },
+    {
+      "path": ".planning/contracts/adapter-v2.md",
+      "sha256": "460369171c946df3400584a6dd2652a24aabc409c9afab6c874b3a221cfe0962"
+    },
+    {
+      "path": ".planning/contracts/verification-catalog.sql",
+      "sha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/proofs.md",
+      "sha256": "3f0723420063a0745290ee96985839a3d8a6cb8da55b256572a6a11df8b82e6b"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/yjs-results.json",
+      "sha256": "742c0407560df412c485fc540b9ccbcfcb1a0b6c429667fe89d4f82055b308b6"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/sqlite-results.json",
+      "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+      "sha256": "3d6296f4790741bd886cf76c0ca3ac8b291390dbd2238d485c38d5bcc69a8e3e"
+    },
+    {
+      "path": ".planning/REVIEW.md",
+      "sha256": "97a63a1ae15496048147638ceb52551f496c54b2e24c00c5a40a2adf9f88e11b"
+    },
+    {
+      "path": "docs/glossary.md",
+      "sha256": "1f30cd843310b791ea0e12705391e7ea9a2d5b5802910f2b3bb053134dfab7ab"
+    }
+  ],
+  "findings": [
+    {
+      "id": "R2-F01",
+      "severity": "blocking",
+      "status": "resolved-in-design",
+      "title": "실패 영수증의 지역 변경 누락과 복구 미완료의 실패 분류",
+      "evidence": [
+        ".planning/evidence/2026-10-14/proofs.md:84-102",
+        ".planning/evidence/2026-10-14/proofs.md:117-140",
+        ".planning/RESEARCH.md:143-145",
+        ".planning/DESIGN.md:121-141"
+      ],
+      "failure_condition": "execute(19,true)는 복구를 생략하고 only-local 변경을 trace/packets에 기록하지 않는다. 기록만 재생하면 원본 관찰값과 다르다. 미완료 전달도 failed로 분류한다. 현재 실패 재생 검사는 정상 표본만 재생한다.",
+      "minimal_change": "기록한 허용 명령 또는 명시한 의도적 오류 연결로 실패를 유발한다. 복구와 필수 전달을 완료한 failed와 미완료 inconclusive를 분리한다. 실패 표본을 새 과정에서 재생하고 각 관찰값·검사 ID·사건·실패 이유를 대조한다.",
+      "verification_condition": "기록되지 않은 상태 변경이 없고, 실제 실패 파일의 새 과정 재생이 같은 실패를 반환한다. 복구 미완료는 failed의 증거로 사용하지 않는다.",
+      "reproduction": {
+        "path": ".planning/evidence/2026-10-14/review-2-failure-replay.json",
+        "sha256": "a4461add8196f0d47da55242d9a115199c880915a02f728712a27c769dd64118",
+        "result": {
+          "node": "v24.18.1",
+          "implementation": "13.6.27",
+          "test": "failure-packet-replay",
+          "equal": false,
+          "unrecordedLocalValue": "injected",
+          "replayValue": null,
+          "originalStates": [
+            {
+              "key0": "value0",
+              "key1": "value1",
+              "key3": "value3",
+              "key2": "value2",
+              "only-local": "injected"
+            },
+            {
+              "key1": "value1",
+              "key3": "value3"
+            },
+            {
+              "key2": "value2",
+              "key3": "value3",
+              "key1": "value1"
+            },
+            {
+              "key3": "value3",
+              "key2": "value2",
+              "key0": "value0"
+            }
+          ],
+          "replayStates": [
+            {
+              "key0": "value0",
+              "key1": "value1",
+              "key3": "value3",
+              "key2": "value2"
+            },
+            {
+              "key1": "value1",
+              "key3": "value3"
+            },
+            {
+              "key2": "value2",
+              "key3": "value3",
+              "key1": "value1"
+            },
+            {
+              "key3": "value3",
+              "key2": "value2",
+              "key0": "value0"
+            }
+          ],
+          "trace": [
+            {
+              "kind": "local",
+              "source": 0,
+              "target": 0,
+              "command": {
+                "key": "key0",
+                "value": "value0"
+              },
+              "packet": "9f7fd06c2c95f3109eaac7db76eaa157e6da5e6615671e7316202d43138cb03c"
+            },
+            {
+              "kind": "local",
+              "source": 1,
+              "target": 1,
+              "command": {
+                "key": "key1",
+                "value": "value1"
+              },
+              "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+            },
+            {
+              "kind": "local",
+              "source": 2,
+              "target": 2,
+              "command": {
+                "key": "key2",
+                "value": "value2"
+              },
+              "packet": "e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2"
+            },
+            {
+              "kind": "local",
+              "source": 3,
+              "target": 3,
+              "command": {
+                "key": "key3",
+                "value": "value3"
+              },
+              "packet": "d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f"
+            },
+            {
+              "kind": "delivered",
+              "source": 1,
+              "target": 0,
+              "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+            },
+            {
+              "kind": "delivered",
+              "source": 2,
+              "target": 3,
+              "packet": "e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2"
+            },
+            {
+              "kind": "delivered",
+              "source": 3,
+              "target": 1,
+              "packet": "d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f"
+            },
+            {
+              "kind": "delivered",
+              "source": 3,
+              "target": 0,
+              "packet": "d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f"
+            },
+            {
+              "kind": "delivered",
+              "source": 0,
+              "target": 3,
+              "packet": "9f7fd06c2c95f3109eaac7db76eaa157e6da5e6615671e7316202d43138cb03c"
+            },
+            {
+              "kind": "delivered",
+              "source": 3,
+              "target": 2,
+              "packet": "d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f"
+            },
+            {
+              "kind": "delivered",
+              "source": 2,
+              "target": 0,
+              "packet": "e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2"
+            },
+            {
+              "kind": "delivered",
+              "source": 2,
+              "target": 3,
+              "packet": "e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2"
+            },
+            {
+              "kind": "delivered",
+              "source": 1,
+              "target": 0,
+              "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+            },
+            {
+              "kind": "delivered",
+              "source": 1,
+              "target": 2,
+              "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+            },
+            {
+              "kind": "delivered",
+              "source": 0,
+              "target": 3,
+              "packet": "9f7fd06c2c95f3109eaac7db76eaa157e6da5e6615671e7316202d43138cb03c"
+            },
+            {
+              "kind": "delivered",
+              "source": 1,
+              "target": 2,
+              "packet": "1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48"
+            }
+          ]
+        }
+      },
+      "status_before_revision": "open",
+      "resolution": {
+        "description": "실패의 모든 명령을 기록하고 실제 복구가 완료된 잘못된 값의 failed와 미완료 inconclusive를 분리했다. 정상/실패/미완료를 각각 새 Node 과정에서 모든 사건 관찰값과 대조했다.",
+        "evidence": [
+          ".planning/evidence/2026-10-14/proofs.md:64-194",
+          ".planning/evidence/2026-10-14/review-2-final-yjs-results.json"
+        ],
+        "verification": "independent proposed Yjs experiment exitCode 0",
+        "verified_against_final_inputs": true
+      },
+      "counterexample_source": {
+        "path": ".planning/evidence/2026-10-14/review-2-failure-replay.mjs.txt",
+        "sha256": "66e1fb3b3b70759eaad73de501a2d1361a844d1c4c4a9ddf66750e74be50bf1b"
+      }
+    },
+    {
+      "id": "R2-F02",
+      "severity": "important",
+      "status": "resolved-in-design",
+      "title": "실제 연결 계약과 복구 실험의 상태 접근 경계 불일치",
+      "evidence": [
+        ".planning/contracts/adapter-v2.md:39-43",
+        ".planning/evidence/2026-10-14/proofs.md:84-94",
+        ".planning/evidence/2026-10-14/proofs.md:128-130",
+        "https://docs.yjs.dev/api/document-updates"
+      ],
+      "failure_condition": "복구 실험은 docs[target]에서 직접 상태 벡터를 조회하지만 reconcile은 자기 State와 peer 이름만 받는다. 재생도 복구 메시지를 새로 생성해 비교하지 않는다. 따라서 실제 제안 함수로 연결 가능한 복구를 아직 입증하지 않았다.",
+      "minimal_change": "첫 연결은 자기 문서의 encodeStateAsUpdate 전체 상태만 전송한다. 차이 교환이 필요하면 상대의 stateVector를 메시지로 전달하고 receive 응답에서 차이를 생성한다. 복구 재생도 생성 바이트를 기록과 대조한다.",
+      "verification_condition": "reconcile 구현이 상대의 비공개 State에 접근하지 않고 전체 명령·수신·복구를 제안 계약 또는 동등한 함수로 실행한다. 복구 출력의 바이트 불일치를 비통과로 검출한다.",
+      "status_before_revision": "open",
+      "resolution": {
+        "description": "복구가 자기 문서의 encodeStateAsUpdate 전체 상태만 전송한다. 재생이 복구 출력을 새로 생성해 기록한 해시와 대조한다.",
+        "evidence": [
+          ".planning/evidence/2026-10-14/proofs.md:113-160",
+          ".planning/evidence/2026-10-14/review-2-final-yjs-results.json"
+        ],
+        "verification": "independent proposed Yjs experiment exitCode 0",
+        "verified_against_final_inputs": true
+      }
+    },
+    {
+      "id": "R2-F03",
+      "severity": "important",
+      "status": "resolved-in-design",
+      "title": "INSERT OR REPLACE가 불변 영수증을 교체한다",
+      "evidence": [
+        ".planning/contracts/verification-catalog.sql:42-57",
+        ".planning/DESIGN.md:168-170",
+        "https://www.sqlite.org/lang_conflict.html"
+      ],
+      "failure_condition": "기본 recursive_triggers=0에서 같은 run_id의 INSERT OR REPLACE는 삭제 trigger를 통과하여 passed 영수증을 failed 영수증으로 교체한다. 해시 진실성 검증은 저장기의 추가 책임이지만 SQL 불변 제약도 주장한 경계에서 실패한다.",
+      "minimal_change": "동일 ID의 BEFORE INSERT를 거부한다. 저장기는 존재한 ID의 전체 정규 바이트가 같은지 비교한 뒤 일반 INSERT만 사용한다. REPLACE를 저장 경로에서 금지한다.",
+      "verification_condition": "기본 설정 및 재열기 후 같은 ID의 REPLACE/UPSERT/UPDATE/DELETE가 모두 원래 행을 보존한다. 같은 바이트 재저장은 저장기에서 성공하고 다른 바이트는 거부한다.",
+      "reproduction": {
+        "path": ".planning/evidence/2026-10-14/review-2-sqlite-counterexamples.json",
+        "sha256": "6433e4e48936d6fcd208669810273e7fbe89bc845a84fe42271e3d91351f953c",
+        "result": {
+          "node": "v24.18.1",
+          "sqliteVersion": "3.53.1",
+          "defaults": {
+            "recursive_triggers": 0
+          },
+          "test": "replace-immutable-run",
+          "before": "passed",
+          "replaceAccepted": true,
+          "after": "failed",
+          "error": null,
+          "typeTests": [
+            {
+              "field": "format_version",
+              "value": null,
+              "accepted": false
+            },
+            {
+              "field": "format_version",
+              "value": [],
+              "accepted": false
+            },
+            {
+              "field": "format_version",
+              "value": {},
+              "accepted": false
+            },
+            {
+              "field": "format_version",
+              "value": true,
+              "accepted": false
+            },
+            {
+              "field": "case_id",
+              "value": null,
+              "accepted": false
+            },
+            {
+              "field": "case_id",
+              "value": [],
+              "accepted": false
+            },
+            {
+              "field": "case_id",
+              "value": {},
+              "accepted": false
+            },
+            {
+              "field": "case_id",
+              "value": true,
+              "accepted": false
+            },
+            {
+              "field": "status",
+              "value": null,
+              "accepted": false
+            },
+            {
+              "field": "status",
+              "value": [],
+              "accepted": false
+            },
+            {
+              "field": "status",
+              "value": {},
+              "accepted": false
+            },
+            {
+              "field": "status",
+              "value": true,
+              "accepted": false
+            }
+          ]
+        }
+      },
+      "status_before_revision": "open",
+      "resolution": {
+        "description": "기존 ID의 BEFORE INSERT를 거부하고 저장기는 기존 기록의 전체 정규 바이트를 비교한다고 명시했다.",
+        "evidence": [
+          ".planning/contracts/verification-catalog.sql:42-69",
+          ".planning/DESIGN.md:176",
+          ".planning/evidence/2026-10-14/review-2-final-sql-negative-results.json"
+        ],
+        "verification": "37 independent SQL negative inputs rejected; original passed row retained",
+        "verified_against_final_inputs": true
+      },
+      "counterexample_source": {
+        "path": ".planning/evidence/2026-10-14/review-2-sql-boundary-proof.mjs.txt",
+        "sha256": "6d43bff7a007b07cad7aa8c4ff1c7c12397aa27b631d8d5c6db84229dadad99f"
+      }
+    },
+    {
+      "id": "R2-F04",
+      "severity": "important",
+      "status": "resolved-in-design",
+      "title": "NUL 이후 추가 바이트가 해시 모양 검사를 통과한다",
+      "evidence": [
+        ".planning/contracts/verification-catalog.sql:7",
+        ".planning/contracts/verification-catalog.sql:17",
+        ".planning/DESIGN.md:156-170",
+        "https://www.sqlite.org/lang_corefunc.html#length",
+        "https://www.sqlite.org/nulinstr.html"
+      ],
+      "failure_condition": "64개 소문자 16진 문자 뒤에 NUL 또는 NUL+g를 추가한 65/66/85 bytes ID가 허용된다. length(TEXT)와 GLOB은 첫 NUL 이후를 검사하지 않는다.",
+      "minimal_change": "case_id/run_id의 실제 BLOB 길이 64와 NUL 금지 및 기존 소문자 16진 조건을 함께 검사한다.",
+      "verification_condition": "정상 64 bytes ID는 허용하고 NUL·후행 바이트·대문자·비16진·비ASCII·NULL을 cases/runs에서 모두 거부한다.",
+      "reproduction": {
+        "path": ".planning/evidence/2026-10-14/review-2-sqlite-nul-counterexample.json",
+        "sha256": "1e3e84179deaaa5e64fdf8446817d92b3c760909b4e37a592d4d76189b22347e",
+        "result": {
+          "node": "v24.18.1",
+          "sqliteVersion": "3.53.1",
+          "test": "hash-shape-embedded-nul",
+          "cases": [
+            {
+              "idBytes": 65,
+              "accepted": true,
+              "error": null,
+              "length": 64
+            },
+            {
+              "idBytes": 66,
+              "accepted": true,
+              "error": null,
+              "length": 64
+            },
+            {
+              "idBytes": 85,
+              "accepted": true,
+              "error": null,
+              "length": 64
+            }
+          ]
+        }
+      },
+      "status_before_revision": "open",
+      "resolution": {
+        "description": "case_id/run_id의 BLOB 길이 64, NUL 금지와 소문자 16진 검사를 함께 적용했다.",
+        "evidence": [
+          ".planning/contracts/verification-catalog.sql:7-17",
+          ".planning/evidence/2026-10-14/review-2-final-sql-boundary.json"
+        ],
+        "verification": "NUL, suffix, wrong length, uppercase, nonhex, unicode and NULL rejected for both identifiers",
+        "verified_against_final_inputs": true
+      },
+      "counterexample_source": {
+        "path": ".planning/evidence/2026-10-14/review-2-sql-boundary-proof.mjs.txt",
+        "sha256": "6d43bff7a007b07cad7aa8c4ff1c7c12397aa27b631d8d5c6db84229dadad99f"
+      }
+    },
+    {
+      "id": "R2-F05",
+      "severity": "important",
+      "status": "resolved-in-design",
+      "title": "동일 시각의 예정 전달과 단계 사이의 전체 순서 공백",
+      "evidence": [
+        ".planning/DESIGN.md:89",
+        ".planning/DESIGN.md:139-145",
+        "src/scenario.ts:102-118"
+      ],
+      "failure_condition": "단계 배열 순서만 정의했고 같은 시각의 예정 메시지·단계·지연 0 응답·분할/복구의 우선순위는 명시하지 않았다. Yjs의 put@0, 전달@5, delete@5는 전달 우선과 명령 우선에서 다른 정답을 갖는다.",
+      "minimal_change": "기존 의미대로 다음 단계 시각 이하의 예정 메시지를 먼저 처리하고 같은 시각의 예정 사건은 증가 번호를 따른다고 명시한다. 지연 0 응답과 같은 시각의 분할/복구도 동일 규약으로 정한다.",
+      "verification_condition": "독립 반복과 새 과정 재생에서 전달·삭제가 동일 순서를 갖고 최초 사건 이전 관찰값과 같은 시각 사건별 관찰값이 일치한다.",
+      "reproduction": {
+        "path": ".planning/evidence/2026-10-14/review-2-same-time-counterexample.json",
+        "sha256": "80dfd4c66b75e3b60247e482c01b2e774fe3683f4f0c1a11eb220a903552bd9d",
+        "result": {
+          "node": "v24.18.1",
+          "implementation": "13.6.27",
+          "case": "a put at 0, pending delivery at 5, b delete at 5",
+          "results": [
+            {
+              "deliveryBeforeCommand": true,
+              "replicas": [
+                {},
+                {}
+              ]
+            },
+            {
+              "deliveryBeforeCommand": false,
+              "replicas": [
+                {
+                  "k": "v"
+                },
+                {
+                  "k": "v"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "status_before_revision": "open",
+      "resolution": {
+        "description": "기존 단계 시각 이하의 전달 우선 규칙, 생성 번호, 지연 0 응답, 같은 시각 단계 순서와 무한 응답의 사건 예산을 명시했다.",
+        "evidence": [
+          ".planning/DESIGN.md:95",
+          ".planning/evidence/2026-10-14/review-2-same-time-counterexample.json"
+        ],
+        "verification": "design order defined; actual v2 engine regression remains G2/G4",
+        "verified_against_final_inputs": true
+      },
+      "counterexample_source": {
+        "path": ".planning/evidence/2026-10-14/review-2-same-time-proof.mjs.txt",
+        "sha256": "73eb55b2891e708fbc6eab2563da64e29badb104990d3d023af39672f0fe1405"
+      }
+    },
+    {
+      "id": "R2-F06",
+      "severity": "important",
+      "status": "resolved-in-design",
+      "title": "관찰값과 검사 결과의 가변 참조가 과거 사건을 변경할 수 있다",
+      "evidence": [
+        ".planning/contracts/adapter-v2.md:20-24",
+        ".planning/contracts/adapter-v2.md:43-58",
+        ".planning/DESIGN.md:85-95",
+        ".planning/DESIGN.md:134-145"
+      ],
+      "failure_condition": "observe()는 대상 State의 내부 객체를 반환할 수 있다. Json의 readonly는 TypeScript 사용자의 변경만 제한하며 대상의 이후 command 변경을 차단하지 않는다. 메시지는 즉시 복사하지만 관찰값·검사 증거의 소유권 확정은 명시하지 않았다.",
+      "minimal_change": "연결 명세·관찰값·검사 결과도 반환 즉시 실행 시 자료 검증 후 깊은 복사 또는 정규 바이트로 확정한다. 검사 함수에 전달할 이전 자료도 가변 대상과 참조를 공유하지 않는다.",
+      "verification_condition": "의도적으로 같은 객체를 계속 반환하고 다음 명령에서 수정하는 연결을 사용해도 이전 사건 관찰값·검사 증거·ID 입력 바이트가 유지된다.",
+      "reproduction": {
+        "path": ".planning/evidence/2026-10-14/review-2-observation-reference-counterexample.json",
+        "sha256": "819c3b3d6e81a453de531fa8256146ed51c999765a87444bbb5b4e08a559fba0",
+        "result": {
+          "scope": "permitted-return-reference-counterexample",
+          "productAcceptance": false,
+          "node": "v24.18.1",
+          "before": "{\"value\":0}",
+          "after": "{\"value\":1}",
+          "previousObservationChanged": true,
+          "separatedBefore": "{\"value\":0}",
+          "separatedAfter": "{\"value\":0}",
+          "separatedPreviousObservationChanged": false
+        }
+      },
+      "status_before_revision": "open",
+      "resolution": {
+        "description": "자료 검증 후 관찰값·시험 정의·명세·검사 결과를 분리 복사하고 복사본만 동결한다고 명시했다.",
+        "evidence": [
+          ".planning/DESIGN.md:89",
+          ".planning/evidence/2026-10-14/proofs.md:42-51",
+          ".planning/evidence/2026-10-14/proofs.md:220-224"
+        ],
+        "verification": "independent observation copy-and-freeze proposed experiment passed; actual generic runner remains G2/G4",
+        "verified_against_final_inputs": true
+      },
+      "counterexample_source": {
+        "path": ".planning/evidence/2026-10-14/review-2-observation-reference-proof.mjs.txt",
+        "sha256": "41b1eccfd29f9d90a648b4510523b86f572399c695c36cfebd3d954491b2b9c3"
+      }
+    }
+  ],
+  "resolved_during_review": [
+    {
+      "id": "R2-R01",
+      "title": "초기 빈 상태와 비어 있지 않은 bootstrap 모순",
+      "evidence": [
+        ".planning/DESIGN.md:145",
+        ".planning/PROJECT.md:45"
+      ],
+      "resolution": "초기 observe 결과를 기록하는 문구로 수정됨. 제품 동작 검사는 G4에서 필요하다."
+    },
+    {
+      "id": "R2-R02",
+      "title": "최초 타입 검사 환경의 모듈 검색 실패",
+      "evidence": [
+        ".planning/evidence/2026-10-14/adapter-typecheck.json"
+      ],
+      "resolution": "moduleResolution Bundler로 TypeScript 5.9.3 exitCode 0을 확인함. 실제 설치 패키지 검사는 G1에서 필요하다."
+    }
+  ],
+  "positive_checks": [
+    {
+      "check": "필수 JSON 필드의 NULL/배열/객체/boolean 입력",
+      "result": "format_version/case_id/status의 12개 입력을 모두 거부했다.",
+      "evidence": ".planning/evidence/2026-10-14/review-2-sqlite-counterexamples.json"
+    },
+    {
+      "check": "범위와 제품 합격 분리",
+      "result": "G0-G5 미완료, 수요/성능 우위 미입증을 문서가 명시한다.",
+      "evidence": [
+        ".planning/DESIGN.md:193",
+        ".planning/DESIGN.md:34",
+        ".planning/PROJECT.md:70"
+      ]
+    }
+  ],
+  "unfinished_product_gates": [
+    "G0-G5 전체",
+    "범용 연결 API의 실행 시 자료 검증",
+    "JCS 표준 벡터·중복 키·유니코드 거부",
+    "실제 CLI 기한 종료와 마지막 확정 사건",
+    "설치 패키지 import·Node 없는 번들",
+    "실제 사건별 웹·선택 저장 연결",
+    "다른 저장소 두 곳에서 설치부터 공유·재생"
+  ],
+  "mutation_scope": "이 검토는 review-2.json과 review-2- 접두어의 검토용 증거 파일만 작성했다. 제안 SQL 실행은 임시 또는 메모리 DB이며, 제품 코드·실제 DB·다른 문서·외부 앱은 변경하지 않았다.",
+  "reviewed_files_before_revision": [
+    {
+      "path": ".planning/PROJECT.md",
+      "sha256": "57510eb3d672116a67305056954ff21291cb148cc55cf68b681b059d6d8fc59b"
+    },
+    {
+      "path": ".planning/DESIGN.md",
+      "sha256": "60cc9aa25f5ffe6b23729f043cf713f1bc026a1e013170b39607fec5189ee877"
+    },
+    {
+      "path": ".planning/RESEARCH.md",
+      "sha256": "f5e4efe3be51c71b4c0e98d361a29c5e33453db4c97d462ff968874525b5b2b5"
+    },
+    {
+      "path": ".planning/contracts/adapter-v2.md",
+      "sha256": "bb81c653c71efe8cabc5a6062963efe0a280fe994631b1294b68e6586f385e40"
+    },
+    {
+      "path": ".planning/contracts/verification-catalog.sql",
+      "sha256": "f449dc95e51c9406cdf8d1adea9b4a347703cb26a839d277b0d84fcc168739c2"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/proofs.md",
+      "sha256": "ec5de452402d1785921fb39f5323393b7a36a910af14dcec573da29442bdb2dd"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/yjs-results.json",
+      "sha256": "733f475e71e317b2e3c45e5fbde84d6b94f4129c4b17820ce412055dd3536974"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/sqlite-results.json",
+      "sha256": "72f121926abb4687632e8296b32f65c660f5e039343389837f32751067d56bb1"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+      "sha256": "3666136d4e54b5dc2178e016f9799e7325b76a7401fbf5236d3b8e15502b98f3"
+    }
+  ],
+  "reverification": [
+    {
+      "file": ".planning/evidence/2026-10-14/review-2-revised-yjs-results.json",
+      "sha256": "974525492adf4c60ac5ca3db6c1688d16fd4abd0cc1c53bacd4c44bd30cb0e3d",
+      "result": {
+        "scope": "design-feasibility-prototype",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "implementation": {
+          "name": "yjs",
+          "version": "13.6.27"
+        },
+        "reconciliation": "self document encodeStateAsUpdate full-state exchange",
+        "checks": [
+          {
+            "id": "external-repeatability",
+            "passed": true,
+            "seeds": 256,
+            "executions": 512
+          },
+          {
+            "id": "converged-wrong-state-detected",
+            "passed": true,
+            "recoveryCompleted": true
+          },
+          {
+            "id": "incomplete-recovery-not-passed",
+            "passed": true
+          },
+          {
+            "id": "separate-process-normal-replay",
+            "passed": true,
+            "parentPid": 42694,
+            "replayPid": 42750
+          },
+          {
+            "id": "separate-process-failure-replay",
+            "passed": true,
+            "parentPid": 42694,
+            "replayPid": 42751
+          },
+          {
+            "id": "separate-process-incomplete-replay",
+            "passed": true,
+            "parentPid": 42694,
+            "replayPid": 42767
+          },
+          {
+            "id": "observation-copy-and-freeze",
+            "passed": true
+          }
+        ],
+        "sampleReceipt": "e95a6258af6ce538baa7eab58c507082cc0399c20939959a0d0b7d1260324f56"
+      }
+    },
+    {
+      "file": ".planning/evidence/2026-10-14/review-2-revised-sql-independent.json",
+      "sha256": "150a29f3141900da53d3fee7056b19a24e1d110d0fe24365774917893defee29",
+      "result": {
+        "scope": "revised-proposed-sql-independent-review",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "recursiveTriggers": 0,
+        "checks": 37,
+        "allRejected": true,
+        "originalStatus": "passed",
+        "caseCount": 1,
+        "runCount": 1,
+        "details": [
+          {
+            "id": "run-INSERT OR REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "case-INSERT OR REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "run-REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "case-REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "run-INSERT OR IGNORE INTO",
+            "rejected": true
+          },
+          {
+            "id": "case-INSERT OR IGNORE INTO",
+            "rejected": true
+          },
+          {
+            "id": "upsert-run",
+            "rejected": true
+          },
+          {
+            "id": "run-delete",
+            "rejected": true
+          },
+          {
+            "id": "case-delete",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000g\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000g\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"한한한한한한한한한한한한한한한한한한한한한한\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"한한한한한한한한한한한한한한한한한한한한한한\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-null",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-null",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-null",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-[]",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-{}",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-true",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-null",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-[]",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-{}",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-true",
+            "rejected": true
+          },
+          {
+            "id": "json-status-null",
+            "rejected": true
+          },
+          {
+            "id": "json-status-[]",
+            "rejected": true
+          },
+          {
+            "id": "json-status-{}",
+            "rejected": true
+          },
+          {
+            "id": "json-status-true",
+            "rejected": true
+          }
+        ]
+      }
+    },
+    {
+      "file": ".planning/evidence/2026-10-14/review-2-revised-sqlite-results.json",
+      "sha256": "72f121926abb4687632e8296b32f65c660f5e039343389837f32751067d56bb1",
+      "result": {
+        "scope": "proposed-schema-fixture",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "checks": [
+          {
+            "id": "migration-idempotent",
+            "passed": true
+          },
+          {
+            "id": "foreign-keys-enabled",
+            "passed": true
+          },
+          {
+            "id": "valid-case-and-run",
+            "passed": true
+          },
+          {
+            "id": "invalid-hash-shape",
+            "passed": true
+          },
+          {
+            "id": "wrong-definition-bytes",
+            "passed": true
+          },
+          {
+            "id": "invalid-json",
+            "passed": true
+          },
+          {
+            "id": "wrong-format",
+            "passed": true
+          },
+          {
+            "id": "foreign-key-orphan",
+            "passed": true
+          },
+          {
+            "id": "status-mismatch",
+            "passed": true
+          },
+          {
+            "id": "model-mismatch",
+            "passed": true
+          },
+          {
+            "id": "missing-required-json-field",
+            "passed": true
+          },
+          {
+            "id": "wrong-receipt-bytes",
+            "passed": true
+          },
+          {
+            "id": "immutable-update",
+            "passed": true
+          },
+          {
+            "id": "immutable-delete",
+            "passed": true
+          },
+          {
+            "id": "transaction-rollback",
+            "passed": true
+          },
+          {
+            "id": "live-backup-consistency",
+            "passed": true
+          },
+          {
+            "id": "reopen-preserves-receipt",
+            "passed": true
+          },
+          {
+            "id": "integrity-and-foreign-keys",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "check": "exact revised adapter type draft",
+      "command": "Node 24.18.1 / TypeScript strict --noEmit --target ES2024 --module ESNext --moduleResolution Bundler",
+      "exitCode": 0,
+      "output": "",
+      "source": ".planning/contracts/adapter-v2.md"
+    }
+  ],
+  "designAcceptance": true,
+  "open_important_findings": 0,
+  "note": "중요 지적 6건의 원래 반례와 수정 전 해시, 수정 후 독립 실행 증거를 함께 유지한다. 두 경미한 정합성 지적도 종료했다. G0-G5의 제품 합격은 별도다.",
+  "resolved_clarifications": [
+    {
+      "severity": "minor",
+      "evidence": [
+        ".planning/DESIGN.md:22",
+        ".planning/evidence/2026-10-14/proofs.md:175-202"
+      ],
+      "condition": "충돌 의미를 입증한다는 문구에 해당하는 실험이 새 구간에서 제거되었다. 실험을 유지하거나 증거 범위를 좁혀야 한다.",
+      "status": "resolved-in-design",
+      "resolution": "동일 키에 독립적인 두 변경을 교환한 실제 Yjs 실험을 복원했다. 독립 재실행의 model-specific-conflict-rule은 두 복제본의 같은 단일 값과 concurrentValuesRetained=1을 확인했다.",
+      "final_evidence": [
+        ".planning/evidence/2026-10-14/proofs.md:196-207",
+        ".planning/evidence/2026-10-14/review-2-final-yjs-results.json"
+      ]
+    },
+    {
+      "severity": "minor",
+      "evidence": [
+        ".planning/DESIGN.md:62",
+        ".planning/DESIGN.md:99"
+      ],
+      "condition": "자식 종료 전 완전한 영수증을 수신하지 못한 기한 초과는 inconclusive 실행 정보만 반환하고 마지막 사건 또는 run_id를 추정하지 않는다고 명시한다. 이 선택이면 별도 사건 전달 규약은 필요하지 않다.",
+      "status": "resolved-in-design",
+      "resolution": "완전한 영수증 미수신의 강제 종료에는 inconclusive 실행 정보만 반환하고 run_id·마지막 사건·상태를 추정하지 않으며 verification_runs에 저장하지 않는다고 정의했다. 별도 과정 간 사건 보관 기능을 추가하지 않는다.",
+      "final_evidence": [
+        ".planning/DESIGN.md:64",
+        ".planning/PROJECT.md:39",
+        ".planning/DESIGN.md:180",
+        ".planning/REVIEW.md:44"
+      ],
+      "scope_limit": "실제 CLI 기한 종료는 G3에서 검증한다. 이번 확인은 명세의 일관성이다."
+    }
+  ],
+  "pending_clarifications": [],
+  "final_reverification": [
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json",
+      "sha256": "762bca47e3c61435239d11dbb837c943cbcd9cd466a3f2bfdd20af8ceebb9474",
+      "result": {
+        "scope": "design-feasibility-prototype",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "implementation": {
+          "name": "yjs",
+          "version": "13.6.27"
+        },
+        "reconciliation": "self document encodeStateAsUpdate full-state exchange",
+        "checks": [
+          {
+            "id": "external-repeatability",
+            "passed": true,
+            "seeds": 256,
+            "executions": 512
+          },
+          {
+            "id": "converged-wrong-state-detected",
+            "passed": true,
+            "recoveryCompleted": true
+          },
+          {
+            "id": "incomplete-recovery-not-passed",
+            "passed": true
+          },
+          {
+            "id": "separate-process-normal-replay",
+            "passed": true,
+            "parentPid": 44767,
+            "replayPid": 44810
+          },
+          {
+            "id": "separate-process-failure-replay",
+            "passed": true,
+            "parentPid": 44767,
+            "replayPid": 44811
+          },
+          {
+            "id": "separate-process-incomplete-replay",
+            "passed": true,
+            "parentPid": 44767,
+            "replayPid": 44812
+          },
+          {
+            "id": "model-specific-conflict-rule",
+            "passed": true,
+            "concurrentValuesRetained": 1
+          },
+          {
+            "id": "reject-code-mismatch",
+            "passed": true
+          },
+          {
+            "id": "reject-version-mismatch",
+            "passed": true
+          },
+          {
+            "id": "reject-packet-mismatch",
+            "passed": true
+          },
+          {
+            "id": "reject-bootstrap-mismatch",
+            "passed": true
+          },
+          {
+            "id": "observation-copy-and-freeze",
+            "passed": true
+          }
+        ],
+        "sampleReceipt": "14eea88aec4a3ae4bec6c04ec39e161e356a24f513770e1ebd17a57b86eb6ace"
+      }
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sqlite-results.json",
+      "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe",
+      "result": {
+        "scope": "proposed-schema-fixture",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "checks": [
+          {
+            "id": "migration-idempotent",
+            "passed": true
+          },
+          {
+            "id": "foreign-keys-enabled",
+            "passed": true
+          },
+          {
+            "id": "valid-case-and-run",
+            "passed": true
+          },
+          {
+            "id": "invalid-hash-shape",
+            "passed": true
+          },
+          {
+            "id": "wrong-definition-bytes",
+            "passed": true
+          },
+          {
+            "id": "invalid-json",
+            "passed": true
+          },
+          {
+            "id": "wrong-format",
+            "passed": true
+          },
+          {
+            "id": "foreign-key-orphan",
+            "passed": true
+          },
+          {
+            "id": "status-mismatch",
+            "passed": true
+          },
+          {
+            "id": "model-mismatch",
+            "passed": true
+          },
+          {
+            "id": "missing-required-json-field",
+            "passed": true
+          },
+          {
+            "id": "wrong-receipt-bytes",
+            "passed": true
+          },
+          {
+            "id": "reject-case-replace",
+            "passed": true
+          },
+          {
+            "id": "reject-case-ignore",
+            "passed": true
+          },
+          {
+            "id": "reject-case-nul",
+            "passed": true
+          },
+          {
+            "id": "reject-run-replace",
+            "passed": true
+          },
+          {
+            "id": "reject-run-ignore",
+            "passed": true
+          },
+          {
+            "id": "reject-run-nul",
+            "passed": true
+          },
+          {
+            "id": "missing-case-format",
+            "passed": true
+          },
+          {
+            "id": "immutable-update",
+            "passed": true
+          },
+          {
+            "id": "immutable-delete",
+            "passed": true
+          },
+          {
+            "id": "transaction-rollback",
+            "passed": true
+          },
+          {
+            "id": "live-backup-consistency",
+            "passed": true
+          },
+          {
+            "id": "reopen-preserves-receipt",
+            "passed": true
+          },
+          {
+            "id": "integrity-and-foreign-keys",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sql-negative-results.json",
+      "sha256": "150a29f3141900da53d3fee7056b19a24e1d110d0fe24365774917893defee29",
+      "result": {
+        "scope": "revised-proposed-sql-independent-review",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "recursiveTriggers": 0,
+        "checks": 37,
+        "allRejected": true,
+        "originalStatus": "passed",
+        "caseCount": 1,
+        "runCount": 1,
+        "details": [
+          {
+            "id": "run-INSERT OR REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "case-INSERT OR REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "run-REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "case-REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "run-INSERT OR IGNORE INTO",
+            "rejected": true
+          },
+          {
+            "id": "case-INSERT OR IGNORE INTO",
+            "rejected": true
+          },
+          {
+            "id": "upsert-run",
+            "rejected": true
+          },
+          {
+            "id": "run-delete",
+            "rejected": true
+          },
+          {
+            "id": "case-delete",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000g\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000g\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"한한한한한한한한한한한한한한한한한한한한한한\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"한한한한한한한한한한한한한한한한한한한한한한\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-null",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-null",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-null",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-[]",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-{}",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-true",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-null",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-[]",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-{}",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-true",
+            "rejected": true
+          },
+          {
+            "id": "json-status-null",
+            "rejected": true
+          },
+          {
+            "id": "json-status-[]",
+            "rejected": true
+          },
+          {
+            "id": "json-status-{}",
+            "rejected": true
+          },
+          {
+            "id": "json-status-true",
+            "rejected": true
+          }
+        ]
+      }
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-original-sql-boundary.json",
+      "sha256": "cd617e4125a27d4c4b27c7a56f387d52a299ee1ab0ea7aa6bd0b90082d8be1ff",
+      "result": {
+        "scope": "original-and-revised-proposed-sql-boundary",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "schemaSha256": "f449dc95e51c9406cdf8d1adea9b4a347703cb26a839d277b0d84fcc168739c2",
+        "mode": "before",
+        "replaceAccepted": true,
+        "originalStatus": "passed",
+        "currentStatus": "failed",
+        "invalidHashes": [
+          {
+            "idBytes": 65,
+            "accepted": true
+          },
+          {
+            "idBytes": 66,
+            "accepted": true
+          },
+          {
+            "idBytes": 85,
+            "accepted": true
+          }
+        ]
+      }
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sql-boundary.json",
+      "sha256": "77ba5b5afbbf44334094fb5a9f1416ee1c7c0c0b005a86a6d00826c14d41383c",
+      "result": {
+        "scope": "original-and-revised-proposed-sql-boundary",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "schemaSha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b",
+        "mode": "after",
+        "replaceAccepted": false,
+        "originalStatus": "passed",
+        "currentStatus": "passed",
+        "invalidHashes": [
+          {
+            "idBytes": 65,
+            "accepted": false
+          },
+          {
+            "idBytes": 66,
+            "accepted": false
+          },
+          {
+            "idBytes": 85,
+            "accepted": false
+          }
+        ]
+      }
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-typecheck.json",
+      "sha256": "463da7c569265747c38f5cbd64833a9721877d849ae3bbd2dbc516396669f028",
+      "result": {
+        "scope": "final-r3-revised-type-contract-independent-review",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "typescript": "5.9.3",
+        "exitCode": 0,
+        "output": "",
+        "source": ".planning/evidence/2026-10-14/review-2-final-adapter-v2.d.ts.txt",
+        "sourceSha256": "d328900af4125d6e4b95e7c9f1d8d766c9914096134b050da8f05e2b344198f7",
+        "fencedBodySha256": "802805f874f154f9d974db8f12567d316ae2dee59bd807a80246d3b2b341043c",
+        "documentSha256": "03da5f70b3a98626eeeea5088fcba793f47fa9c49ef678fb96f6851a9e809077",
+        "parentSourceHashMatches": true,
+        "execution": "보관한 .d.ts.txt와 같은 바이트를 임시 .d.ts로 복사하여 strict 검사했다."
+      }
+    }
+  ],
+  "open_blocking_findings": 0,
+  "open_minor_findings": 0,
+  "final_review_note": "승인 상태와 최종 REVIEW 문구를 포함한 현재 11개 입력으로 2심 설계 수락을 유지한다. 정리 전 해시·원래 반례·수정 후 독립 실행 결과를 보존했다. 제품 G0-G5는 미완료이며 제품 합격·업계 우위·보편적 정확성은 수락 범위 밖이다.",
+  "accepted_scope": [
+    "실제 대상의 자기 상태 API를 사용하는 최소 연결 방향",
+    "사건 순서·독립 검사 문맥·불변 관찰값·실패/미완료 분류의 명세",
+    "영수증 없는 강제 종료의 추정 금지·저장 제외",
+    "선택 SQLite의 제안 SQL 제약과 재열기·보관 실험",
+    "기존 경로·ID·DB를 분리 보존하는 설계와 후속 합격 조건"
+  ],
+  "evidence_preservation": {
+    "original_schema": ".planning/evidence/2026-10-14/review-2-original-schema.sql",
+    "original_schema_sha256": "f449dc95e51c9406cdf8d1adea9b4a347703cb26a839d277b0d84fcc168739c2",
+    "original_schema_matches_first_review_sha256": true,
+    "dependency_lock": ".planning/evidence/2026-10-14/yjs-pnpm-lock.yaml",
+    "dependency_lock_sha256": "9af13108c9bed295bce6d11a57509693fa2dc4c724a61b520a90c70cdb79cf39",
+    "runtime_dependency": "Yjs 13.6.27; CAUSAL_PROOF_DIR is a separately installed exact-version package directory",
+    "sources_note": "최초 STDIN 실험의 SQL·시각·참조 반례는 동일한 연산을 실행하는 보관용 .mjs로 정리하고 재실행했다. 최초 실행 결과는 변경하지 않고 보관했다. 최초 SQL 원문은 검토 당시 SHA-256과 정확히 일치한다."
+  },
+  "evidence_files": [
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-failure-replay.json",
+      "bytes": 3809,
+      "sha256": "a4461add8196f0d47da55242d9a115199c880915a02f728712a27c769dd64118"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-failure-replay.mjs.txt",
+      "bytes": 4459,
+      "sha256": "66e1fb3b3b70759eaad73de501a2d1361a844d1c4c4a9ddf66750e74be50bf1b"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-adapter-v2.d.ts.txt",
+      "bytes": 2181,
+      "sha256": "d328900af4125d6e4b95e7c9f1d8d766c9914096134b050da8f05e2b344198f7"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sql-boundary.json",
+      "bytes": 532,
+      "sha256": "77ba5b5afbbf44334094fb5a9f1416ee1c7c0c0b005a86a6d00826c14d41383c"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sql-negative-results.json",
+      "bytes": 3741,
+      "sha256": "150a29f3141900da53d3fee7056b19a24e1d110d0fe24365774917893defee29"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sqlite-proof.mjs.txt",
+      "bytes": 5965,
+      "sha256": "3e2766b2d645e1eaddfd863bd19b882f55b0abe93eda58fd85f633cc27b0e470"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sqlite-results.json",
+      "bytes": 1850,
+      "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-typecheck.json",
+      "bytes": 667,
+      "sha256": "463da7c569265747c38f5cbd64833a9721877d849ae3bbd2dbc516396669f028"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-proof.mjs.txt",
+      "bytes": 10305,
+      "sha256": "74443296063bea28323b3fa05ea0e475461932546161c89262f74bbcae4ff3dc"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json",
+      "bytes": 13217,
+      "sha256": "762bca47e3c61435239d11dbb837c943cbcd9cd466a3f2bfdd20af8ceebb9474"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.failure.json",
+      "bytes": 7522,
+      "sha256": "4a00c5e02b1a0c839268926ea3bdeba9d9a125dd871cfc5a89b5ede3a8594546"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.failure.replay.json",
+      "bytes": 574,
+      "sha256": "66e0a23f34316c615900212898e086b1083aba811b63b520afbb1d7b06310b19"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.incomplete.json",
+      "bytes": 4472,
+      "sha256": "1c1ddc0aceadf7584bb3ea0844759a9b6084a8ab36a39bbb1ae2271205ef3cff"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.incomplete.replay.json",
+      "bytes": 461,
+      "sha256": "0530868c47306ab2e7069bf5625aa42af505e1a8ba290e564a8e92f7904144e0"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.normal.json",
+      "bytes": 7354,
+      "sha256": "68315efcb400262c3a76badda5392c08966d2d6d6b0f008e44dec36a1fe37536"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.normal.replay.json",
+      "bytes": 549,
+      "sha256": "f5851719bbdddd03f85b96ea9ef725928fec3d80a9172b8b7ba5e647491f89ef"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.tampered-bootstrap.json",
+      "bytes": 7356,
+      "sha256": "6e3ba3b68bb7b8b6972ddf0721084628d774c7cd2d93fd3f95c91da0a8944c23"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.tampered-code.json",
+      "bytes": 7354,
+      "sha256": "0b140d5b48d10b6635c96736fe9d7015a430611f1ee44b2e1af8fa0cd2190b35"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.tampered-packet.json",
+      "bytes": 7326,
+      "sha256": "283836b1a48fc4c4fe560e297926331cd3f178a2bb6a32e1a06b4bb2e0671e36"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json.tampered-version.json",
+      "bytes": 7356,
+      "sha256": "d0c36eba1b4a8c9efc1044ab0c877c9655ac2111c1a7c9651df395f073cb438c"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-observation-reference-counterexample.json",
+      "bytes": 329,
+      "sha256": "819c3b3d6e81a453de531fa8256146ed51c999765a87444bbb5b4e08a559fba0"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-observation-reference-proof.mjs.txt",
+      "bytes": 967,
+      "sha256": "41b1eccfd29f9d90a648b4510523b86f572399c695c36cfebd3d954491b2b9c3"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-original-schema.sql",
+      "bytes": 2831,
+      "sha256": "f449dc95e51c9406cdf8d1adea9b4a347703cb26a839d277b0d84fcc168739c2"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-original-sql-boundary.json",
+      "bytes": 529,
+      "sha256": "cd617e4125a27d4c4b27c7a56f387d52a299ee1ab0ea7aa6bd0b90082d8be1ff"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-pre-r3-adapter-v2.d.ts.txt",
+      "bytes": 1982,
+      "sha256": "9f4086dddd57a008af38354186eb4151e79e2e1d3f5f875646466e2349921d74"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-revised-adapter-v2.d.ts.txt",
+      "bytes": 1982,
+      "sha256": "9f4086dddd57a008af38354186eb4151e79e2e1d3f5f875646466e2349921d74"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-revised-sql-independent.json",
+      "bytes": 3741,
+      "sha256": "150a29f3141900da53d3fee7056b19a24e1d110d0fe24365774917893defee29"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-revised-sqlite-proof.mjs.txt",
+      "bytes": 5122,
+      "sha256": "44ab0c1b2710996d081cbebbf6f1c119f2a8847e024721d63a3de34415d10e5f"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-revised-sqlite-results.json",
+      "bytes": 1380,
+      "sha256": "72f121926abb4687632e8296b32f65c660f5e039343389837f32751067d56bb1"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-revised-yjs-proof.mjs.txt",
+      "bytes": 8752,
+      "sha256": "5da737d185e64cc6c6bc23ab43d5971817dd9225fc1b4f90ecb2338bd3f03ca8"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-revised-yjs-results.json",
+      "bytes": 12812,
+      "sha256": "974525492adf4c60ac5ca3db6c1688d16fd4abd0cc1c53bacd4c44bd30cb0e3d"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-same-time-counterexample.json",
+      "bytes": 396,
+      "sha256": "80dfd4c66b75e3b60247e482c01b2e774fe3683f4f0c1a11eb220a903552bd9d"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-same-time-proof.mjs.txt",
+      "bytes": 1201,
+      "sha256": "73eb55b2891e708fbc6eab2563da64e29badb104990d3d023af39672f0fe1405"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-sql-boundary-proof.mjs.txt",
+      "bytes": 2263,
+      "sha256": "6d43bff7a007b07cad7aa8c4ff1c7c12397aa27b631d8d5c6db84229dadad99f"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-sql-negative-proof.mjs.txt",
+      "bytes": 3350,
+      "sha256": "593742295a3c942c55325c7474a9ceb230350912538746e45384912a31407e96"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-sqlite-counterexamples.json",
+      "bytes": 1266,
+      "sha256": "6433e4e48936d6fcd208669810273e7fbe89bc845a84fe42271e3d91351f953c"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-sqlite-nul-counterexample.json",
+      "bytes": 402,
+      "sha256": "1e3e84179deaaa5e64fdf8446817d92b3c760909b4e37a592d4d76189b22347e"
+    }
+  ],
+  "source_file_preservation": {
+    "renamed_files": 11,
+    "bytes_preserved": true,
+    "execution": "보관한 .mjs.txt와 .d.ts.txt를 임시 디렉터리의 원래 확장자로 복사하여 실행한다. 제품 검사 대상에 증거 파일을 추가하지 않는다."
+  },
+  "revision_review_pending": {
+    "reason": "3심의 명령 수락 상태·heal 완료 절차 보강 후 동일한 최종 계약을 다시 대조한다.",
+    "prior_round2_design_acceptance": true,
+    "scope": "새 중요 지적의 수정본과 기존 2심 지적의 보존 여부를 확인한다.",
+    "resolved": true,
+    "resolution": "수정된 CommandResult·복구 정책과 관련 정본의 최종 대조 및 독립 타입 검사를 완료했다."
+  },
+  "decision_before_final_contract_revision": "accepted-for-implementation",
+  "reviewed_files_before_final_contract_revision": [
+    {
+      "path": ".planning/PROJECT.md",
+      "sha256": "fa06241247487ff61788625051aa8f43b6b6fe8e5dd8610c76123bd67b42c1b6"
+    },
+    {
+      "path": ".planning/DESIGN.md",
+      "sha256": "52e415da6f6cb7a36471497e08b0aadd8f61b74c7c83428a44071d46f344ad62"
+    },
+    {
+      "path": ".planning/RESEARCH.md",
+      "sha256": "072b9a236547b02c7785912a0cbd2c343c4d05fa7e91752b05ac8de16103f98a"
+    },
+    {
+      "path": ".planning/contracts/adapter-v2.md",
+      "sha256": "c1f8387895f665ab394a5a497d52e0f31c4c38f36bfde3b4ebf1ebb90b0a4b7e"
+    },
+    {
+      "path": ".planning/contracts/verification-catalog.sql",
+      "sha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/proofs.md",
+      "sha256": "7d0205ded0787eeba594d1de4f3998a0c32a659fcca3468b5ed820a46988c76c"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/yjs-results.json",
+      "sha256": "742c0407560df412c485fc540b9ccbcfcb1a0b6c429667fe89d4f82055b308b6"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/sqlite-results.json",
+      "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+      "sha256": "94057bad9c98ea9334c3e55dd27988c89c74f196fd386a908cc9f15a27a4c900"
+    },
+    {
+      "path": ".planning/REVIEW.md",
+      "sha256": "f67edd37b8152ba659d059ca4c8100847a0084410794c2e5dcfbadc2bf44ae3c"
+    },
+    {
+      "path": "docs/glossary.md",
+      "sha256": "99902ec081a73005aeb3c4739729e3f59907b08bc758b7a53a342464a2ed4ddb"
+    }
+  ],
+  "final_reverification_before_final_contract_revision": [
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-yjs-results.json",
+      "sha256": "762bca47e3c61435239d11dbb837c943cbcd9cd466a3f2bfdd20af8ceebb9474",
+      "result": {
+        "scope": "design-feasibility-prototype",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "implementation": {
+          "name": "yjs",
+          "version": "13.6.27"
+        },
+        "reconciliation": "self document encodeStateAsUpdate full-state exchange",
+        "checks": [
+          {
+            "id": "external-repeatability",
+            "passed": true,
+            "seeds": 256,
+            "executions": 512
+          },
+          {
+            "id": "converged-wrong-state-detected",
+            "passed": true,
+            "recoveryCompleted": true
+          },
+          {
+            "id": "incomplete-recovery-not-passed",
+            "passed": true
+          },
+          {
+            "id": "separate-process-normal-replay",
+            "passed": true,
+            "parentPid": 44767,
+            "replayPid": 44810
+          },
+          {
+            "id": "separate-process-failure-replay",
+            "passed": true,
+            "parentPid": 44767,
+            "replayPid": 44811
+          },
+          {
+            "id": "separate-process-incomplete-replay",
+            "passed": true,
+            "parentPid": 44767,
+            "replayPid": 44812
+          },
+          {
+            "id": "model-specific-conflict-rule",
+            "passed": true,
+            "concurrentValuesRetained": 1
+          },
+          {
+            "id": "reject-code-mismatch",
+            "passed": true
+          },
+          {
+            "id": "reject-version-mismatch",
+            "passed": true
+          },
+          {
+            "id": "reject-packet-mismatch",
+            "passed": true
+          },
+          {
+            "id": "reject-bootstrap-mismatch",
+            "passed": true
+          },
+          {
+            "id": "observation-copy-and-freeze",
+            "passed": true
+          }
+        ],
+        "sampleReceipt": "14eea88aec4a3ae4bec6c04ec39e161e356a24f513770e1ebd17a57b86eb6ace"
+      }
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sqlite-results.json",
+      "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe",
+      "result": {
+        "scope": "proposed-schema-fixture",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "checks": [
+          {
+            "id": "migration-idempotent",
+            "passed": true
+          },
+          {
+            "id": "foreign-keys-enabled",
+            "passed": true
+          },
+          {
+            "id": "valid-case-and-run",
+            "passed": true
+          },
+          {
+            "id": "invalid-hash-shape",
+            "passed": true
+          },
+          {
+            "id": "wrong-definition-bytes",
+            "passed": true
+          },
+          {
+            "id": "invalid-json",
+            "passed": true
+          },
+          {
+            "id": "wrong-format",
+            "passed": true
+          },
+          {
+            "id": "foreign-key-orphan",
+            "passed": true
+          },
+          {
+            "id": "status-mismatch",
+            "passed": true
+          },
+          {
+            "id": "model-mismatch",
+            "passed": true
+          },
+          {
+            "id": "missing-required-json-field",
+            "passed": true
+          },
+          {
+            "id": "wrong-receipt-bytes",
+            "passed": true
+          },
+          {
+            "id": "reject-case-replace",
+            "passed": true
+          },
+          {
+            "id": "reject-case-ignore",
+            "passed": true
+          },
+          {
+            "id": "reject-case-nul",
+            "passed": true
+          },
+          {
+            "id": "reject-run-replace",
+            "passed": true
+          },
+          {
+            "id": "reject-run-ignore",
+            "passed": true
+          },
+          {
+            "id": "reject-run-nul",
+            "passed": true
+          },
+          {
+            "id": "missing-case-format",
+            "passed": true
+          },
+          {
+            "id": "immutable-update",
+            "passed": true
+          },
+          {
+            "id": "immutable-delete",
+            "passed": true
+          },
+          {
+            "id": "transaction-rollback",
+            "passed": true
+          },
+          {
+            "id": "live-backup-consistency",
+            "passed": true
+          },
+          {
+            "id": "reopen-preserves-receipt",
+            "passed": true
+          },
+          {
+            "id": "integrity-and-foreign-keys",
+            "passed": true
+          }
+        ]
+      }
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sql-negative-results.json",
+      "sha256": "150a29f3141900da53d3fee7056b19a24e1d110d0fe24365774917893defee29",
+      "result": {
+        "scope": "revised-proposed-sql-independent-review",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "recursiveTriggers": 0,
+        "checks": 37,
+        "allRejected": true,
+        "originalStatus": "passed",
+        "caseCount": 1,
+        "runCount": 1,
+        "details": [
+          {
+            "id": "run-INSERT OR REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "case-INSERT OR REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "run-REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "case-REPLACE INTO",
+            "rejected": true
+          },
+          {
+            "id": "run-INSERT OR IGNORE INTO",
+            "rejected": true
+          },
+          {
+            "id": "case-INSERT OR IGNORE INTO",
+            "rejected": true
+          },
+          {
+            "id": "upsert-run",
+            "rejected": true
+          },
+          {
+            "id": "run-delete",
+            "rejected": true
+          },
+          {
+            "id": "case-delete",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000g\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\\u0000g\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-\"한한한한한한한한한한한한한한한한한한한한한한\"",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-\"한한한한한한한한한한한한한한한한한한한한한한\"",
+            "rejected": true
+          },
+          {
+            "id": "case-hash-null",
+            "rejected": true
+          },
+          {
+            "id": "run-hash-null",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-null",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-[]",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-{}",
+            "rejected": true
+          },
+          {
+            "id": "json-format_version-true",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-null",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-[]",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-{}",
+            "rejected": true
+          },
+          {
+            "id": "json-case_id-true",
+            "rejected": true
+          },
+          {
+            "id": "json-status-null",
+            "rejected": true
+          },
+          {
+            "id": "json-status-[]",
+            "rejected": true
+          },
+          {
+            "id": "json-status-{}",
+            "rejected": true
+          },
+          {
+            "id": "json-status-true",
+            "rejected": true
+          }
+        ]
+      }
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-original-sql-boundary.json",
+      "sha256": "cd617e4125a27d4c4b27c7a56f387d52a299ee1ab0ea7aa6bd0b90082d8be1ff",
+      "result": {
+        "scope": "original-and-revised-proposed-sql-boundary",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "schemaSha256": "f449dc95e51c9406cdf8d1adea9b4a347703cb26a839d277b0d84fcc168739c2",
+        "mode": "before",
+        "replaceAccepted": true,
+        "originalStatus": "passed",
+        "currentStatus": "failed",
+        "invalidHashes": [
+          {
+            "idBytes": 65,
+            "accepted": true
+          },
+          {
+            "idBytes": 66,
+            "accepted": true
+          },
+          {
+            "idBytes": 85,
+            "accepted": true
+          }
+        ]
+      }
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2-final-sql-boundary.json",
+      "sha256": "77ba5b5afbbf44334094fb5a9f1416ee1c7c0c0b005a86a6d00826c14d41383c",
+      "result": {
+        "scope": "original-and-revised-proposed-sql-boundary",
+        "productAcceptance": false,
+        "node": "v24.18.1",
+        "sqliteVersion": "3.53.1",
+        "schemaSha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b",
+        "mode": "after",
+        "replaceAccepted": false,
+        "originalStatus": "passed",
+        "currentStatus": "passed",
+        "invalidHashes": [
+          {
+            "idBytes": 65,
+            "accepted": false
+          },
+          {
+            "idBytes": 66,
+            "accepted": false
+          },
+          {
+            "idBytes": 85,
+            "accepted": false
+          }
+        ]
+      }
+    },
+    {
+      "check": "exact final adapter type draft",
+      "source": ".planning/evidence/2026-10-14/review-2-pre-r3-adapter-v2.d.ts.txt",
+      "sourceSha256": "9f4086dddd57a008af38354186eb4151e79e2e1d3f5f875646466e2349921d74",
+      "node": "v24.18.1",
+      "typescript": "5.9.3",
+      "exitCode": 0,
+      "output": "",
+      "parent_source_hash_matches": true
+    }
+  ],
+  "final_contract_rereview": {
+    "date": "2026-10-14",
+    "decision": "accepted-for-implementation",
+    "designAcceptance": true,
+    "productAcceptance": false,
+    "method": "최종 명세·타입·요구·용어·검토 기록을 독립 대조하고 수정된 타입 구간을 임시 파일의 TypeScript strict 검사로 재실행했다. 범용 실행기의 제품 동작 검사는 하지 않았다.",
+    "r3_revisions": [
+      {
+        "id": "R3-01",
+        "assessment": "consistent",
+        "evidence": [
+          ".planning/DESIGN.md:73",
+          ".planning/DESIGN.md:81",
+          ".planning/contracts/adapter-v2.md:25-29",
+          ".planning/contracts/adapter-v2.md:46",
+          ".planning/PROJECT.md:41",
+          ".planning/REVIEW.md:45"
+        ],
+        "verified_design_rules": [
+          "accepted/rejected 결과와 JSON result·outgoing을 요청과 함께 기록한다",
+          "메시지·관찰 변화가 없는 accepted와 정상 rejected를 구분한다",
+          "rejected를 자동 실패 또는 반드시 무변경인 명령으로 추정하지 않는다",
+          "정상 거절은 업무 규칙이 판정하고 함수 예외는 error다",
+          "시도·확정·accepted·rejected와 생성 시험 횟수를 구분한다",
+          "확정 전 중단은 시도 정보만 추가하고 마지막 확정 상태를 보존한다"
+        ],
+        "product_gates": [
+          "G2의 실제 no-op/rejected/accepted·함수 예외 검사",
+          "G3의 명령 결과를 포함한 별도 과정 재생"
+        ]
+      },
+      {
+        "id": "R3-02",
+        "assessment": "consistent",
+        "evidence": [
+          ".planning/DESIGN.md:99-105",
+          ".planning/contracts/adapter-v2.md:38",
+          ".planning/contracts/adapter-v2.md:61-62",
+          ".planning/PROJECT.md:40",
+          ".planning/REVIEW.md:46",
+          "docs/glossary.md:47"
+        ],
+        "verified_design_rules": [
+          "full-state-exchange-v1을 정확히 명시하며 자기 상태 API의 최소 하나 메시지를 요구한다",
+          "heal의 순서쌍 순서·보류 메시지 재예약·신뢰 전달·응답을 정의한다",
+          "신뢰 전달도 도착 시점의 새 분할에 보류되며 분할을 우회하지 않는다",
+          "다른 상대에게 전달한 같은 packet_id도 별도 필수 전송으로 기록한다",
+          "완료는 모든 순서쌍·필수 메시지·응답 전달과 예정/보류 0·미중단 증거가 필요하다",
+          "새 명령·분할·일반 손실은 복구를 무효화하며 이전 완료를 재사용하지 않는다",
+          "completedRecovery는 기록한 증거에서 계산하고 실제 수렴·업무 의미는 독립 검사가 판정한다"
+        ],
+        "product_gates": [
+          "G2/G4의 실제 복구·분할·손실·응답·중단 검사",
+          "G3의 recovery 증거 재생·변조 거부"
+        ]
+      }
+    ],
+    "original_round2_findings": "6건 모두 수정된 계약에서도 종료 상태를 유지한다. 초기 관찰값·SQL 불변/해시·기한 종료·관찰 참조 분리·동일 시각 전달 우선·실제 자기 상태 복구가 유지된다.",
+    "command_result_ownership": {
+      "evidence": [
+        ".planning/DESIGN.md:91",
+        ".planning/contracts/adapter-v2.md:25-29"
+      ],
+      "assessment": "CommandResult의 outcome/result를 반환 즉시 검증·분리 복사하는 규칙이 다른 관찰값·검사 결과의 불변 규칙과 일치한다. 외부 가변 State를 동결하지 않고 복사본만 동결한다.",
+      "scope": "명세 대조. 범용 실행기의 실제 결과 참조 분리 검사는 G2/G4다."
+    }
+  },
+  "finalReviewedInputs": [
+    {
+      "path": ".planning/PROJECT.md",
+      "sha256": "2916f1cfbf0132137f79dde0ef76992a8cea61ce3566b8fe863661b50ad6b73b"
+    },
+    {
+      "path": ".planning/DESIGN.md",
+      "sha256": "790bda373794e8fed97e78fa08bdfc6b5ce72f2d2b57a42964dde2aebcc7e17f"
+    },
+    {
+      "path": ".planning/RESEARCH.md",
+      "sha256": "66dad80ffa5838e205d49ebe15601b485f85ded236dc0ecdc2efbb505920fcf2"
+    },
+    {
+      "path": ".planning/contracts/adapter-v2.md",
+      "sha256": "460369171c946df3400584a6dd2652a24aabc409c9afab6c874b3a221cfe0962"
+    },
+    {
+      "path": ".planning/contracts/verification-catalog.sql",
+      "sha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/proofs.md",
+      "sha256": "3f0723420063a0745290ee96985839a3d8a6cb8da55b256572a6a11df8b82e6b"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/yjs-results.json",
+      "sha256": "742c0407560df412c485fc540b9ccbcfcb1a0b6c429667fe89d4f82055b308b6"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/sqlite-results.json",
+      "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+      "sha256": "3d6296f4790741bd886cf76c0ca3ac8b291390dbd2238d485c38d5bcc69a8e3e"
+    },
+    {
+      "path": ".planning/REVIEW.md",
+      "sha256": "97a63a1ae15496048147638ceb52551f496c54b2e24c00c5a40a2adf9f88e11b"
+    },
+    {
+      "path": "docs/glossary.md",
+      "sha256": "1f30cd843310b791ea0e12705391e7ea9a2d5b5802910f2b3bb053134dfab7ab"
+    }
+  ],
+  "openImportantFindings": 0,
+  "openBlockingFindings": 0,
+  "openMinorFindings": 0,
+  "finalReviewedInputsBeforeDocumentationFinalization": [
+    {
+      "path": ".planning/PROJECT.md",
+      "sha256": "7301ce234d0548181284743a0f9175c08938aa7b05f1dfe1962f0a539adf308f"
+    },
+    {
+      "path": ".planning/DESIGN.md",
+      "sha256": "7f1b204d69ea0a78466af2d676eaeacff1dc07e8bfa76f6f8c7767eebeb48ba4"
+    },
+    {
+      "path": ".planning/RESEARCH.md",
+      "sha256": "072b9a236547b02c7785912a0cbd2c343c4d05fa7e91752b05ac8de16103f98a"
+    },
+    {
+      "path": ".planning/contracts/adapter-v2.md",
+      "sha256": "03da5f70b3a98626eeeea5088fcba793f47fa9c49ef678fb96f6851a9e809077"
+    },
+    {
+      "path": ".planning/contracts/verification-catalog.sql",
+      "sha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/proofs.md",
+      "sha256": "7d0205ded0787eeba594d1de4f3998a0c32a659fcca3468b5ed820a46988c76c"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/yjs-results.json",
+      "sha256": "742c0407560df412c485fc540b9ccbcfcb1a0b6c429667fe89d4f82055b308b6"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/sqlite-results.json",
+      "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+      "sha256": "1f0b72bac082c39dbbf6442d2da9b46d8bfa1b8e142bd3cfe4447a5ba5771de0"
+    },
+    {
+      "path": ".planning/REVIEW.md",
+      "sha256": "6bfb51b35449707879fb67426465a9c32efbccc314eae00c660d6fb6a1eb4aed"
+    },
+    {
+      "path": "docs/glossary.md",
+      "sha256": "f74ec8c3619742b309bce08ac2ae3df8b2b696765abce87e41258cbcc7dcab7a"
+    }
+  ],
+  "documentationFinalizationAudit": {
+    "date": "2026-10-14",
+    "method": "현재 11개 파일을 실제 조회하고 SHA-256을 계산했다. REVIEW를 제외한 6개 MD는 approved를 review로 치환한 바이트가 직전 검토 해시와 일치함을 확인했다.",
+    "changes": [
+      {
+        "path": ".planning/PROJECT.md",
+        "beforeSha256": "7301ce234d0548181284743a0f9175c08938aa7b05f1dfe1962f0a539adf308f",
+        "afterSha256": "2916f1cfbf0132137f79dde0ef76992a8cea61ce3566b8fe863661b50ad6b73b",
+        "changed": true,
+        "status": "approved",
+        "onlyApprovalStatusChanged": true
+      },
+      {
+        "path": ".planning/DESIGN.md",
+        "beforeSha256": "7f1b204d69ea0a78466af2d676eaeacff1dc07e8bfa76f6f8c7767eebeb48ba4",
+        "afterSha256": "790bda373794e8fed97e78fa08bdfc6b5ce72f2d2b57a42964dde2aebcc7e17f",
+        "changed": true,
+        "status": "approved",
+        "onlyApprovalStatusChanged": true
+      },
+      {
+        "path": ".planning/RESEARCH.md",
+        "beforeSha256": "072b9a236547b02c7785912a0cbd2c343c4d05fa7e91752b05ac8de16103f98a",
+        "afterSha256": "66dad80ffa5838e205d49ebe15601b485f85ded236dc0ecdc2efbb505920fcf2",
+        "changed": true,
+        "status": "approved",
+        "onlyApprovalStatusChanged": true
+      },
+      {
+        "path": ".planning/contracts/adapter-v2.md",
+        "beforeSha256": "03da5f70b3a98626eeeea5088fcba793f47fa9c49ef678fb96f6851a9e809077",
+        "afterSha256": "460369171c946df3400584a6dd2652a24aabc409c9afab6c874b3a221cfe0962",
+        "changed": true,
+        "status": "approved",
+        "onlyApprovalStatusChanged": true
+      },
+      {
+        "path": ".planning/contracts/verification-catalog.sql",
+        "beforeSha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b",
+        "afterSha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b",
+        "changed": false
+      },
+      {
+        "path": ".planning/evidence/2026-10-14/proofs.md",
+        "beforeSha256": "7d0205ded0787eeba594d1de4f3998a0c32a659fcca3468b5ed820a46988c76c",
+        "afterSha256": "3f0723420063a0745290ee96985839a3d8a6cb8da55b256572a6a11df8b82e6b",
+        "changed": true,
+        "status": "approved",
+        "onlyApprovalStatusChanged": true
+      },
+      {
+        "path": ".planning/evidence/2026-10-14/yjs-results.json",
+        "beforeSha256": "742c0407560df412c485fc540b9ccbcfcb1a0b6c429667fe89d4f82055b308b6",
+        "afterSha256": "742c0407560df412c485fc540b9ccbcfcb1a0b6c429667fe89d4f82055b308b6",
+        "changed": false
+      },
+      {
+        "path": ".planning/evidence/2026-10-14/sqlite-results.json",
+        "beforeSha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe",
+        "afterSha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe",
+        "changed": false
+      },
+      {
+        "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+        "beforeSha256": "1f0b72bac082c39dbbf6442d2da9b46d8bfa1b8e142bd3cfe4447a5ba5771de0",
+        "afterSha256": "3d6296f4790741bd886cf76c0ca3ac8b291390dbd2238d485c38d5bcc69a8e3e",
+        "changed": true
+      },
+      {
+        "path": ".planning/REVIEW.md",
+        "beforeSha256": "6bfb51b35449707879fb67426465a9c32efbccc314eae00c660d6fb6a1eb4aed",
+        "afterSha256": "883c3cfbd164b6fb2999f1a756c80c89756fa5b941f996d0118866a46396d86a",
+        "changed": true,
+        "status": "approved"
+      },
+      {
+        "path": "docs/glossary.md",
+        "beforeSha256": "f74ec8c3619742b309bce08ac2ae3df8b2b696765abce87e41258cbcc7dcab7a",
+        "afterSha256": "1f30cd843310b791ea0e12705391e7ea9a2d5b5802910f2b3bb053134dfab7ab",
+        "changed": true,
+        "status": "approved",
+        "onlyApprovalStatusChanged": true
+      }
+    ],
+    "reviewDocumentChecks": [
+      "수락·열린 중요 지적 0·제품 G0-G5 미완료를 명시한다",
+      "3심의 추가 실험 자료를 연결하고 그 범위와 제품 검사를 구분한다",
+      "다음 구현 경계를 G0로 명시한다"
+    ],
+    "typeContentUnchanged": true,
+    "typedSourceSha256": "d328900af4125d6e4b95e7c9f1d8d766c9914096134b050da8f05e2b344198f7",
+    "typeDocumentSha256": "460369171c946df3400584a6dd2652a24aabc409c9afab6c874b3a221cfe0962",
+    "latestParentTypecheckExitCode": 0,
+    "independentTypecheckSourceMatchesFinalContent": true,
+    "sqlAndYjsAndSqliteResultsUnchanged": true,
+    "evidence": "이번 확인은 문서 정리와 해시 대조다. 기존 독립 실행 결과를 새 제품 검사로 계산하지 않는다."
+  },
+  "lastWordingOnlyCorrection": {
+    "path": ".planning/REVIEW.md",
+    "line": 90,
+    "beforeSha256": "883c3cfbd164b6fb2999f1a756c80c89756fa5b941f996d0118866a46396d86a",
+    "afterSha256": "97a63a1ae15496048147638ceb52551f496c54b2e24c00c5a40a2adf9f88e11b",
+    "verifiedSentence": "G0의 현재 결함 수정과 공통 경계 정비를 먼저 구현한다.",
+    "otherTenInputHashesUnchanged": true,
+    "priorDecisionPreserved": "accepted-for-implementation",
+    "scope": "어휘 수정만 확인했다. 요구·계약·범위와 설계 수락 판정은 유지하며 실행 검사를 반복하지 않았다."
+  }
+}

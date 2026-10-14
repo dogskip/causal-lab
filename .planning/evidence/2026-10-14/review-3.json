@@ -1,0 +1,969 @@
+{
+  "reviewId": "review-3",
+  "reviewRound": 3,
+  "reviewer": "/root/final_design_review",
+  "author": "/root",
+  "date": "2026-10-14",
+  "status": "final-independent-design-review",
+  "scope": "독립 3심의 문서·계약·공식 근거·설계 실험 검토. 제품 구현과 제품 합격 판정은 제외한다.",
+  "verdict": "accepted_for_implementation",
+  "designAcceptance": true,
+  "productAcceptance": false,
+  "openImportantFindings": 0,
+  "originalInputHashes": ".planning/evidence/2026-10-14/review-3-inputs-before-revision.json",
+  "findings": [
+    {
+      "id": "R3-01",
+      "severity": "important",
+      "status": "closed-in-design",
+      "title": "명령 수락·거절 결과가 반환 계약에 없다",
+      "requirements": [
+        "R01",
+        "R02",
+        "R05",
+        "R06"
+      ],
+      "evidence": [
+        ".planning/contracts/adapter-v2.md:40",
+        ".planning/DESIGN.md:119",
+        ".planning/RESEARCH.md:63",
+        ".planning/evidence/2026-10-14/review-3-contract-counterexamples.json:9"
+      ],
+      "counterexample": "현재 값과 같은 값을 설정해 성공한 명령과 대상 정책이 정상 거절한 명령이 모두 상태 변화 없이 빈 메시지 배열을 반환할 수 있다. 메시지만 기록하면 수락 여부를 서로 다르게 해석할 수 있다. 업무 규칙, 처리 횟수, 실패 재생에 필요한 결과가 없다.",
+      "minimalChange": "CommandResult에 accepted/rejected, JSON 결과 또는 이유, outgoing을 명시한다. 요청·결과·현재 사건·관찰값을 불변 기록과 독립 검사에 전달한다. 정상 rejected와 함수 예외(error)를 구분한다.",
+      "acceptanceConditions": [
+        "DESIGN·타입·요구 추적에 같은 명령 결과 계약을 명시한다",
+        "메시지 없는 수락과 정상 거절이 서로 다른 사건 결과를 갖는다",
+        "거절은 대상 결함으로 오판하지 않고 잘못된 수락의 무변경은 독립 기대값에서 실패한다",
+        "제품 G2/G3에서 같은 명령 결과와 업무 규칙을 별도 과정에서 재생한다"
+      ],
+      "proofScope": "구계약의 정보 누락 반례. 제품 v2 실행기를 실행한 결과가 아니다.",
+      "originalStatus": "open",
+      "originalInputManifest": ".planning/evidence/2026-10-14/review-3-inputs-before-revision.json",
+      "resolution": {
+        "evidence": [
+          ".planning/DESIGN.md:73",
+          ".planning/DESIGN.md:81",
+          ".planning/DESIGN.md:91",
+          ".planning/DESIGN.md:129",
+          ".planning/DESIGN.md:152",
+          ".planning/DESIGN.md:202",
+          ".planning/contracts/adapter-v2.md:25-29",
+          ".planning/contracts/adapter-v2.md:46",
+          ".planning/PROJECT.md:41",
+          ".planning/evidence/2026-10-14/review-3-revised-contract-proof.mjs.txt:21-31",
+          ".planning/evidence/2026-10-14/review-3-revised-contract-results.json:16-22"
+        ],
+        "judgment": "명시적 CommandResult와 요청·결과 기록, 반환 결과의 검증·분리 복사, 정상 거절/예외와 횟수 구분이 일치한다. 실제 Yjs 문서를 연결한 작은 시험에서 무변경 수락과 정책 거절은 다른 결과를 갖고, 잘못된 수락은 완전 복구 후 독립 기대값을 위반했다.",
+        "designAcceptance": true,
+        "productAcceptance": false,
+        "remainingProductGates": [
+          "G2",
+          "G3"
+        ]
+      }
+    },
+    {
+      "id": "R3-02",
+      "severity": "important",
+      "status": "closed-in-design",
+      "title": "복구 완료의 호출 범위와 전달 조건이 모호하다",
+      "requirements": [
+        "R02",
+        "R04",
+        "R05",
+        "R06"
+      ],
+      "evidence": [
+        ".planning/DESIGN.md:119",
+        ".planning/DESIGN.md:123",
+        ".planning/DESIGN.md:129",
+        ".planning/contracts/adapter-v2.md:42",
+        ".planning/evidence/2026-10-14/review-3-contract-counterexamples.json:72",
+        "https://docs.yjs.dev/api/document-updates"
+      ],
+      "counterexample": "dropRate=1에서 지역 변경 후 실제 전체 상태 API를 호출해도 복구 메시지에 손실을 계속 적용하면 6개 순서쌍의 전달은 0건이고 inconclusive다. 복구 메시지만 신뢰 전달하면 6건 전달 후 passed다. 하나의 순서쌍만 교환하면 세 번째 복제본이 누락되지만 대기열은 0이다. 현재 문구는 이 호출 범위와 전달 조건을 확정하지 않는다.",
+      "minimalChange": "첫 independent-updates heal의 분할 해제·보류 처리, 모든 서로 다른 순서쌍의 결정적 reconcile 호출, 복구 메시지와 응답의 신뢰 전달·소진, 완료 증거와 무효화 규칙을 명시한다. 절차 완료와 독립 수렴·업무 판정을 구분한다.",
+      "acceptanceConditions": [
+        "세 복제본·손실률 1의 복구가 같은 호출 순서·필수 전달 집합·판정을 갖는다",
+        "누락한 교환·보류 메시지·자원 중단을 빈 대기열로 통과시키지 않는다",
+        "복구 뒤 새 명령·분할·손실은 이전 완료를 무효화한다",
+        "제품 G2/G3에서 완료 증거를 검증 재생하고 대상의 잘못된 수렴은 독립 규칙에서 실패한다"
+      ],
+      "proofScope": "실제 Yjs 13.6.27의 계약 해석 비교. 제품 v2 실행기를 실행한 결과가 아니다.",
+      "originalStatus": "open",
+      "originalInputManifest": ".planning/evidence/2026-10-14/review-3-inputs-before-revision.json",
+      "resolution": {
+        "evidence": [
+          ".planning/DESIGN.md:99-105",
+          ".planning/DESIGN.md:129",
+          ".planning/contracts/adapter-v2.md:38",
+          ".planning/contracts/adapter-v2.md:61-62",
+          ".planning/PROJECT.md:40",
+          "docs/glossary.md:47",
+          ".planning/evidence/2026-10-14/review-3-revised-contract-proof.mjs.txt:55-111",
+          ".planning/evidence/2026-10-14/review-3-revised-contract-execution.log:12-79"
+        ],
+        "judgment": "full-state-exchange-v1의 모든 순서쌍·최소 메시지·신뢰 전달·응답·생성 번호·수신 증거·보류·완료·무효화가 명시됐다. 실제 API의 작은 시험은 순서쌍 6개·응답 포함 9개 메시지를 완료했다. 하나의 호출이 빠진 시험은 관찰값이 같아도 inconclusive였고 새 명령·분할·중단은 완료를 재사용하지 않았다.",
+        "designAcceptance": true,
+        "productAcceptance": false,
+        "remainingProductGates": [
+          "G2",
+          "G3",
+          "G4"
+        ]
+      }
+    }
+  ],
+  "independentExperiments": [
+    {
+      "name": "Yjs 작은 설계 실험 재실행",
+      "source": ".planning/evidence/2026-10-14/review-3-yjs-proof.mjs.txt",
+      "result": ".planning/evidence/2026-10-14/review-3-yjs-results.json",
+      "log": ".planning/evidence/2026-10-14/review-3-yjs-execution.log",
+      "node": "v24.18.1",
+      "implementation": "yjs@13.6.27",
+      "exitCode": 0,
+      "checks": 12,
+      "repeatabilitySeeds": 256,
+      "repeatabilityExecutions": 512,
+      "productAcceptance": false
+    },
+    {
+      "name": "제안 SQLite 정의 재실행",
+      "source": ".planning/evidence/2026-10-14/review-3-sqlite-proof.mjs.txt",
+      "result": ".planning/evidence/2026-10-14/review-3-sqlite-results.json",
+      "log": ".planning/evidence/2026-10-14/review-3-sqlite-execution.log",
+      "node": "v24.18.1",
+      "sqliteVersion": "3.53.1",
+      "exitCode": 0,
+      "checks": 25,
+      "productAcceptance": false
+    },
+    {
+      "name": "명령 결과와 복구 계약의 독립 반례",
+      "source": ".planning/evidence/2026-10-14/review-3-contract-counterexamples.mjs.txt",
+      "result": ".planning/evidence/2026-10-14/review-3-contract-counterexamples.json",
+      "exitCode": 0,
+      "productAcceptance": false
+    },
+    {
+      "name": "수정 계약의 실제 Yjs API 시험",
+      "source": ".planning/evidence/2026-10-14/review-3-revised-contract-proof.mjs.txt",
+      "sourceSha256": "901e169293bdcb7f2e688a40d9ab5d923fe6ccc5f4c298f9842782038a0387cb",
+      "result": ".planning/evidence/2026-10-14/review-3-revised-contract-results.json",
+      "log": ".planning/evidence/2026-10-14/review-3-revised-contract-execution.log",
+      "node": "v24.18.1",
+      "implementation": "yjs@13.6.27",
+      "exitCode": 0,
+      "cases": 7,
+      "separateProcessRepetitionCases": 7,
+      "outcomes": {
+        "normal": "passed",
+        "wrong-accept": "failed",
+        "missing-pair": "inconclusive",
+        "new-command": "inconclusive",
+        "new-partition": "inconclusive",
+        "interrupted": "inconclusive",
+        "empty-reconcile": "error"
+      },
+      "meaningfulCounterexample": "missing-pair는 세 관찰값이 같고 대기열도 비었지만 필수 교환이 누락되어 inconclusive다.",
+      "productAcceptance": false,
+      "limits": [
+        "제안 메서드 경계를 사용하는 작은 실행이며 제품 v2 실행기가 아니다",
+        "별도 과정은 같은 고정 시험의 반복이다. 기록 메시지의 재생은 앞선 Yjs 실험의 증거다",
+        "사건 상한·전체 시간 순서·JCS·일반 JSON·기한·전체 메모리·웹·저장 연결을 검증하지 않았다"
+      ]
+    },
+    {
+      "name": "수정된 연결 타입 독립 strict 검사",
+      "result": ".planning/evidence/2026-10-14/review-3-typecheck.json",
+      "exitCode": 0,
+      "typescript": "5.9.3",
+      "documentSha256": "03da5f70b3a98626eeeea5088fcba793f47fa9c49ef678fb96f6851a9e809077",
+      "productAcceptance": false,
+      "limit": "타입 초안의 구문 검사이며 실행 시 자료 검사와 설치한 패키지의 증거가 아니다"
+    }
+  ],
+  "verification": {
+    "reportAndReview3EvidenceOnly": true,
+    "otherFilesModifiedByReviewer": false,
+    "additionalAgentsSpawned": false,
+    "nativeSkillFilesRead": false,
+    "browserUsed": false,
+    "finalHashesPending": false,
+    "priorRoundFreshChecksPending": false,
+    "sameFinalInputsAcrossRounds": true,
+    "outcomeAndResultOwnershipConfirmed": true,
+    "completeReceiptRequiredForRunIdAndDb": true,
+    "frozenFileNamesForExperimentSources": true,
+    "finalEditorialStatusRecheckPending": false
+  },
+  "counts": {
+    "blocking": 0,
+    "important": 0,
+    "minor": 0
+  },
+  "finalReviewedInputs": [
+    {
+      "path": ".planning/PROJECT.md",
+      "sha256": "2916f1cfbf0132137f79dde0ef76992a8cea61ce3566b8fe863661b50ad6b73b"
+    },
+    {
+      "path": ".planning/DESIGN.md",
+      "sha256": "790bda373794e8fed97e78fa08bdfc6b5ce72f2d2b57a42964dde2aebcc7e17f"
+    },
+    {
+      "path": ".planning/RESEARCH.md",
+      "sha256": "66dad80ffa5838e205d49ebe15601b485f85ded236dc0ecdc2efbb505920fcf2"
+    },
+    {
+      "path": ".planning/contracts/adapter-v2.md",
+      "sha256": "460369171c946df3400584a6dd2652a24aabc409c9afab6c874b3a221cfe0962"
+    },
+    {
+      "path": ".planning/contracts/verification-catalog.sql",
+      "sha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/proofs.md",
+      "sha256": "3f0723420063a0745290ee96985839a3d8a6cb8da55b256572a6a11df8b82e6b"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/yjs-results.json",
+      "sha256": "742c0407560df412c485fc540b9ccbcfcb1a0b6c429667fe89d4f82055b308b6"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/sqlite-results.json",
+      "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+      "sha256": "3d6296f4790741bd886cf76c0ca3ac8b291390dbd2238d485c38d5bcc69a8e3e"
+    },
+    {
+      "path": ".planning/REVIEW.md",
+      "sha256": "97a63a1ae15496048147638ceb52551f496c54b2e24c00c5a40a2adf9f88e11b"
+    },
+    {
+      "path": "docs/glossary.md",
+      "sha256": "1f30cd843310b791ea0e12705391e7ea9a2d5b5802910f2b3bb053134dfab7ab"
+    }
+  ],
+  "priorRounds": [
+    {
+      "path": ".planning/evidence/2026-10-14/review-1.json",
+      "sha256": "1714ac42187abe55ce874b1673fd2019e56d5e2744211f8cc5c3b7c1baea30d4",
+      "designAcceptance": true,
+      "productAcceptance": false,
+      "openImportantFindings": 0,
+      "sameFinalInputsVerified": true,
+      "closedFindingIds": [
+        "R1-01",
+        "R1-02"
+      ],
+      "evidence": [
+        ".planning/evidence/2026-10-14/review-1.json:1"
+      ]
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/review-2.json",
+      "sha256": "c118827ae7cf9a0fedd5bfaf24c54217f78289fb1a9aa6a5625b97a3eb0f87f3",
+      "designAcceptance": true,
+      "productAcceptance": false,
+      "openImportantFindings": 0,
+      "sameFinalInputsVerified": true,
+      "closedFindingIds": [
+        "R2-F01",
+        "R2-F02",
+        "R2-F03",
+        "R2-F04",
+        "R2-F05",
+        "R2-F06"
+      ],
+      "evidence": [
+        ".planning/evidence/2026-10-14/review-2.json:1"
+      ]
+    }
+  ],
+  "acceptanceScope": "현재 최종 문서의 목적·계약·근거·반례 수정·요구 추적·DB 정의를 수락한다. 제품 G0–G5의 완료와 정확성·성능 우위는 판정하지 않는다.",
+  "assessments": [
+    {
+      "topic": "목적·대안·단순성",
+      "result": "aligned",
+      "evidence": [
+        ".planning/PROJECT.md:18-31",
+        ".planning/PROJECT.md:62-64",
+        ".planning/DESIGN.md:26-34",
+        ".planning/DESIGN.md:50-60",
+        ".planning/DESIGN.md:186",
+        "https://fast-check.dev/docs/advanced/model-based-testing/",
+        "https://github.com/jeffa5/automerge-model-checker"
+      ],
+      "judgment": "동기식 실제 대상·업무 검사·실패 파일·자동 검사라는 목적에 책임과 의존성이 연결된다. 기존 fast-check를 재사용하고 새 운영 서비스·완전 상태 탐색·계정 표를 추가하지 않는다. 비교는 목적 적합성의 추론이며 제품 우위나 수요의 증명은 아니다."
+    },
+    {
+      "topic": "실제 대상·공식 전달 전제",
+      "result": "implementable_with_explicit_scope",
+      "evidence": [
+        ".planning/DESIGN.md:68-87",
+        ".planning/DESIGN.md:99-105",
+        ".planning/contracts/adapter-v2.md:25-50",
+        ".planning/evidence/2026-10-14/review-3-revised-contract-proof.mjs.txt:18-45",
+        "https://docs.yjs.dev/api/document-updates",
+        "https://docs.yjs.dev/api/faq",
+        "https://automerge.org/automerge/automerge/sync/index.html"
+      ],
+      "judgment": "폐쇄된 새 Yjs 문서의 고정 고유 ID와 실제 자기 상태 API를 사용하는 첫 연결은 작은 시험으로 가능성을 확인했다. ordered-session과 Automerge는 이름 예약과 조사 범위이며 현재 지원으로 해석하지 않는다. 새 계약의 수락 결과와 복구 정책이 독립 검사에 필요한 증거를 제공한다."
+    },
+    {
+      "topic": "사건·자원·기한·판정",
+      "result": "consistent_in_design",
+      "evidence": [
+        "src/scenario.ts:102-118",
+        "src/simulation.ts:115-123",
+        ".planning/DESIGN.md:62-64",
+        ".planning/DESIGN.md:97-123",
+        ".planning/DESIGN.md:139-143",
+        ".planning/evidence/2026-10-14/review-2-same-time-counterexample.json:1",
+        ".planning/evidence/2026-10-14/review-3-revised-contract-execution.log:12-79"
+      ],
+      "judgment": "기존 전달 우선과 같은 시각 생성 순서를 유지하고 복구 완료와 실제 수렴을 구분한다. 네 판정·종료 코드, 기한 미수신의 실행 정보, 마지막 확정 사건과 중단 시도, 기존 Simulation 원자성 요구가 충돌하지 않는다. 크기 상한은 설계 초기값이며 실제 최대 메모리·10,000 사건 성능은 미입증이다."
+    },
+    {
+      "topic": "자료 소유권·ID·재생",
+      "result": "consistent_in_design",
+      "evidence": [
+        ".planning/DESIGN.md:81",
+        ".planning/DESIGN.md:89-91",
+        ".planning/DESIGN.md:147-163",
+        ".planning/evidence/2026-10-14/proofs.md:130-161",
+        ".planning/evidence/2026-10-14/proofs.md:185-224",
+        "src/scenario.ts:147-149",
+        "https://www.rfc-editor.org/rfc/rfc8785"
+      ],
+      "judgment": "명령 결과·관찰값·검사 증거와 원래 메시지는 반환 직후 분리한다. v2의 명세·JCS·NUL 구분자와 v1 ID를 구분하고 조회 재생과 대상 재실행을 구분한다. 작은 Yjs 시험의 정상·실패·미완료 별도 과정 재생은 확인했지만 JCS 전체·중복 키·유니코드·축소 재생의 제품 합격은 없다."
+    },
+    {
+      "topic": "DB 표·열·제약·호환성·보관",
+      "result": "proportionate_and_verified_at_schema_scope",
+      "evidence": [
+        ".planning/DESIGN.md:167-194",
+        ".planning/contracts/verification-catalog.sql:1-74",
+        ".planning/evidence/2026-10-14/review-3-sqlite-results.json:1-108",
+        "src/catalog.ts:50-68",
+        "src/catalog.ts:128-148",
+        "https://www.sqlite.org/lang_conflict.html",
+        "https://www.sqlite.org/foreignkeys.html",
+        "https://www.sqlite.org/backup.html",
+        "https://www.sqlite.org/wal.html"
+      ],
+      "judgment": "정의·결과·소유자/버전 표 3개와 조회 색인 하나가 요구에 연결된다. BLOB 길이·NUL·본문/조회 열 일치·외래 키·기존 ID INSERT 보호의 수정은 실제 SQLite 25개 작은 검사에서 통과했다. 파일 기본·명시한 별도 DB·v1 자동 이전 없음·일관된 보관은 호환성에 맞는다. 저장기의 JCS·실행 판정·복원 연결은 G4다."
+    },
+    {
+      "topic": "실제 사용·공개 경계·재사용성",
+      "result": "specified_with_product_gates",
+      "evidence": [
+        ".planning/PROJECT.md:24-31",
+        ".planning/PROJECT.md:43-48",
+        ".planning/DESIGN.md:50-64",
+        ".planning/DESIGN.md:159-163",
+        ".planning/DESIGN.md:200-213",
+        "package.json:8-15",
+        "src/index.ts:1-6",
+        "https://nodejs.org/download/release/v24.18.1/docs/api/packages.html#package-entry-points"
+      ],
+      "judgment": "설치·연결·규칙·검사·공유·재생 절차와 Node 없는 공통 경계가 명시됐다. 웹은 기록 조회만 담당하고 DB는 선택이다. 현재 최상위 진입점은 Node 코드도 내보내므로 G1의 실제 패키지 import가 필요하다. 외부 저장소 두 곳의 전체 절차와 최대 입력 측정은 G5이며 아직 통과하지 않았다."
+    }
+  ],
+  "requirements": [
+    {
+      "id": "R01",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:68-99",
+        ".planning/contracts/adapter-v2.md:43-50"
+      ],
+      "remainingProductGates": [
+        "G2",
+        "G5"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R02",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:81-105",
+        ".planning/DESIGN.md:143-159",
+        ".planning/evidence/2026-10-14/proofs.md:170-194"
+      ],
+      "remainingProductGates": [
+        "G2",
+        "G3",
+        "G5"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R03",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:62-64",
+        ".planning/DESIGN.md:109-123"
+      ],
+      "remainingProductGates": [
+        "G0",
+        "G2",
+        "G3"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R04",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:83-105",
+        ".planning/PROJECT.md:40"
+      ],
+      "remainingProductGates": [
+        "G2"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R05",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:81-91",
+        ".planning/DESIGN.md:107",
+        ".planning/DESIGN.md:127-139",
+        ".planning/PROJECT.md:41"
+      ],
+      "remainingProductGates": [
+        "G0",
+        "G2"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R06",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:81",
+        ".planning/DESIGN.md:103-105",
+        ".planning/DESIGN.md:139-143"
+      ],
+      "remainingProductGates": [
+        "G2",
+        "G3"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R07",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:147-163"
+      ],
+      "remainingProductGates": [
+        "G3",
+        "G5"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R08",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:50-60",
+        ".planning/contracts/adapter-v2.md:20-69"
+      ],
+      "remainingProductGates": [
+        "G1",
+        "G5"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R09",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:91",
+        ".planning/DESIGN.md:97",
+        ".planning/DESIGN.md:163"
+      ],
+      "remainingProductGates": [
+        "G4"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R10",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:167-194",
+        ".planning/contracts/verification-catalog.sql:1-74"
+      ],
+      "remainingProductGates": [
+        "G4"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R11",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:58",
+        ".planning/DESIGN.md:147",
+        ".planning/DESIGN.md:167",
+        ".planning/DESIGN.md:211"
+      ],
+      "remainingProductGates": [
+        "G0",
+        "G1"
+      ],
+      "productAcceptance": false
+    },
+    {
+      "id": "R12",
+      "designStatus": "defined-and-reviewed",
+      "evidence": [
+        ".planning/DESIGN.md:26-34",
+        ".planning/DESIGN.md:50-64",
+        ".planning/DESIGN.md:186",
+        ".planning/DESIGN.md:200-207"
+      ],
+      "remainingProductGates": [
+        "G1",
+        "G5"
+      ],
+      "productAcceptance": false
+    }
+  ],
+  "baselinePreservation": {
+    "manifest": ".planning/evidence/2026-10-14/baseline-manifest.json",
+    "checkedFiles": 80,
+    "unchangedFiles": 77,
+    "changedOriginalFiles": [
+      {
+        "path": ".planning/DESIGN.md",
+        "baselineSha256": "6c734364d5bd02576e28709a3635c183f56fcaa576774f617f73efd167ae2f95",
+        "currentSha256": "790bda373794e8fed97e78fa08bdfc6b5ce72f2d2b57a42964dde2aebcc7e17f",
+        "currentSha256BeforeEditorial": "7f1b204d69ea0a78466af2d676eaeacff1dc07e8bfa76f6f8c7767eebeb48ba4"
+      },
+      {
+        "path": ".planning/PROJECT.md",
+        "baselineSha256": "ab6001a5dc8c8a3f02da1e1eee4f7f42b73ce0e1dbd99f2622e105914006d9fc",
+        "currentSha256": "2916f1cfbf0132137f79dde0ef76992a8cea61ce3566b8fe863661b50ad6b73b",
+        "currentSha256BeforeEditorial": "7301ce234d0548181284743a0f9175c08938aa7b05f1dfe1962f0a539adf308f"
+      },
+      {
+        "path": "docs/glossary.md",
+        "baselineSha256": "e6ab94b04bf1aa14016f771c82b55d8b434435bffd162acf0e4f4c3600bde786",
+        "currentSha256": "1f30cd843310b791ea0e12705391e7ea9a2d5b5802910f2b3bb053134dfab7ab",
+        "currentSha256BeforeEditorial": "f74ec8c3619742b309bce08ac2ae3df8b2b696765abce87e41258cbcc7dcab7a"
+      }
+    ],
+    "productSourcesPreserved": true,
+    "evidence": [
+      ".planning/evidence/2026-10-14/baseline-manifest.json:1",
+      "src/scenario.ts:1",
+      "src/simulation.ts:1",
+      "src/crdt.ts:1",
+      "src/catalog.ts:1",
+      "package.json:1"
+    ]
+  },
+  "sourceReviewedInputs": [
+    {
+      "path": "src/scenario.ts",
+      "sha256": "54a9852db989f086c8bf86e816d76b788b5b6a5824082769fec73c2a9cc89d05"
+    },
+    {
+      "path": "src/simulation.ts",
+      "sha256": "11fab29b43936dd2cfc481da416acbea52a327ae9d20004fb2410c053972d6fc"
+    },
+    {
+      "path": "src/crdt.ts",
+      "sha256": "ebd4025d4562ec7d5720376f6a47fc92b86d8da9516b66240ad7ac6a9bbc2ff5"
+    },
+    {
+      "path": "src/catalog.ts",
+      "sha256": "c8786b24a1bdf44cd4cd055fa07a491f79560fb702a4e76cbce073d1c1bbbbeb"
+    },
+    {
+      "path": "src/index.ts",
+      "sha256": "97cfe8aebbe0201ac205ed3c899dcdcdb85393d652ba6661b2a3b49e0225f966"
+    },
+    {
+      "path": "package.json",
+      "sha256": "0a1d97e090f6538b66587c5bb02cd682ad7b2aff1813fb8299e4747734f84456"
+    },
+    {
+      "path": "pnpm-lock.yaml",
+      "sha256": "4953f03bef13e843fa2d21f055f5fc0fc27b5978cafc7c8d66aafd46f4defd77"
+    }
+  ],
+  "officialSourcesVerified": [
+    {
+      "url": "https://docs.yjs.dev/api/document-updates",
+      "scope": "원시 변경 전달과 실제 전체 상태 교환"
+    },
+    {
+      "url": "https://docs.yjs.dev/api/faq",
+      "scope": "고유 clientID 교체와 중복 위험"
+    },
+    {
+      "url": "https://automerge.org/automerge/automerge/sync/index.html",
+      "scope": "신뢰할 수 있는 순서 보존 전달과 쌍별 상태"
+    },
+    {
+      "url": "https://www.rfc-editor.org/rfc/rfc8785",
+      "scope": "JCS 입력·정렬·수·유니코드 규약"
+    },
+    {
+      "url": "https://fast-check.dev/docs/advanced/model-based-testing/",
+      "scope": "명령 전제·독립 기대값·축소·replayPath"
+    },
+    {
+      "url": "https://fast-check.dev/docs/api/interfaces/Parameters/",
+      "scope": "횟수 미달 중단의 기본 성공 처리"
+    },
+    {
+      "url": "https://www.sqlite.org/lang_conflict.html",
+      "scope": "REPLACE의 삭제 trigger 전제"
+    },
+    {
+      "url": "https://www.sqlite.org/foreignkeys.html",
+      "scope": "연결별 외래 키 활성화"
+    },
+    {
+      "url": "https://www.sqlite.org/wal.html",
+      "scope": "일관된 보관과 로컬 파일 시스템 전제"
+    },
+    {
+      "url": "https://www.sqlite.org/backup.html",
+      "scope": "일관된 DB 보관 API"
+    },
+    {
+      "url": "https://nodejs.org/download/release/v24.18.1/docs/api/packages.html#package-entry-points",
+      "scope": "Node 24.18.1 공개 진입점"
+    },
+    {
+      "url": "https://www.foundationdb.org/files/fdb-paper.pdf",
+      "scope": "실제 코드의 결정적 실행과 알려진 한계"
+    },
+    {
+      "url": "https://jepsen.io/analyses/ethics",
+      "scope": "유한 시험과 검사 코드의 한계"
+    },
+    {
+      "url": "https://github.com/jeffa5/automerge-model-checker",
+      "scope": "실제 Automerge와 응용의 대안 검사"
+    },
+    {
+      "url": "https://antithesis.com/docs/introduction/how_antithesis_works/",
+      "scope": "대상 환경 전체의 결정적 시험 범위"
+    }
+  ],
+  "unprovenProductGates": [
+    "G0–G5 전체",
+    "JCS 표준 벡터·중복 키·유니코드 거부",
+    "새 실행기의 모든 자료·상한·사건·기한 검증",
+    "축소된 실제 실패 파일의 같은 규칙 재생",
+    "설치한 패키지 import·Node 없는 번들",
+    "새 사건별 웹·저장기·복원 연결",
+    "다른 저장소 두 곳의 전체 사용 절차",
+    "10,000 사건·최대 입력·전체 메모리 측정"
+  ],
+  "history": [
+    {
+      "phase": "accepted-before-editorial-finalization",
+      "reportSha256": "68b6cd76911c3c63c8836e50bc41215471024489c3bde67c38e300c9f6346e36",
+      "verdict": "accepted_for_implementation",
+      "designAcceptance": true,
+      "productAcceptance": false,
+      "openImportantFindings": 0,
+      "finalReviewedInputs": [
+        {
+          "path": ".planning/PROJECT.md",
+          "sha256": "7301ce234d0548181284743a0f9175c08938aa7b05f1dfe1962f0a539adf308f"
+        },
+        {
+          "path": ".planning/DESIGN.md",
+          "sha256": "7f1b204d69ea0a78466af2d676eaeacff1dc07e8bfa76f6f8c7767eebeb48ba4"
+        },
+        {
+          "path": ".planning/RESEARCH.md",
+          "sha256": "072b9a236547b02c7785912a0cbd2c343c4d05fa7e91752b05ac8de16103f98a"
+        },
+        {
+          "path": ".planning/contracts/adapter-v2.md",
+          "sha256": "03da5f70b3a98626eeeea5088fcba793f47fa9c49ef678fb96f6851a9e809077"
+        },
+        {
+          "path": ".planning/contracts/verification-catalog.sql",
+          "sha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b"
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/proofs.md",
+          "sha256": "7d0205ded0787eeba594d1de4f3998a0c32a659fcca3468b5ed820a46988c76c"
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/yjs-results.json",
+          "sha256": "742c0407560df412c485fc540b9ccbcfcb1a0b6c429667fe89d4f82055b308b6"
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/sqlite-results.json",
+          "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe"
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+          "sha256": "1f0b72bac082c39dbbf6442d2da9b46d8bfa1b8e142bd3cfe4447a5ba5771de0"
+        },
+        {
+          "path": ".planning/REVIEW.md",
+          "sha256": "6bfb51b35449707879fb67426465a9c32efbccc314eae00c660d6fb6a1eb4aed"
+        },
+        {
+          "path": "docs/glossary.md",
+          "sha256": "f74ec8c3619742b309bce08ac2ae3df8b2b696765abce87e41258cbcc7dcab7a"
+        }
+      ],
+      "priorRounds": [
+        {
+          "path": ".planning/evidence/2026-10-14/review-1.json",
+          "sha256": "fc27ed52f2746f485539f4021494b9fc34e0fedcda18e29929858095c978b5ca",
+          "designAcceptance": true,
+          "productAcceptance": false,
+          "openImportantFindings": 0,
+          "sameFinalInputsVerified": true,
+          "closedFindingIds": [
+            "R1-01",
+            "R1-02"
+          ],
+          "evidence": [
+            ".planning/evidence/2026-10-14/review-1.json:1"
+          ]
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/review-2.json",
+          "sha256": "814023447b31ef271b116caa95682db601154e829acd9d6c4af782754f0d378f",
+          "designAcceptance": true,
+          "productAcceptance": false,
+          "openImportantFindings": 0,
+          "sameFinalInputsVerified": true,
+          "closedFindingIds": [
+            "R2-F01",
+            "R2-F02",
+            "R2-F03",
+            "R2-F04",
+            "R2-F05",
+            "R2-F06"
+          ],
+          "evidence": [
+            ".planning/evidence/2026-10-14/review-2.json:1"
+          ]
+        }
+      ]
+    },
+    {
+      "phase": "accepted-before-final-wording-correction",
+      "reportSha256": "3be518f983ad656b2042a0b3205f86cb09c2d0edbaa56a199666313d66fdfd1a",
+      "verdict": "accepted_for_implementation",
+      "designAcceptance": true,
+      "productAcceptance": false,
+      "openImportantFindings": 0,
+      "finalReviewedInputs": [
+        {
+          "path": ".planning/PROJECT.md",
+          "sha256": "2916f1cfbf0132137f79dde0ef76992a8cea61ce3566b8fe863661b50ad6b73b"
+        },
+        {
+          "path": ".planning/DESIGN.md",
+          "sha256": "790bda373794e8fed97e78fa08bdfc6b5ce72f2d2b57a42964dde2aebcc7e17f"
+        },
+        {
+          "path": ".planning/RESEARCH.md",
+          "sha256": "66dad80ffa5838e205d49ebe15601b485f85ded236dc0ecdc2efbb505920fcf2"
+        },
+        {
+          "path": ".planning/contracts/adapter-v2.md",
+          "sha256": "460369171c946df3400584a6dd2652a24aabc409c9afab6c874b3a221cfe0962"
+        },
+        {
+          "path": ".planning/contracts/verification-catalog.sql",
+          "sha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b"
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/proofs.md",
+          "sha256": "3f0723420063a0745290ee96985839a3d8a6cb8da55b256572a6a11df8b82e6b"
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/yjs-results.json",
+          "sha256": "742c0407560df412c485fc540b9ccbcfcb1a0b6c429667fe89d4f82055b308b6"
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/sqlite-results.json",
+          "sha256": "3579f1a93b2e498b5ffeae009549c24ce63dc6483800c8217d5c39dc7fd779fe"
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+          "sha256": "3d6296f4790741bd886cf76c0ca3ac8b291390dbd2238d485c38d5bcc69a8e3e"
+        },
+        {
+          "path": ".planning/REVIEW.md",
+          "sha256": "883c3cfbd164b6fb2999f1a756c80c89756fa5b941f996d0118866a46396d86a"
+        },
+        {
+          "path": "docs/glossary.md",
+          "sha256": "1f30cd843310b791ea0e12705391e7ea9a2d5b5802910f2b3bb053134dfab7ab"
+        }
+      ],
+      "priorRounds": [
+        {
+          "path": ".planning/evidence/2026-10-14/review-1.json",
+          "sha256": "106864c6a17e8dbcd24c132e90a081578e1540b7aef8c39fa108906bbd952e8d",
+          "designAcceptance": true,
+          "productAcceptance": false,
+          "openImportantFindings": 0,
+          "sameFinalInputsVerified": true,
+          "closedFindingIds": [
+            "R1-01",
+            "R1-02"
+          ],
+          "evidence": [
+            ".planning/evidence/2026-10-14/review-1.json:1"
+          ]
+        },
+        {
+          "path": ".planning/evidence/2026-10-14/review-2.json",
+          "sha256": "269320a992b7f2f79cd611b31e6bf346a137822e955dc17789972c7cf281c097",
+          "designAcceptance": true,
+          "productAcceptance": false,
+          "openImportantFindings": 0,
+          "sameFinalInputsVerified": true,
+          "closedFindingIds": [
+            "R2-F01",
+            "R2-F02",
+            "R2-F03",
+            "R2-F04",
+            "R2-F05",
+            "R2-F06"
+          ],
+          "evidence": [
+            ".planning/evidence/2026-10-14/review-2.json:1"
+          ]
+        }
+      ]
+    }
+  ],
+  "finalEditorialRecheck": {
+    "date": "2026-10-14",
+    "method": "수락한 11개 입력의 임시 사본과 최종 파일을 실제 문구·바이트로 대조하고, 변경하지 않은 타입 본문을 새 strict 명령으로 확인했다. 1·2심의 최종 11개 해시와 중요 지적 종료를 다시 확인했다.",
+    "changes": [
+      {
+        "path": ".planning/PROJECT.md",
+        "changeScope": "metadata-status-only",
+        "previousSha256": "7301ce234d0548181284743a0f9175c08938aa7b05f1dfe1962f0a539adf308f",
+        "currentSha256": "2916f1cfbf0132137f79dde0ef76992a8cea61ce3566b8fe863661b50ad6b73b"
+      },
+      {
+        "path": ".planning/DESIGN.md",
+        "changeScope": "metadata-status-only",
+        "previousSha256": "7f1b204d69ea0a78466af2d676eaeacff1dc07e8bfa76f6f8c7767eebeb48ba4",
+        "currentSha256": "790bda373794e8fed97e78fa08bdfc6b5ce72f2d2b57a42964dde2aebcc7e17f"
+      },
+      {
+        "path": ".planning/RESEARCH.md",
+        "changeScope": "metadata-status-only",
+        "previousSha256": "072b9a236547b02c7785912a0cbd2c343c4d05fa7e91752b05ac8de16103f98a",
+        "currentSha256": "66dad80ffa5838e205d49ebe15601b485f85ded236dc0ecdc2efbb505920fcf2"
+      },
+      {
+        "path": ".planning/contracts/adapter-v2.md",
+        "changeScope": "metadata-status-only",
+        "previousSha256": "03da5f70b3a98626eeeea5088fcba793f47fa9c49ef678fb96f6851a9e809077",
+        "currentSha256": "460369171c946df3400584a6dd2652a24aabc409c9afab6c874b3a221cfe0962"
+      },
+      {
+        "path": ".planning/evidence/2026-10-14/proofs.md",
+        "changeScope": "metadata-status-only",
+        "previousSha256": "7d0205ded0787eeba594d1de4f3998a0c32a659fcca3468b5ed820a46988c76c",
+        "currentSha256": "3f0723420063a0745290ee96985839a3d8a6cb8da55b256572a6a11df8b82e6b"
+      },
+      {
+        "path": ".planning/evidence/2026-10-14/adapter-typecheck.json",
+        "changeScope": "matching-document-hash-only",
+        "previousSha256": "1f0b72bac082c39dbbf6442d2da9b46d8bfa1b8e142bd3cfe4447a5ba5771de0",
+        "currentSha256": "3d6296f4790741bd886cf76c0ca3ac8b291390dbd2238d485c38d5bcc69a8e3e"
+      },
+      {
+        "path": ".planning/REVIEW.md",
+        "changeScope": "review-status-evidence-summary-and-g0-next-scope",
+        "previousSha256": "6bfb51b35449707879fb67426465a9c32efbccc314eae00c660d6fb6a1eb4aed",
+        "currentSha256": "883c3cfbd164b6fb2999f1a756c80c89756fa5b941f996d0118866a46396d86a"
+      },
+      {
+        "path": "docs/glossary.md",
+        "changeScope": "metadata-status-only",
+        "previousSha256": "f74ec8c3619742b309bce08ac2ae3df8b2b696765abce87e41258cbcc7dcab7a",
+        "currentSha256": "1f30cd843310b791ea0e12705391e7ea9a2d5b5802910f2b3bb053134dfab7ab"
+      }
+    ],
+    "scopeUnchanged": true,
+    "designAcceptance": true,
+    "productAcceptance": false,
+    "openImportantFindings": 0,
+    "typecheck": {
+      "scope": "review-3-final-editorial-contract-typecheck",
+      "productAcceptance": false,
+      "node": "v24.18.1",
+      "typescript": "5.9.3",
+      "command": [
+        "/Users/bjchoi/.nvm/versions/node/v24.18.1/bin/node",
+        "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/node_modules/.pnpm/typescript@5.9.3/node_modules/typescript/bin/tsc",
+        "--noEmit",
+        "--strict",
+        "--target",
+        "ES2024",
+        "--module",
+        "ESNext",
+        "--moduleResolution",
+        "Bundler",
+        "/var/folders/mm/kmj45ls13zzfqssk63kptb7c0000gn/T/causal-review3-w45fui8b/adapter-v2.d.ts"
+      ],
+      "exitCode": 0,
+      "output": "",
+      "sourceSha256": "d328900af4125d6e4b95e7c9f1d8d766c9914096134b050da8f05e2b344198f7",
+      "documentSha256": "460369171c946df3400584a6dd2652a24aabc409c9afab6c874b3a221cfe0962",
+      "bodyUnchangedFromAcceptedContract": true,
+      "executionEvidence": "Fresh exec output in this final editorial review turn; it returned exitCode 0."
+    },
+    "evidence": [
+      ".planning/REVIEW.md:20",
+      ".planning/REVIEW.md:70-74",
+      ".planning/REVIEW.md:83-89",
+      ".planning/DESIGN.md:200-213"
+    ]
+  },
+  "finalWordingRecheck": {
+    "date": "2026-10-14",
+    "path": ".planning/REVIEW.md",
+    "line": 90,
+    "previousSha256": "883c3cfbd164b6fb2999f1a756c80c89756fa5b941f996d0118866a46396d86a",
+    "currentSha256": "97a63a1ae15496048147638ceb52551f496c54b2e24c00c5a40a2adf9f88e11b",
+    "method": "최종 문장 하나를 이전 문장으로 복원한 메모리 바이트의 SHA-256이 이전 수락 해시와 같은지 확인했다. 나머지 10개 입력과 1·2심의 현재 11개 입력 해시도 대조했다.",
+    "oneSentenceOnlyVerified": true,
+    "contractAndVerdictUnchanged": true,
+    "executionTestsRepeated": false,
+    "designAcceptance": true,
+    "productAcceptance": false,
+    "openImportantFindings": 0,
+    "evidence": [
+      ".planning/REVIEW.md:90",
+      ".planning/DESIGN.md:200-213"
+    ]
+  }
+}

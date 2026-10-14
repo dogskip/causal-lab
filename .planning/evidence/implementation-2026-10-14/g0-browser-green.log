@@ -1,0 +1,13 @@
+
+Running 4 tests using 1 worker
+
+  ✓  1 e2e/g0.spec.ts:19:1 › state follows the actual delivery at time five (588ms)
+  ✓  2 e2e/g0.spec.ts:29:1 › the initial screen does not contain a future command (380ms)
+  ✓  3 e2e/g0.spec.ts:38:1 › reserved replica names are visible and different values remain different (245ms)
+  ✓  4 e2e/g0.spec.ts:46:1 › the real Mermaid parser preserves sender and receiver (253ms)
+
+  4 passed (2.7s)
+[WebServer] (node:62048) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[WebServer] (Use `node --trace-warnings ...` to show where the warning was created)
+(node:62059) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)

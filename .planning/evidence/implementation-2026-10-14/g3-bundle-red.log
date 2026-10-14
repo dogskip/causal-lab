@@ -1,0 +1,25 @@
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+ ❯ test/bundle-v2.test.ts (0 test)
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/bundle-v2.test.ts [ test/bundle-v2.test.ts ]
+Error: Cannot find module '../src/verify/bundle.js' imported from /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/test/bundle-v2.test.ts
+ ❯ test/bundle-v2.test.ts:4:1
+      2| import { createBuiltinContext } from '../src/node/registry.js';
+      3| import { executeVerification, replayVerification } from '../src/verify…
+      4| import { readBundle, statesAt } from '../src/verify/bundle.js';
+       | ^
+      5| import { jcs } from '../src/verify/json.js';
+      6| import { sha256Hex } from '../src/sha256.js';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  19:33:57
+   Duration  160ms (transform 61ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+

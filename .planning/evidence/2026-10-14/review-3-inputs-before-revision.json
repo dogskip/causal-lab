@@ -1,0 +1,38 @@
+{
+  "scope": "review-3-contracts-before-revision",
+  "productAcceptance": false,
+  "files": [
+    {
+      "path": ".planning/PROJECT.md",
+      "sha256": "fa06241247487ff61788625051aa8f43b6b6fe8e5dd8610c76123bd67b42c1b6"
+    },
+    {
+      "path": ".planning/DESIGN.md",
+      "sha256": "52e415da6f6cb7a36471497e08b0aadd8f61b74c7c83428a44071d46f344ad62"
+    },
+    {
+      "path": ".planning/RESEARCH.md",
+      "sha256": "072b9a236547b02c7785912a0cbd2c343c4d05fa7e91752b05ac8de16103f98a"
+    },
+    {
+      "path": ".planning/REVIEW.md",
+      "sha256": "f67edd37b8152ba659d059ca4c8100847a0084410794c2e5dcfbadc2bf44ae3c"
+    },
+    {
+      "path": ".planning/contracts/adapter-v2.md",
+      "sha256": "c1f8387895f665ab394a5a497d52e0f31c4c38f36bfde3b4ebf1ebb90b0a4b7e"
+    },
+    {
+      "path": ".planning/contracts/verification-catalog.sql",
+      "sha256": "e86bd12e5e85bf46b80cf7b04ed614f570815428fcce8b73adecce4df41a346b"
+    },
+    {
+      "path": "docs/glossary.md",
+      "sha256": "99902ec081a73005aeb3c4739729e3f59907b08bc758b7a53a342464a2ed4ddb"
+    },
+    {
+      "path": ".planning/evidence/2026-10-14/proofs.md",
+      "sha256": "7d0205ded0787eeba594d1de4f3998a0c32a659fcca3468b5ed820a46988c76c"
+    }
+  ]
+}

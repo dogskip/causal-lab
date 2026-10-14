@@ -1,0 +1,542 @@
+{
+  "scope": "design-artifact-consistency",
+  "productAcceptance": false,
+  "allPassed": true,
+  "checks": [
+    {
+      "id": "original-files-preserved",
+      "passed": true,
+      "detail": {
+        "baselineFiles": 80,
+        "changed": [
+          ".planning/DESIGN.md",
+          ".planning/PROJECT.md",
+          "docs/glossary.md"
+        ],
+        "missing": []
+      }
+    },
+    {
+      "id": "review-1-final-inputs",
+      "passed": true,
+      "detail": {
+        "mismatches": [],
+        "inputCount": 11
+      }
+    },
+    {
+      "id": "review-1-design-only-acceptance",
+      "passed": true,
+      "detail": {
+        "designAcceptance": true,
+        "productAcceptance": false,
+        "openImportantFindings": 0
+      }
+    },
+    {
+      "id": "review-2-final-inputs",
+      "passed": true,
+      "detail": {
+        "mismatches": [],
+        "inputCount": 11
+      }
+    },
+    {
+      "id": "review-2-design-only-acceptance",
+      "passed": true,
+      "detail": {
+        "designAcceptance": true,
+        "productAcceptance": false,
+        "openImportantFindings": 0
+      }
+    },
+    {
+      "id": "review-3-final-inputs",
+      "passed": true,
+      "detail": {
+        "mismatches": [],
+        "inputCount": 11
+      }
+    },
+    {
+      "id": "review-3-design-only-acceptance",
+      "passed": true,
+      "detail": {
+        "designAcceptance": true,
+        "productAcceptance": false,
+        "openImportantFindings": 0
+      }
+    },
+    {
+      "id": "evidence-json-parses",
+      "passed": true,
+      "detail": {
+        "files": [
+          "adapter-typecheck.json",
+          "baseline-manifest.json",
+          "baseline-results.json",
+          "initial-analysis-preservation.json",
+          "initial-browser-results.json",
+          "initial-mermaid-probe.json",
+          "review-1.json",
+          "review-2-failure-replay.json",
+          "review-2-final-sql-boundary.json",
+          "review-2-final-sql-negative-results.json",
+          "review-2-final-sqlite-results.json",
+          "review-2-final-typecheck.json",
+          "review-2-final-yjs-results.json",
+          "review-2-final-yjs-results.json.failure.json",
+          "review-2-final-yjs-results.json.failure.replay.json",
+          "review-2-final-yjs-results.json.incomplete.json",
+          "review-2-final-yjs-results.json.incomplete.replay.json",
+          "review-2-final-yjs-results.json.normal.json",
+          "review-2-final-yjs-results.json.normal.replay.json",
+          "review-2-final-yjs-results.json.tampered-bootstrap.json",
+          "review-2-final-yjs-results.json.tampered-code.json",
+          "review-2-final-yjs-results.json.tampered-packet.json",
+          "review-2-final-yjs-results.json.tampered-version.json",
+          "review-2-observation-reference-counterexample.json",
+          "review-2-original-sql-boundary.json",
+          "review-2-revised-sql-independent.json",
+          "review-2-revised-sqlite-results.json",
+          "review-2-revised-yjs-results.json",
+          "review-2-same-time-counterexample.json",
+          "review-2-sqlite-counterexamples.json",
+          "review-2-sqlite-nul-counterexample.json",
+          "review-2.json",
+          "review-3-contract-counterexamples.json",
+          "review-3-evidence-consistency.json",
+          "review-3-inputs-before-revision.json",
+          "review-3-revised-contract-results.json",
+          "review-3-revised-contract-results.json.empty-reconcile.repeat.json",
+          "review-3-revised-contract-results.json.interrupted.repeat.json",
+          "review-3-revised-contract-results.json.missing-pair.repeat.json",
+          "review-3-revised-contract-results.json.new-command.repeat.json",
+          "review-3-revised-contract-results.json.new-partition.repeat.json",
+          "review-3-revised-contract-results.json.normal.repeat.json",
+          "review-3-revised-contract-results.json.wrong-accept.repeat.json",
+          "review-3-sqlite-results.json",
+          "review-3-typecheck.json",
+          "review-3-yjs-results.json",
+          "review-3-yjs-results.json.failure.json",
+          "review-3-yjs-results.json.failure.replay.json",
+          "review-3-yjs-results.json.incomplete.json",
+          "review-3-yjs-results.json.incomplete.replay.json",
+          "review-3-yjs-results.json.normal.json",
+          "review-3-yjs-results.json.normal.replay.json",
+          "review-3-yjs-results.json.tampered-bootstrap.json",
+          "review-3-yjs-results.json.tampered-code.json",
+          "review-3-yjs-results.json.tampered-packet.json",
+          "review-3-yjs-results.json.tampered-version.json",
+          "review-3.json",
+          "sqlite-results.json",
+          "yjs-results.json",
+          "yjs-results.json.failure.json",
+          "yjs-results.json.failure.replay.json",
+          "yjs-results.json.incomplete.json",
+          "yjs-results.json.incomplete.replay.json",
+          "yjs-results.json.normal.json",
+          "yjs-results.json.normal.replay.json",
+          "yjs-results.json.tampered-bootstrap.json",
+          "yjs-results.json.tampered-code.json",
+          "yjs-results.json.tampered-packet.json",
+          "yjs-results.json.tampered-version.json"
+        ]
+      }
+    },
+    {
+      "id": "document-authority:.planning/PROJECT.md",
+      "passed": true,
+      "detail": {
+        "missing": []
+      }
+    },
+    {
+      "id": "korean-word-candidates:.planning/PROJECT.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-local-links:.planning/PROJECT.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-authority:.planning/DESIGN.md",
+      "passed": true,
+      "detail": {
+        "missing": []
+      }
+    },
+    {
+      "id": "korean-word-candidates:.planning/DESIGN.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-local-links:.planning/DESIGN.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-authority:.planning/RESEARCH.md",
+      "passed": true,
+      "detail": {
+        "missing": []
+      }
+    },
+    {
+      "id": "korean-word-candidates:.planning/RESEARCH.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-local-links:.planning/RESEARCH.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-authority:.planning/REVIEW.md",
+      "passed": true,
+      "detail": {
+        "missing": []
+      }
+    },
+    {
+      "id": "korean-word-candidates:.planning/REVIEW.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-local-links:.planning/REVIEW.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-authority:.planning/contracts/adapter-v2.md",
+      "passed": true,
+      "detail": {
+        "missing": []
+      }
+    },
+    {
+      "id": "korean-word-candidates:.planning/contracts/adapter-v2.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-local-links:.planning/contracts/adapter-v2.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-authority:docs/glossary.md",
+      "passed": true,
+      "detail": {
+        "missing": []
+      }
+    },
+    {
+      "id": "korean-word-candidates:docs/glossary.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-local-links:docs/glossary.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-authority:.planning/evidence/2026-10-14/proofs.md",
+      "passed": true,
+      "detail": {
+        "missing": []
+      }
+    },
+    {
+      "id": "korean-word-candidates:.planning/evidence/2026-10-14/proofs.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "document-local-links:.planning/evidence/2026-10-14/proofs.md",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "yjs-tested-source",
+      "passed": true,
+      "detail": {
+        "sha256": "74443296063bea28323b3fa05ea0e475461932546161c89262f74bbcae4ff3dc"
+      }
+    },
+    {
+      "id": "yjs-scoped-results",
+      "passed": true,
+      "detail": {
+        "checks": 12,
+        "implementation": {
+          "name": "yjs",
+          "version": "13.6.27"
+        }
+      }
+    },
+    {
+      "id": "sqlite-scoped-results",
+      "passed": true,
+      "detail": {
+        "checks": 25,
+        "sqliteVersion": "3.53.1"
+      }
+    },
+    {
+      "id": "yjs-pinned-dependency",
+      "passed": true,
+      "detail": {
+        "sha256": "9af13108c9bed295bce6d11a57509693fa2dc4c724a61b520a90c70cdb79cf39"
+      }
+    },
+    {
+      "id": "separate-process-replay:normal",
+      "passed": true,
+      "detail": {
+        "expectedVerdict": "passed",
+        "replayPid": 59099
+      }
+    },
+    {
+      "id": "packet:normal:9f7fd06c2c95f3109eaac7db76eaa157e6da5e6615671e7316202d43138cb03c",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:normal:1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:normal:e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:normal:d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:normal:318f61ef7ff6cbc47589beaa82ea5f539124ce668063caf91bb633c2c0d63c43",
+      "passed": true,
+      "detail": {
+        "byteLength": 106
+      }
+    },
+    {
+      "id": "separate-process-replay:failure",
+      "passed": true,
+      "detail": {
+        "expectedVerdict": "failed",
+        "replayPid": 59101
+      }
+    },
+    {
+      "id": "packet:failure:ea9b0c6e05ed81bfa19a9ec184c97c69f0a28b6bd894f563ddf08ac493e69991",
+      "passed": true,
+      "detail": {
+        "byteLength": 34
+      }
+    },
+    {
+      "id": "packet:failure:1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:failure:e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:failure:d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:failure:58d028a95b97a311aeb7eaa1aee73db41784312b8cdb0cd91e72df246cd98c02",
+      "passed": true,
+      "detail": {
+        "byteLength": 112
+      }
+    },
+    {
+      "id": "separate-process-replay:incomplete",
+      "passed": true,
+      "detail": {
+        "expectedVerdict": "inconclusive",
+        "replayPid": 59102
+      }
+    },
+    {
+      "id": "packet:incomplete:9f7fd06c2c95f3109eaac7db76eaa157e6da5e6615671e7316202d43138cb03c",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:incomplete:1008d107da822640148112845c167929f076f02b43e9b38c74ce5bb0bead6d48",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:incomplete:e8b24501f85b9c910cf374389ba975d8427987cd270e44b7a9132aee063575a2",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "packet:incomplete:d2af1fc1e11525f49d0386ff8bb313bef798a974d1b046a23e67ff9149ae9a3f",
+      "passed": true,
+      "detail": {
+        "byteLength": 28
+      }
+    },
+    {
+      "id": "adapter-tested-source",
+      "passed": true,
+      "detail": {
+        "sourceSha256": "d328900af4125d6e4b95e7c9f1d8d766c9914096134b050da8f05e2b344198f7",
+        "exitCode": 0
+      }
+    },
+    {
+      "id": "revised-contract-scoped-results",
+      "passed": true,
+      "detail": {
+        "cases": [
+          [
+            "normal",
+            "passed"
+          ],
+          [
+            "wrong-accept",
+            "failed"
+          ],
+          [
+            "missing-pair",
+            "inconclusive"
+          ],
+          [
+            "new-command",
+            "inconclusive"
+          ],
+          [
+            "new-partition",
+            "inconclusive"
+          ],
+          [
+            "interrupted",
+            "inconclusive"
+          ],
+          [
+            "empty-reconcile",
+            "error"
+          ]
+        ],
+        "sourceSha256": "901e169293bdcb7f2e688a40d9ab5d923fe6ccc5f4c298f9842782038a0387cb"
+      }
+    },
+    {
+      "id": "unchanged-product-regression",
+      "passed": true,
+      "detail": {
+        "node": "v24.18.1",
+        "pnpm": "10.28.2",
+        "tasks": [
+          {
+            "task": "lint",
+            "exitCode": 0,
+            "scope": "unchanged-product-regression",
+            "location": "original-read-only",
+            "log": ".planning/evidence/2026-10-14/baseline-lint.log"
+          },
+          {
+            "task": "typecheck",
+            "exitCode": 0,
+            "scope": "unchanged-product-regression",
+            "location": "original-read-only",
+            "log": ".planning/evidence/2026-10-14/baseline-typecheck.log"
+          },
+          {
+            "task": "build",
+            "exitCode": 0,
+            "scope": "unchanged-product-regression",
+            "location": "isolated-identical-source",
+            "log": ".planning/evidence/2026-10-14/baseline-build.log"
+          },
+          {
+            "task": "test",
+            "exitCode": 0,
+            "scope": "unchanged-product-regression",
+            "location": "isolated-identical-source",
+            "log": ".planning/evidence/2026-10-14/baseline-test.log"
+          },
+          {
+            "task": "test:deep",
+            "exitCode": 0,
+            "scope": "unchanged-product-regression",
+            "location": "isolated-identical-source",
+            "log": ".planning/evidence/2026-10-14/baseline-test-deep.log"
+          }
+        ]
+      }
+    },
+    {
+      "id": "evidence-does-not-enter-eslint-project",
+      "passed": true,
+      "detail": []
+    },
+    {
+      "id": "final-lint",
+      "passed": true,
+      "detail": {
+        "command": [
+          "/Users/bjchoi/.nvm/versions/node/v24.18.1/bin/node",
+          "/Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab/node_modules/eslint/bin/eslint.js",
+          "."
+        ],
+        "exitCode": 0
+      }
+    },
+    {
+      "id": "git-diff-whitespace",
+      "passed": true,
+      "detail": {
+        "command": [
+          "git",
+          "diff",
+          "--check"
+        ],
+        "exitCode": 0,
+        "output": ""
+      }
+    }
+  ]
+}

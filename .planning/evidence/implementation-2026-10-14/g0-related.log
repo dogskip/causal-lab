@@ -1,0 +1,115 @@
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+ ❯ test/trace.test.ts (9 tests | 3 failed) 7ms
+     × maps every trace kind to a mermaid line 4ms
+     × includes dropped events in mermaid output 0ms
+     × includes held events in mermaid output 0ms
+ ❯ test/frame.test.ts (13 tests | 1 failed) 7ms
+     × picks the latest snapshot at or before the time 2ms
+
+ Test Files  2 failed | 4 passed (6)
+      Tests  4 failed | 98 passed (102)
+   Start at  18:07:31
+   Duration  251ms (transform 268ms, setup 0ms, import 354ms, tests 148ms, environment 0ms)
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  test/frame.test.ts > snapshots > picks the latest snapshot at or before the time
+AssertionError: expected undefined to be { at: 1, states: { a: {}, b: {} } } // Object.is equality
+
+- Expected:
+{
+  "at": 1,
+  "states": {
+    "a": {},
+    "b": {},
+  },
+}
+
++ Received:
+undefined
+
+ ❯ test/frame.test.ts:90:38
+     88|
+     89|   it("picks the latest snapshot at or before the time", () => {
+     90|     expect(snapshotAt(snapshots, 0)).toBe(snapshots[0]);
+       |                                      ^
+     91|     expect(snapshotAt(snapshots, 1)).toBe(snapshots[0]);
+     92|     expect(snapshotAt(snapshots, 2)).toBe(snapshots[0]);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  test/trace.test.ts > traceToMermaid > maps every trace kind to a mermaid line
+AssertionError: expected 'sequenceDiagram\nparticipant a\nparti…' to contain 'a ->> schedule a:1 (t=0): b'
+
+- Expected
++ Received
+
+- a ->> schedule a:1 (t=0): b
++ sequenceDiagram
++ participant a
++ participant b
++ Note over a: local a:1 (t=0)
++ a->>b: schedule a:1 (t=0)
++ a--xb: drop a:1 (t=0)
++ Note over a: partition a<->b (t=1)
++ a--)b: hold a:1 (t=2)
++ Note over system: heal (t=3)
++ a->>b: deliver a:1 (t=3)
+
+ ❯ test/trace.test.ts:31:17
+     29|     const out = traceToMermaid(trace);
+     30|     expect(out).toContain("Note over a: local a:1 (t=0)");
+     31|     expect(out).toContain("a ->> schedule a:1 (t=0): b");
+       |                 ^
+     32|     expect(out).toContain("a --x drop a:1 (t=0): b");
+     33|     expect(out).toContain("Note over a: partition a<->b (t=1)");
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  test/trace.test.ts > traceToMermaid > includes dropped events in mermaid output
+AssertionError: expected 'sequenceDiagram\nparticipant a\nparti…' to contain 'a --x drop a:1 (t=0): b'
+
+- Expected
++ Received
+
+- a --x drop a:1 (t=0): b
++ sequenceDiagram
++ participant a
++ participant b
++ a--xb: drop a:1 (t=0)
+
+ ❯ test/trace.test.ts:113:21
+    111|     ];
+    112|     const mermaid = traceToMermaid(trace);
+    113|     expect(mermaid).toContain("a --x drop a:1 (t=0): b");
+       |                     ^
+    114|   });
+    115|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  test/trace.test.ts > traceToMermaid > includes held events in mermaid output
+AssertionError: expected 'sequenceDiagram\nparticipant a\nparti…' to contain 'a --) hold a:1 (t=0): b'
+
+- Expected
++ Received
+
+- a --) hold a:1 (t=0): b
++ sequenceDiagram
++ participant a
++ participant b
++ a--)b: hold a:1 (t=0)
+
+ ❯ test/trace.test.ts:121:21
+    119|     ];
+    120|     const mermaid = traceToMermaid(trace);
+    121|     expect(mermaid).toContain("a --) hold a:1 (t=0): b");
+       |                     ^
+    122|   });
+    123| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+

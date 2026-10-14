@@ -1,0 +1,51 @@
+export type Json = null | boolean | number | string | readonly Json[] | { readonly [key: string]: Json };
+export type Status = "passed" | "failed" | "inconclusive" | "error";
+export type DeliveryProfile = "independent-updates" | "ordered-session";
+export type Context = Readonly<{ replica: string; virtualTime: number; eventSequence: number; sessionId: string; randomUint32(): number }>;
+export type Outgoing = Readonly<{ to: string; sessionId: string; bytes: Uint8Array }>;
+export type CommandResult = Readonly<{
+  outcome: "accepted" | "rejected";
+  result: Json;
+  outgoing: readonly Outgoing[];
+}>;
+export type Manifest = Readonly<{
+  adapterApi: "causal-lab-adapter-v2";
+  model_id: string;
+  adapterId: string;
+  adapterVersion: string;
+  adapterSha256: string;
+  implementation: Readonly<{ name: string; version: string; integrity: string }>;
+  profile: DeliveryProfile;
+  recoveryPolicy: "full-state-exchange-v1";
+  observationVersion: string;
+  supportedCommands: readonly string[];
+  supportedChecks: readonly string[];
+}>;
+export interface ModelAdapter<State> {
+  readonly manifest: Manifest;
+  create(bootstrap: Json, context: Context): State;
+  command(state: State, command: Json, context: Context): CommandResult;
+  receive(state: State, from: string, sessionId: string, bytes: Uint8Array, context: Context): readonly Outgoing[];
+  reconcile(state: State, peer: string, sessionId: string, context: Context): readonly Outgoing[];
+  observe(state: State): Json;
+  close(state: State): void;
+}
+export type CheckResult = Readonly<{ checkId: string; passed: boolean; reason: string; evidence: Json }>;
+export type CheckContext = Readonly<{
+  caseDefinition: Json;
+  eventSequence: number;
+  virtualTime: number;
+  states: Readonly<Record<string, Json>>;
+  phase: "initial" | "command" | "delivery" | "recovery" | "final";
+  currentEvent: Json | null;
+  history: readonly Json[];
+  recoveryEvidence: Json | null;
+  completedRecovery: boolean;
+}>;
+export interface Invariant {
+  readonly id: string;
+  readonly version: string;
+  readonly sha256: string;
+  readonly phases: readonly CheckContext["phase"][];
+  check(context: CheckContext, parameters: Json): CheckResult;
+}

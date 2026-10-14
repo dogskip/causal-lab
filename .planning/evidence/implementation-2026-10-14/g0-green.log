@@ -1,0 +1,19 @@
+
+ RUN  v4.1.10 /Users/bjchoi/SynologyDrive/projects/test/labs-experiments/causal-lab
+
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > preserves every valid replica name as an own property before comparing states 1ms
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > orders version counters without locale-dependent collation 0ms
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > leaves all public state unchanged when put exceeds the event budget 52ms
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > leaves all public state unchanged when remove exceeds the event budget 58ms
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > leaves held messages, partitions, counters and RNG unchanged when heal exceeds the budget 104ms
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > rejects an overflowing scheduled arrival before changing the local replica 0ms
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > does not display a future operation before the first recorded state 0ms
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > captures actual state immediately after a message delivery 1ms
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > puts the receiver before the Mermaid label separator 0ms
+ ✓ test/g0-regression.test.ts > G0 requirement regressions > rejects a dangling symbolic link without creating its target 1ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  18:04:07
+   Duration  336ms (transform 39ms, setup 0ms, import 50ms, tests 218ms, environment 0ms)
+
