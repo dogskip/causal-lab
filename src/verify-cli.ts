@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { spawn } from "node:child_process";
+import { readFileSync, realpathSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { ContractError } from "./crdt.js";
@@ -17,10 +18,35 @@ export const EXIT_CODES: Readonly<Record<Status, number>> = {
 export async function runCli(
   args: readonly string[],
 ): Promise<Readonly<Record<string, unknown>>> {
-  const [mode, inputPath, ...flags] = args;
+  if (args.length === 1 && (args[0] === "--version" || args[0] === "-v")) {
+    const pkg = JSON.parse(
+      readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+    ) as { version: string };
+    return { version: pkg.version };
+  }
+  const [rawMode, second, ...rest] = args;
+  let mode: string;
+  let inputPath: string | undefined;
+  let flags: string[];
+  if (rawMode === "run") {
+    mode = "verify";
+    if (second === undefined || second.startsWith("--")) {
+      inputPath = fileURLToPath(
+        new URL("../examples/verification/yjs.json", import.meta.url),
+      );
+      flags = args.slice(1);
+    } else {
+      inputPath = second;
+      flags = rest;
+    }
+  } else {
+    mode = rawMode ?? "";
+    inputPath = second;
+    flags = rest;
+  }
   if ((mode !== "verify" && mode !== "replay") || inputPath === undefined)
     throw new ContractError(
-      "usage: causal-lab-verify verify|replay FILE [--out DIR] [--module FILE] [--timeout MS] [--runs N --seed N --path PATH]",
+      "usage: crdt-fuzz run [--target yjs] | crdt-fuzz verify|replay FILE [--out DIR] [--module FILE] [--timeout MS] [--runs N --seed N --path PATH]",
     );
   const options = new Map<string, string>();
   for (let i = 0; i < flags.length; i += 2) {
@@ -36,12 +62,15 @@ export async function runCli(
         "--runs",
         "--seed",
         "--path",
+        "--target",
       ].includes(key) ||
       options.has(key)
     )
       throw new ContractError("invalid CLI option");
     options.set(key, value);
   }
+  if (options.has("--target") && options.get("--target") !== "yjs")
+    throw new ContractError("only --target yjs is supported in this alpha");
   const integer = (
     name: string,
     fallback: number,
@@ -209,7 +238,8 @@ export async function runCli(
 }
 if (
   process.argv[1] !== undefined &&
-  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+  realpathSync(resolve(process.argv[1])) ===
+    realpathSync(fileURLToPath(import.meta.url))
 ) {
   let result: Readonly<Record<string, unknown>>;
   try {
@@ -224,6 +254,11 @@ if (
       receipts: [],
     };
   }
-  process.stdout.write(jcs(result) + "\n");
-  process.exitCode = EXIT_CODES[result.status as Status] ?? 2;
+  if (typeof result.version === "string" && result.status === undefined) {
+    process.stdout.write(result.version + "\n");
+    process.exitCode = 0;
+  } else {
+    process.stdout.write(jcs(result) + "\n");
+    process.exitCode = EXIT_CODES[result.status as Status] ?? 2;
+  }
 }

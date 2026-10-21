@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -116,10 +116,13 @@ export function createEngineIdentity(): EngineIdentity {
   const packageInfo = JSON.parse(
     readFileSync(new URL("../../package.json", import.meta.url), "utf8"),
   ) as { version: string };
+  const lockfile = new URL("../../pnpm-lock.yaml", import.meta.url);
   return Object.freeze({
     engineVersion: packageInfo.version + (extension === ".ts" ? "-source" : ""),
     engineSha256: treeDigest(codeRoot),
-    lockSha256: fileDigest(new URL("../../pnpm-lock.yaml", import.meta.url)),
+    lockSha256: existsSync(lockfile)
+      ? fileDigest(lockfile)
+      : digest(new TextEncoder().encode("pnpm-lock.yaml not packaged")),
     randomVersion: "mulberry32-v1",
     schedulerVersion: "arrival-sequence-v1",
     canonicalization: "RFC8785",

@@ -57,6 +57,19 @@ it("verifies and replays in separate processes, preserving status exit codes", (
     );
   }
 });
+it("exposes run --target yjs and --version for the public name", () => {
+  const version = run(["--version"]);
+  expect(version.status, version.stdout + version.stderr).toBe(0);
+  expect(version.stdout.trim()).toMatch(/^\d+\.\d+\.\d+/u);
+  const result = run(["run", "--target", "yjs"]);
+  expect(result.status, result.stdout + result.stderr).toBe(0);
+  const summary = JSON.parse(result.stdout) as {
+    status: string;
+    receipts: { status: string }[];
+  };
+  expect(summary.status).toBe("passed");
+  expect(summary.receipts[0]?.status).toBe("passed");
+});
 it("rejects duplicate JSON keys and returns error status without a receipt", () => {
   const input = join(root, "bad.json");
   writeFileSync(input, '{"format_version":2,"format_version":2}');

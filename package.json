@@ -1,10 +1,27 @@
 {
-  "name": "causal-lab",
-  "version": "0.2.0",
+  "name": "crdt-fuzz",
+  "version": "0.3.0-alpha.1",
   "private": false,
   "type": "module",
-  "description": "Reproducible CRDT verification, independent checks and replayable failure files",
+  "description": "Deterministic fault injection for CRDTs, with replayable failure bundles",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dogskip/causal-lab.git"
+  },
+  "homepage": "https://dogskip.github.io/causal-lab/",
+  "bugs": {
+    "url": "https://github.com/dogskip/causal-lab/issues"
+  },
+  "keywords": [
+    "crdt",
+    "local-first",
+    "testing",
+    "fuzzing",
+    "distributed-systems",
+    "yjs",
+    "replication"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -24,14 +41,24 @@
     }
   },
   "bin": {
+    "crdt-fuzz": "./dist/verify-cli.js",
     "causal-lab": "./dist/server.js",
     "causal-lab-verify": "./dist/verify-cli.js"
   },
   "files": [
     "dist",
+    "docs/api-reference.md",
+    "docs/data-model.md",
+    "docs/demo-scenario1.md",
+    "docs/error-codes.md",
+    "docs/glossary.md",
+    "docs/openapi.json",
+    "docs/test-contract.md",
+    "docs/threat-model.md",
+    "docs/tutorial.md",
+    "docs/verification.md",
     "schema",
-    "examples",
-    "pnpm-lock.yaml"
+    "examples"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json && vite build",
