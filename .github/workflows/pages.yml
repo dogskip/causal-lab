@@ -1,7 +1,9 @@
 name: Pages
 
-# Manual only: publishing a public URL is a deliberate act.
+# Deploy every push to main, or run it by hand.
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:

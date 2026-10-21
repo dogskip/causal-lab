@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <title>Causal Lab — 한국어 시연</title>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <p><a href="../">English</a> · <a href="../verification.html">검증 파일 조회 — 실제 대상의 실패와 사건별 상태 확인</a></p>
+    <h1>Causal Lab</h1>
+    <p>
+      분할 · 지연 · 손실 · 중복 · 재정렬을 겪은 뒤에도 복제본들이 같은 값으로 모이는지 재생한다. 관찰-제거
+      맵(OR-Map) 구현이고, 가상 시간만 쓰며 서버와 네트워크를 쓰지 않는다. 같은 시나리오는 어디서나 같은
+      결과를 낸다.
+    </p>
+    <p>
+      <a href="#stories">실험</a>
+      <a href="#replay">재생</a>
+      <a href="#state">복제본 상태</a>
+      <a href="#receipt">영수증</a>
+      <a href="#editor">시나리오 편집</a>
+    </p>
+
+    <hr />
+    <h2 id="stories-title">실험</h2>
+    <ul id="stories"></ul>
+
+    <hr />
+    <h2 id="replay">재생</h2>
+    <p>
+      <button id="restart" type="button">처음</button>
+      <button id="play" type="button">재생</button>
+      <button id="next" type="button">다음 사건</button>
+      속도
+      <select id="speed">
+        <option value="0.5">0.5×</option>
+        <option value="1" selected>1×</option>
+        <option value="2">2×</option>
+      </select>
+      <input id="scrub" type="range" min="0" max="0" step="0.01" value="0" aria-label="시간 이동" />
+      <output id="clock" for="scrub">t=0</output>
+    </p>
+    <p id="beat" aria-live="polite"></p>
+    <p id="beat-detail"></p>
+    <p id="scenario-line"></p>
+    <p id="counters"></p>
+    <canvas id="timeline" width="1000" height="340"></canvas>
+    <p>표시 — ● 로컬 쓰기 · ─ 도착 · ┄ 손실 · ┈ 보류 · 연한 상자 분할 구간</p>
+    <p id="details"></p>
+    <p>타임라인을 클릭하면 그 사건을 설명한다. 단축키 Space 재생/정지 · ← → 사건 이동 · Home End 처음/끝.</p>
+
+    <hr />
+    <h2 id="state">복제본 상태</h2>
+    <table id="state-table" border="1" cellspacing="0" cellpadding="4"></table>
+
+    <hr />
+    <h2 id="receipt">영수증</h2>
+    <dl id="verdict"></dl>
+    <p>
+      같은 시나리오면 어디서나 같은 영수증 id가 나온다. 마지막 쓰기가 이기는 일반 저장소라면 동시에 쓴 값 중
+      하나가 사라진다.
+    </p>
+
+    <hr />
+    <details id="editor">
+      <summary>시나리오 편집</summary>
+      <p id="config-row"></p>
+      <p>
+        동작
+        <select id="step-action"></select>
+        at <input id="step-at" type="number" min="0" step="1" value="0" size="4" />
+        replica <input id="step-replica" value="a" size="6" />
+        left <input id="step-left" value="a" size="6" />
+        right <input id="step-right" value="b" size="6" />
+        key <input id="step-key" value="mode" size="8" />
+        value <input id="step-value" value="safe" size="10" />
+        <button id="add-step" type="button">스텝 추가</button>
+      </p>
+      <div id="step-table-wrap">
+        <table id="step-table" border="1" cellspacing="0" cellpadding="4">
+          <tr>
+            <th>#</th>
+            <th>at</th>
+            <th>동작</th>
+            <th>세부</th>
+            <th></th>
+          </tr>
+        </table>
+      </div>
+      <p>
+        JSON 파일 열기 <input id="file-input" type="file" accept="application/json" />
+        <button id="download" type="button">시나리오 내려받기</button>
+        <button id="copy" type="button">영수증 id 복사</button>
+      </p>
+      <p id="error" role="alert"></p>
+    </details>
+
+    <hr />
+    <p>용어 — 분할 partition · 복구 heal · 보류 held · 손실 dropped · 복제본 replica · 영수증 receipt</p>
+    <script type="module" src="../main.ts"></script>
+  </body>
+</html>

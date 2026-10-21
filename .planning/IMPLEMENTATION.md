@@ -4,7 +4,7 @@ authority_level: execution
 ssot: true
 owner: shared
 status: partial
-last_updated: 2026-10-14
+last_updated: 2026-10-21
 derived_from: [".planning/PROJECT.md", ".planning/DESIGN.md", "사용자의 SDD/TDD/E2E·재귀·회귀 구현 지시"]
 source_of_truth_for: ["구현 작업, 요구별 검사, 완료 증거"]
 must_not_be_overridden_by: []
@@ -47,3 +47,13 @@ TDD 스킬의 RED→GREEN→정비 순서를 따른다. 기존 검사가 결함�
 이번 변경은 feature/verification-tool-v2에서 작업하며 기존 변경을 유지했다. 설계 3심은 설계에 대한 증거이며 구현의 독립 3심을 대신하지 않는다.
 
 최종 로컬 확인은 lint/typecheck/build, 전체 301개 검사, 깊은 속성 검사 10개, headless E2E 16회다. 운영 의존성 점검은 알려진 취약점 0건이다. 증거와 미완료 항목은 evidence/implementation-2026-10-14/summary.md에 기록했다.
+
+## 2026-10-21 공개 준비
+
+사용자가 `.planning/MARKET.md`, `.planning/GROWTH.md`, `.planning/REFACTOR.md`의 13주 계획과 승인 6개를 확정했다. 이 절은 2026-10-14 부분 마감의 범위를 바꾸지 않고, 공개 준비 상태만 기록한다.
+
+- 이름·꾸러미: `crdt-fuzz@0.3.0-alpha.1`, `crdt-fuzz` 명령과 `run --target yjs` 별칭, `causal-lab`·`causal-lab-verify` 별칭 유지.
+- 화면: 영어 첫 화면 `/`, 한국어 시연 `/ko/`, 기록 조회 `verification.html`.
+- 검사: 302개 통과(2026-10-21), `pnpm build` 뒤 `pnpm test`. 새 `run`·`--version` 검사 포함.
+- 설치: `npm pack` → 임시 프로젝트 설치 → `crdt-fuzz --version`과 `run --target yjs` 통과. npm 공개와 저장소 이름 변경은 인증 대기.
+- 남은 WP-01 항목: npm 공개, GitHub 저장소 이름 변경, Pages 첫 배포.

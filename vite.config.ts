@@ -12,7 +12,12 @@ export default defineConfig({
     // Readable output: the deployed bundle stays auditable and keeps export names.
     minify: false,
     rollupOptions: {
-      input: { index: "index.html", core: "core.ts", verification: "verification.html" },
+      input: {
+        index: "index.html",
+        ko: "ko/index.html",
+        core: "core.ts",
+        verification: "verification.html",
+      },
       output: {
         // `core.ts` is both an entry and the app's dependency; keep its export names.
         minifyInternalExports: false,
