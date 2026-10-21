@@ -4,7 +4,7 @@ authority_level: execution
 ssot: true
 owner: shared
 status: partial
-last_updated: 2026-10-21
+last_updated: 2026-10-22
 derived_from: [".planning/PROJECT.md", ".planning/DESIGN.md", "사용자의 SDD/TDD/E2E·재귀·회귀 구현 지시"]
 source_of_truth_for: ["구현 작업, 요구별 검사, 완료 증거"]
 must_not_be_overridden_by: []
@@ -57,3 +57,11 @@ TDD 스킬의 RED→GREEN→정비 순서를 따른다. 기존 검사가 결함�
 - 검사: 302개 통과(2026-10-21), `pnpm build` 뒤 `pnpm test`. 새 `run`·`--version` 검사 포함.
 - 설치: `npm pack` → 임시 프로젝트 설치 → `crdt-fuzz --version`과 `run --target yjs` 통과. npm 공개와 저장소 이름 변경은 인증 대기.
 - 남은 WP-01 항목: npm 공개, GitHub 저장소 이름 변경, Pages 첫 배포.
+
+## 2026-10-22 WP-02 명령 표면
+
+`crdt-fuzz`의 공개 명령을 `src/cli/main.ts` 하나로 모았다. `init`, `run`, `verify`, `replay`, `open`, `list`가 같은 진입점을 사용하고, 기본 출력은 사람이 읽는 한 화면이며 `--json`은 CI용 한 줄 요약을 낸다. 종료 코드는 기존 계약(0/1/2/3)을 유지한다. `run --seeds N`과 `run --time SECONDS`는 기존 생성기 옵션 `--runs`·`--timeout`으로 변환한다.
+
+`init`은 `crdt-fuzz.config.mjs`, `adapters/example.mjs`(또는 `--ts`), `cases/<target>.json`을 만들고 기존 파일은 `--force` 없이 덮어쓰지 않는다. `open`은 기록 묶음을 다시 검증한 뒤 `127.0.0.1`에만 정적 조회 화면을 열고 `/bundle.js`로 묶음을 주입한다. `web/verification.ts`는 주입된 묶음을 읽는다. `list`는 내장 대상과 검사를 보여 준다.
+
+검사: `pnpm build`, 309개 통과, `pnpm typecheck`, `pnpm lint`. `npm pack` → 임시 프로젝트 설치에서 `--version`, `list`, `run --target yjs`, `init`, 생성 연결기로 `verify`, `open --no-open`을 확인했다. 남은 WP-02 항목은 없다.

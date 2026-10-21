@@ -51,6 +51,46 @@ function render(sequence: number): void {
   element<HTMLButtonElement>("verification-next").disabled =
     sequence === bundle.receipt.events.length;
 }
+function show(verified: ReplayBundle): void {
+  bundle = verified;
+  element("verification-status").textContent = labels[bundle.receipt.status];
+  element("verification-reason").textContent = bundle.receipt.reason;
+  const info = element("verification-info");
+  info.replaceChildren();
+  for (const [name, value] of [
+    ["대상", bundle.receipt.manifest.model_id],
+    ["정의 ID", bundle.case_id],
+    ["실행 ID", bundle.run_id],
+    ["전달", String(bundle.receipt.counts.deliveredMessages)],
+    ["명령", String(bundle.receipt.counts.committedCommands)],
+  ]) {
+    const term = document.createElement("dt");
+    term.textContent = name!;
+    const detail = document.createElement("dd");
+    detail.textContent = value!;
+    info.append(term, detail);
+  }
+  const checks = element("verification-checks");
+  checks.replaceChildren();
+  if (bundle.receipt.checks.length === 0)
+    checks.textContent = "아직 완료한 규칙 검사가 없습니다.";
+  for (const check of bundle.receipt.checks) {
+    const row = document.createElement("details");
+    row.className = "check";
+    row.dataset.passed = String(check.result.passed);
+    const heading = document.createElement("summary");
+    heading.textContent = `${check.result.passed ? "통과" : "실패"} · ${check.result.checkId} · ${check.phase} · 사건 ${check.eventSequence}`;
+    const reason = document.createElement("p");
+    reason.textContent = check.result.reason;
+    const evidence = document.createElement("pre");
+    evidence.textContent = JSON.stringify(check.result.evidence, null, 2);
+    row.append(heading, reason, evidence);
+    checks.append(row);
+  }
+  slider.max = String(bundle.receipt.events.length);
+  result.hidden = false;
+  render(0);
+}
 async function importFile(): Promise<void> {
   const version = ++generation;
   bundle = undefined;
@@ -65,44 +105,7 @@ async function importFile(): Promise<void> {
     );
     const verified = readBundle(text);
     if (version !== generation) return;
-    bundle = verified;
-    element("verification-status").textContent = labels[bundle.receipt.status];
-    element("verification-reason").textContent = bundle.receipt.reason;
-    const info = element("verification-info");
-    info.replaceChildren();
-    for (const [name, value] of [
-      ["대상", bundle.receipt.manifest.model_id],
-      ["정의 ID", bundle.case_id],
-      ["실행 ID", bundle.run_id],
-      ["전달", String(bundle.receipt.counts.deliveredMessages)],
-      ["명령", String(bundle.receipt.counts.committedCommands)],
-    ]) {
-      const term = document.createElement("dt");
-      term.textContent = name!;
-      const detail = document.createElement("dd");
-      detail.textContent = value!;
-      info.append(term, detail);
-    }
-    const checks = element("verification-checks");
-    checks.replaceChildren();
-    if (bundle.receipt.checks.length === 0)
-      checks.textContent = "아직 완료한 규칙 검사가 없습니다.";
-    for (const check of bundle.receipt.checks) {
-      const row = document.createElement("details");
-      row.className = "check";
-      row.dataset.passed = String(check.result.passed);
-      const heading = document.createElement("summary");
-      heading.textContent = `${check.result.passed ? "통과" : "실패"} · ${check.result.checkId} · ${check.phase} · 사건 ${check.eventSequence}`;
-      const reason = document.createElement("p");
-      reason.textContent = check.result.reason;
-      const evidence = document.createElement("pre");
-      evidence.textContent = JSON.stringify(check.result.evidence, null, 2);
-      row.append(heading, reason, evidence);
-      checks.append(row);
-    }
-    slider.max = String(bundle.receipt.events.length);
-    result.hidden = false;
-    render(0);
+    show(verified);
   } catch {
     if (version !== generation) return;
     error.textContent =
@@ -135,3 +138,14 @@ element("verification-download").addEventListener("click", () => {
   anchor.click();
   URL.revokeObjectURL(url);
 });
+const injected = (
+  globalThis as { __CRDT_FUZZ_BUNDLE__?: unknown }
+).__CRDT_FUZZ_BUNDLE__;
+if (injected !== undefined) {
+  try {
+    show(readBundle(injected));
+  } catch {
+    error.textContent =
+      "검증 파일을 확인할 수 없습니다. 형식, 크기, 해시 또는 기록 일관성이 잘못되었습니다.";
+  }
+}

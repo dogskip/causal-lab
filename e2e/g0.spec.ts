@@ -19,7 +19,7 @@ test.beforeEach(async ({ page }) => {
   page.on("pageerror", (error) => {
     errors.push(error.message);
   });
-  await page.goto("/");
+  await page.goto("/ko/index.html");
   await expect(page.locator("#stories button")).toHaveCount(6);
   await page.locator("#editor").evaluate((node) => {
     (node as HTMLDetailsElement).open = true;

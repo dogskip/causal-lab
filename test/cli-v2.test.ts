@@ -19,7 +19,7 @@ const fixture = {
 function run(args: string[]) {
   return spawnSync(
     process.execPath,
-    ["--import", "tsx", resolve("src/verify-cli.ts"), ...args],
+    ["--import", "tsx", resolve("src/cli/main.ts"), ...args],
     { encoding: "utf8", timeout: 15_000 },
   );
 }
@@ -42,7 +42,7 @@ it("verifies and replays in separate processes, preserving status exit codes", (
     const input = join(root, label + ".json");
     const output = join(root, label);
     writeFileSync(input, JSON.stringify(definition));
-    const first = run(["verify", input, "--out", output]);
+    const first = run(["verify", input, "--out", output, "--json"]);
     expect(first.stderr).not.toContain("Error:");
     expect(first.status, first.stdout + first.stderr).toBe(code);
     const record = readdirSync(output).find((name) =>
@@ -50,7 +50,7 @@ it("verifies and replays in separate processes, preserving status exit codes", (
     )!;
     const path = join(output, record);
     readBundle(readFileSync(path, "utf8"));
-    const replay = run(["replay", path]);
+    const replay = run(["replay", path, "--json"]);
     expect(replay.status, replay.stdout + replay.stderr).toBe(code);
     expect((JSON.parse(replay.stdout) as { matched: boolean }).matched).toBe(
       true,
@@ -61,7 +61,7 @@ it("exposes run --target yjs and --version for the public name", () => {
   const version = run(["--version"]);
   expect(version.status, version.stdout + version.stderr).toBe(0);
   expect(version.stdout.trim()).toMatch(/^\d+\.\d+\.\d+/u);
-  const result = run(["run", "--target", "yjs"]);
+  const result = run(["run", "--target", "yjs", "--json"]);
   expect(result.status, result.stdout + result.stderr).toBe(0);
   const summary = JSON.parse(result.stdout) as {
     status: string;
@@ -73,7 +73,7 @@ it("exposes run --target yjs and --version for the public name", () => {
 it("rejects duplicate JSON keys and returns error status without a receipt", () => {
   const input = join(root, "bad.json");
   writeFileSync(input, '{"format_version":2,"format_version":2}');
-  const result = run(["verify", input]);
+  const result = run(["verify", input, "--json"]);
   expect(result.status).toBe(2);
   expect(
     (JSON.parse(result.stdout) as { receipts: unknown[] }).receipts,
@@ -95,6 +95,7 @@ it("terminates a real non-cooperative target without inventing IDs or states", (
     module,
     "--timeout",
     "1500",
+    "--json",
   ]);
   expect(readFileSync(marker, "utf8")).toBe("started");
   expect(result.status).toBe(3);

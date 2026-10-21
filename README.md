@@ -4,7 +4,7 @@ authority_level: entrypoint
 ssot: true
 owner: shared
 status: partial
-last_updated: 2026-10-21
+last_updated: 2026-10-22
 derived_from: ["docs/verification.md", ".planning/IMPLEMENTATION.md", ".planning/GROWTH.md"]
 source_of_truth_for: ["project entrypoint"]
 must_not_be_overridden_by: []
@@ -34,7 +34,7 @@ checkout, the same run is:
 ```sh
 pnpm install
 pnpm build
-pnpm exec tsx src/verify-cli.ts run --target yjs
+pnpm exec tsx src/cli/main.ts run --target yjs
 ```
 
 ## What works today
@@ -42,6 +42,7 @@ pnpm exec tsx src/verify-cli.ts run --target yjs
 - Seeded, virtual-time schedules with partitions, drops, duplicates and variable latency.
 - Convergence and expected-state checks against real Yjs 13.6.27 and the built-in OR-Map.
 - Replayable v2 bundles: the same schedule returns the same receipt.
+- One CLI for `init`, `run`, `verify`, `replay`, `open` and `list`. Human output is the default; `--json` returns one line for CI.
 - A v1 HTTP simulator, REPL and SQLite catalog, kept for compatibility.
 
 ## What is next
@@ -65,12 +66,13 @@ distribution that produced it.
 ```sh
 pnpm install
 pnpm build
-pnpm verify verify examples/verification/yjs.json --out ./verification-results
+pnpm exec tsx src/cli/main.ts verify examples/verification/yjs.json --out ./verification-results
+pnpm exec tsx src/cli/main.ts open ./verification-results/result-RUN_ID.bundle.json
 ```
 
-Open `dist/web/verification.html` in a browser to inspect a result file. Use the
-CLI's `replay` command to execute the same target and compare the entire receipt.
-Browser inspection does not execute target code.
+`open` serves the viewer on `127.0.0.1` only and injects the validated bundle.
+Use `--no-open` to print the URL without launching a browser. The viewer does not
+execute target code or send the bundle anywhere.
 
 ## Legacy simulator (v1)
 

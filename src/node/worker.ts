@@ -90,11 +90,19 @@ try {
         path: result.path,
         numShrinks: result.numShrinks,
         failureChecks: result.failureChecks,
+        replicas: definition.replicas.length,
+        steps: definition.steps.length,
       });
     } else {
       const bundle = executeVerification(definition, context(definition));
       record(bundle);
-      emit({ type: "summary", status: bundle.receipt.status });
+      emit({
+        type: "summary",
+        status: bundle.receipt.status,
+        seed: definition.seed,
+        replicas: definition.replicas.length,
+        steps: definition.steps.length,
+      });
     }
   }
 } catch {

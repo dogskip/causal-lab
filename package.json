@@ -41,7 +41,7 @@
     }
   },
   "bin": {
-    "crdt-fuzz": "./dist/verify-cli.js",
+    "crdt-fuzz": "./dist/cli/main.js",
     "causal-lab": "./dist/server.js",
     "causal-lab-verify": "./dist/verify-cli.js"
   },

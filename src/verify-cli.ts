@@ -28,12 +28,11 @@ export async function runCli(
   let mode: string;
   let inputPath: string | undefined;
   let flags: string[];
+  let defaultRun = false;
   if (rawMode === "run") {
     mode = "verify";
     if (second === undefined || second.startsWith("--")) {
-      inputPath = fileURLToPath(
-        new URL("../examples/verification/yjs.json", import.meta.url),
-      );
+      defaultRun = true;
       flags = args.slice(1);
     } else {
       inputPath = second;
@@ -44,9 +43,12 @@ export async function runCli(
     inputPath = second;
     flags = rest;
   }
-  if ((mode !== "verify" && mode !== "replay") || inputPath === undefined)
+  if (
+    (mode !== "verify" && mode !== "replay") ||
+    (inputPath === undefined && !defaultRun)
+  )
     throw new ContractError(
-      "usage: crdt-fuzz run [--target yjs] | crdt-fuzz verify|replay FILE [--out DIR] [--module FILE] [--timeout MS] [--runs N --seed N --path PATH]",
+      "usage: crdt-fuzz run [--target yjs|or-map] | crdt-fuzz verify|replay FILE [--out DIR] [--module FILE] [--timeout MS] [--runs N --seed N --path PATH]",
     );
   const options = new Map<string, string>();
   for (let i = 0; i < flags.length; i += 2) {
@@ -69,8 +71,15 @@ export async function runCli(
       throw new ContractError("invalid CLI option");
     options.set(key, value);
   }
-  if (options.has("--target") && options.get("--target") !== "yjs")
-    throw new ContractError("only --target yjs is supported in this alpha");
+  const target = options.get("--target") ?? "yjs";
+  if (target !== "yjs" && target !== "or-map")
+    throw new ContractError("target must be yjs or or-map");
+  if (defaultRun)
+    inputPath = fileURLToPath(
+      new URL("../examples/verification/" + target + ".json", import.meta.url),
+    );
+  if (inputPath === undefined)
+    throw new ContractError("a verification case file is required");
   const integer = (
     name: string,
     fallback: number,
@@ -123,8 +132,15 @@ export async function runCli(
     role: string;
     run_id: string;
     case_id: string;
+    model_id: string;
     status: Status;
     path?: string;
+    failed_checks?: {
+      checkId: string;
+      phase: string;
+      eventSequence: number;
+      reason: string;
+    }[];
   }[] = [];
   let summary: Record<string, unknown> | undefined;
   let partial = "";
@@ -171,11 +187,21 @@ export async function runCli(
                   join(directory, role + "-" + bundle.run_id + ".bundle.json"),
                   bundle,
                 );
+          const failed = bundle.receipt.checks
+            .filter((check) => !check.result.passed)
+            .map((check) => ({
+              checkId: check.result.checkId,
+              phase: check.phase,
+              eventSequence: check.eventSequence,
+              reason: check.result.reason,
+            }));
           receipts.push({
             role,
             run_id: bundle.run_id,
             case_id: bundle.case_id,
+            model_id: bundle.receipt.manifest.model_id,
             status: bundle.receipt.status,
+            ...(failed.length === 0 ? {} : { failed_checks: failed }),
             ...(path === undefined ? {} : { path }),
           });
         } else if (frame.type === "summary") {
